@@ -409,12 +409,146 @@
       border-radius: 0 3px 3px 0;
     }
 
+    /* Atmospheric Inspector Modal / Scanner Interface */
+    .atmo-inspector-panel {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      bottom: 14px;
+      width: 440px;
+      max-width: calc(100vw - 28px);
+      background: rgba(3, 10, 22, 0.94);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      border-radius: 6px;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 0 35px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 240, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-480px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .atmo-inspector-panel.visible {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .atmo-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+      background: linear-gradient(180deg, rgba(0, 240, 255, 0.12) 0%, rgba(0, 240, 255, 0.02) 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .atmo-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .atmo-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      font-family: var(--font-mono);
+    }
+
+    .wind-speed-card {
+      background: rgba(4, 16, 34, 0.75);
+      border: 1px solid rgba(0, 240, 255, 0.22);
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      text-align: center;
+      position: relative;
+    }
+
+    .wind-val-display {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--cyan-glow);
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+      margin: 4px 0 2px 0;
+    }
+
+    .wind-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: rgba(0, 240, 255, 0.15);
+      border: 1px solid var(--cyan-glow);
+      color: #fff;
+      margin-top: 4px;
+    }
+
+    .gas-bar-container {
+      margin-bottom: 8px;
+    }
+    .gas-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      margin-bottom: 3px;
+      color: rgba(220, 240, 255, 0.85);
+    }
+    .gas-progress-track {
+      height: 6px;
+      background: rgba(10, 30, 55, 0.6);
+      border-radius: 3px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 240, 255, 0.15);
+    }
+    .gas-progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.6s ease;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .stratum-item {
+      padding: 7px 10px;
+      background: rgba(3, 14, 28, 0.55);
+      border-left: 3px solid var(--cyan-glow);
+      margin-bottom: 6px;
+      border-radius: 0 3px 3px 0;
+      font-size: 11px;
+    }
+    .stratum-title {
+      font-weight: bold;
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+    }
+    .stratum-alt {
+      color: var(--cyan-glow);
+      font-size: 10px;
+    }
+    .stratum-desc {
+      color: rgba(200, 225, 255, 0.75);
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
     /* Mobile adjustments */
     @media (max-width: 640px) {
       .top-title-group p { display: none; }
       .toggle-group { font-size: 10px; gap: 8px; }
       .bottom-bar { padding: 6px 10px; }
       .telemetry-card { width: calc(100vw - 28px); right: 14px; top: 68px; }
+      .atmo-inspector-panel { width: calc(100vw - 20px); left: 10px; top: 10px; bottom: 10px; }
     }
   </style>
 </head>
@@ -568,6 +702,97 @@
 
     <!-- Moons / Sub-satellites List -->
     <div id="tel-moons-list" style="margin-top: 10px;"></div>
+
+    <!-- Atmosphere & Weather Scanner Action Button -->
+    <div id="tel-atmo-btn-container"></div>
+  </aside>
+
+  <!-- Deep Planetary Atmosphere & Weather Inspector Interface -->
+  <aside class="atmo-inspector-panel" id="atmo-inspector-panel">
+    <div class="atmo-header">
+      <div class="atmo-title">
+        <span class="live-pulse" style="background: var(--cyan-glow);"></span>
+        <div>
+          <div id="atmo-planet-name" style="font-size: 15px; font-weight: bold; color: #fff;">টেরা নোভা</div>
+          <div id="atmo-planet-type" style="font-size: 10px; color: var(--cyan-glow);">মহাসাগরীয় বাসযোগ্য গ্রহ</div>
+        </div>
+      </div>
+      <button class="hud-btn" id="atmo-close-btn" style="padding: 4px 10px; font-size: 11px;">✕ ব্যাক</button>
+    </div>
+
+    <div class="atmo-body">
+      <!-- Weather Status Summary -->
+      <div style="background: rgba(0, 240, 255, 0.08); border-left: 3px solid var(--cyan-glow); padding: 8px 10px; border-radius: 0 4px 4px 0; margin-bottom: 12px; font-size: 11px;">
+        <div style="font-size: 9px; color: rgba(180, 220, 255, 0.6); text-transform: uppercase;">আবহাওয়া ও জলবায়ু অবস্থা // Weather Status:</div>
+        <div id="atmo-weather-summary" style="font-weight: bold; color: #e2f1ff; margin-top: 2px;">নাতিশীতোষ্ণ জলবায়ু ও সাইক্লোন</div>
+      </div>
+
+      <!-- Real-Time Wind Speedometer Card -->
+      <div class="wind-speed-card">
+        <div style="font-size: 9px; color: rgba(180, 220, 255, 0.65); text-transform: uppercase; letter-spacing: 0.8px;">
+          বায়ুপ্রবাহ ও গতিবেগ // Real-time Wind Speed
+        </div>
+        <div class="wind-val-display" id="atmo-wind-speed">১৫ - ৩২০ km/h</div>
+        <div style="font-size: 10px; color: rgba(220, 240, 255, 0.85); margin-top: 2px;" id="atmo-wind-dir">
+          পশ্চিম থেকে পূর্বমুখী করিওলিস জেট স্ট্রিম
+        </div>
+        <div class="wind-badge">🌪️ লাইভ ৩ডি অ্যারোডায়নামিক সিমুলেশন সক্রিয়</div>
+      </div>
+
+      <!-- Planetary Climate Metrics Grid -->
+      <div class="tel-grid" style="margin-bottom: 14px;">
+        <div class="tel-metric">
+          <div class="tel-label">পৃষ্ঠ চাপ (Pressure)</div>
+          <div class="tel-val" id="atmo-pressure">1.013 bar</div>
+        </div>
+        <div class="tel-metric">
+          <div class="tel-label">গড় তাপমাত্রা (Temp)</div>
+          <div class="tel-val" id="atmo-temp">15°C</div>
+        </div>
+        <div class="tel-metric">
+          <div class="tel-label">মেঘের ঘনত্ব (Clouds)</div>
+          <div class="tel-val" id="atmo-clouds">62%</div>
+        </div>
+        <div class="tel-metric">
+          <div class="tel-label">বর্ষণ প্রকৃতি (Precip)</div>
+          <div class="tel-val" id="atmo-precip">পানি ও তুষার</div>
+        </div>
+      </div>
+
+      <!-- Storm Activity -->
+      <div style="background: rgba(3, 15, 30, 0.55); border: 1px solid rgba(0, 240, 255, 0.15); padding: 8px 10px; border-radius: 4px; margin-bottom: 14px; font-size: 11px;">
+        <span style="font-size: 9px; color: rgba(180, 220, 255, 0.6); text-transform: uppercase;">ঝড় ও টার্বুলেন্স // Storm Activity:</span>
+        <div id="atmo-storms" style="color: #e2f1ff; font-weight: bold; margin-top: 2px;">মহাসাগরীয় সাইক্লোন ও বজ্রঝড়</div>
+      </div>
+
+      <!-- Chemical Spectroscopy -->
+      <div style="margin-bottom: 14px;">
+        <div style="font-size: 10px; color: var(--cyan-glow); font-weight: bold; margin-bottom: 6px; letter-spacing: 0.5px;">
+          গ্যাসীয় উপাদান বিশ্লেষণ // Chemical Spectroscopy:
+        </div>
+        <div id="atmo-gases-list"></div>
+      </div>
+
+      <!-- Altitude Strata Layers -->
+      <div style="margin-bottom: 14px;">
+        <div style="font-size: 10px; color: var(--cyan-glow); font-weight: bold; margin-bottom: 6px; letter-spacing: 0.5px;">
+          বায়ুমণ্ডলীয় স্তরবিন্যাস // Atmospheric Altitude Strata:
+        </div>
+        <div id="atmo-strata-list"></div>
+      </div>
+
+      <!-- Internal Core Architecture -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 10px; color: #f59e0b; font-weight: bold; margin-bottom: 6px; letter-spacing: 0.5px;">
+          অভ্যন্তরীণ ভূত্বক ও কোর // Internal Core Architecture:
+        </div>
+        <div id="atmo-core-list"></div>
+      </div>
+
+      <button class="hud-btn" style="width: 100%; justify-content: center; padding: 10px; font-weight: bold; background: rgba(0, 240, 255, 0.2); border-color: var(--cyan-glow);" onclick="simulation.closeAtmosphereInspector()">
+        ⬅️ সোলার সিস্টেম মানচিত্রে ফিরুন (Return to Map)
+      </button>
+    </div>
   </aside>
 
   <script>/**
@@ -1624,9 +1849,10 @@
 } )();
 </script>
   <script>/**
- * CELESTIAL DATA & TELEMETRY
- * Detailed parameters for stars, planets, and comprehensive moon systems (উপগ্রহ মণ্ডল)
- * with bilingual Bengali & English support.
+ * CELESTIAL DATA & TELEMETRY - COMPREHENSIVE ATMOSPHERE & WEATHER ARCHITECTURE
+ * Contains high-precision planetary physics, dynamic weather patterns,
+ * supersonic wind speeds, atmospheric chemical spectroscopy, altitude layers,
+ * internal core structures, and complete moon systems.
  */
 
 const CELESTIAL_DATA = [
@@ -1642,7 +1868,7 @@ const CELESTIAL_DATA = [
     velocity: "—",
     distanceAu: "0.00 AU",
     period: "—",
-    description: "নক্ষত্রমন্ডলের কেন্দ্রীয় উজ্জ্বল নক্ষত্র। এর মহাকর্ষীয় ক্ষেত্র সমগ্র মণ্ডলের গতিপথ নিয়ন্ত্রণ করে এবং শক্তি বিকিরণ করে।",
+    description: "নক্ষত্রমন্ডলের কেন্দ্রীয় উজ্জ্বল নক্ষত্র। এর মহাকর্ষীয় ক্ষেত্র সমগ্র মণ্ডলের গতিপথ নিয়ন্ত্রণ করে এবং প্লাজমা ও তাপশক্তি বিকিরণ করে।",
     descriptionEn: "The central radiant star of the system. Its gravitational anchor controls all orbital dynamics and radiates sustained fusion energy.",
     color: "#ffaa33",
     emissive: true,
@@ -1651,7 +1877,41 @@ const CELESTIAL_DATA = [
     orbitSpeed: 0,
     rotationSpeed: 0.002,
     inclination: 0,
-    eccentricity: 0
+    eccentricity: 0,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "করোনাল ম্যাস ইজেকশন ও সুপার-হট প্লাজমা ঝড়",
+      weatherStatusEn: "Coronal Mass Ejections & Ultra-Relativistic Plasma Storms",
+      windSpeed: "১,৪৫০,০০০ - ২,৮০০,০০০ km/h (সৌর বায়ু)",
+      windSpeedEn: "1,450,000 - 2,800,000 km/h (Solar Wind)",
+      avgWindKmh: 1600000,
+      windDirection: "কেন্দ্র থেকে বহির্মুখী তেজস্ক্রিয় বিকিরণ (Radial Outflow)",
+      windDirectionEn: "Radial Outflow along Magnetic Field Lines",
+      surfacePressure: "Photosphere: 0.001 bar / Core: ২৫০ বিলিয়ন bar",
+      stormActivity: "সৌরশিখা (Solar Flares) ও প্লাজমা প্রমিনেন্স লুপ",
+      stormActivityEn: "Prominence Arches & X-class Solar Flares",
+      precipitation: "হাই-এনার্জি প্রোটন ও ইলেকট্রন কণার বৃষ্টি",
+      precipitationEn: "High-Energy Relativistic Protons & Electron Stream",
+      cloudCoverage: "১০০% ম্যাগনেটিক প্লাজমা গ্র্যানিউলস",
+      gases: [
+        { name: "হাইড্রোজেন আয়ন (H⁺)", nameEn: "Hydrogen (H)", percent: 73.46, color: "#f59e0b" },
+        { name: "হিলিয়াম প্লাজমা (He²⁺)", nameEn: "Helium (He)", percent: 24.85, color: "#fbbf24" },
+        { name: "অক্সিজেন প্লাজমা (O)", nameEn: "Oxygen (O)", percent: 0.77, color: "#38bdf8" },
+        { name: "ভারী ধাতু ও কার্বন (Fe/C/Ne)", nameEn: "Heavy Metals (Fe/C)", percent: 0.92, color: "#ec4899" }
+      ],
+      layers: [
+        { name: "ফটোস্ফিয়ার (Photosphere)", nameEn: "Photosphere", alt: "0 - 500 km", desc: "দৃশ্যমান পৃষ্ঠভাগ; ৫,৫০০°C উষ্ণতার গ্র্যানিউলেশন সেল", descEn: "Visible surface layer; granulation convection cells" },
+        { name: "ক্রোমোস্ফিয়ার (Chromosphere)", nameEn: "Chromosphere", alt: "500 - 2,100 km", desc: "গোলাপি আভার উত্তপ্ত স্তর ও স্পিকিউল গ্যাস স্তম্ভ", descEn: "Spicule jet zone and hydrogen-alpha emission" },
+        { name: "ট্রানজিশন অঞ্চল (Transition Zone)", nameEn: "Transition Zone", alt: "2,100 - 10,000 km", desc: "তাপমাত্রা হঠাৎ ২০ হাজার থেকে ১০ লক্ষ ডিগ্রিতে উল্লম্ফন", descEn: "Rapid temperature spike to 1,000,000 K" },
+        { name: "করোনা (Solar Corona)", nameEn: "Solar Corona", alt: "10,000 - 5,000,000 km", desc: "কোটি কিলোমিটার বিস্তৃত অতি-উত্তপ্ত প্লাজমা মুকুট", descEn: "Diffuse ultra-hot magnetic plasma halo" }
+      ],
+      internalStructure: [
+        { layer: "নিউক্লিয়ার ফিউশন কোর (Fusion Core)", depth: "0 - 175,000 km", temp: "15,000,000°C" },
+        { layer: "রেডিয়েটিভ জোন (Radiative Zone)", depth: "175,000 - 490,000 km", temp: "7,000,000°C" },
+        { layer: "ট্যাকোক্লাইন (Tachocline)", depth: "490,000 - 510,000 km", temp: "2,000,000°C" },
+        { layer: "কনভেক্টিভ জোন (Convective Zone)", depth: "510,000 - 696,340 km", temp: "2,000,000°C - 5,500°C" }
+      ]
+    }
   },
   {
     id: "cygnus_beacon",
@@ -1674,7 +1934,36 @@ const CELESTIAL_DATA = [
     orbitSpeed: 0.024,
     rotationSpeed: 0.015,
     inclination: 0.08,
-    eccentricity: 0.06
+    eccentricity: 0.06,
+    atmosphereData: {
+      hasAtmosphere: false,
+      weatherStatus: "চৌম্বকীয় প্লাজমা শিল্ড ও যোগাযোগ তরঙ্গের বিকিরণ",
+      weatherStatusEn: "Magnetic Shielding & High-Frequency Beam Propagation",
+      windSpeed: "০ km/h (কৃত্রিম শূন্যতা)",
+      windSpeedEn: "0 km/h (Vacuum Enclosure)",
+      avgWindKmh: 0,
+      windDirection: "স্থিতিশীল ম্যাগনেটিক টরাস",
+      windDirectionEn: "Stationary Magnetic Torus Field",
+      surfacePressure: "0.000 bar (কৃত্রিম মহাকাশ প্ল্যাটফর্ম)",
+      stormActivity: "শক্তি রিঅ্যাক্টর প্লাজমা ডিসচার্জ",
+      stormActivityEn: "Tokamak Fusion Torus Discharges",
+      precipitation: "কোনো বৃষ্টি নেই",
+      precipitationEn: "None (Vacuum)",
+      cloudCoverage: "০%",
+      gases: [
+        { name: "ডিউটেরিয়াম প্লাজমা (²H)", nameEn: "Deuterium (²H)", percent: 60.0, color: "#38bdf8" },
+        { name: "ট্রিটিয়াম জ্বালানি (³H)", nameEn: "Tritium (³H)", percent: 35.0, color: "#f97316" },
+        { name: "হিলিয়াম ছাই (⁴He)", nameEn: "Helium Ash", percent: 5.0, color: "#a855f7" }
+      ],
+      layers: [
+        { name: "প্লাজমা শিল্ড (Shield Hull)", alt: "0 - 50 m", desc: "চৌম্বকীয় রেডিয়েশন ফিল্টার", descEn: "Magnetic deflection envelope" }
+      ],
+      internalStructure: [
+        { layer: "টাইটানিয়াম-টংস্টেন সংকর বহিরাবরণ", depth: "0 - 15 m", temp: "300°C" },
+        { layer: "সুপারকন্ডাক্টিভ ম্যাগনেট সেল", depth: "15 - 80 m", temp: "-269°C" },
+        { layer: "ফিউশন কোর রিঅ্যাক্টর চেম্বার", depth: "80 - 800 m", temp: "100,000,000°C" }
+      ]
+    }
   },
   {
     id: "vulcanus",
@@ -1684,7 +1973,7 @@ const CELESTIAL_DATA = [
     spectral: "Silicate / Metallic Core",
     radiusKm: "2,440 km",
     mass: "3.30 × 10²³ kg",
-    temp: "427°C / -173°C",
+    temp: "427°C (Day) / -173°C (Night)",
     velocity: "47.4 km/s",
     distanceAu: "0.52 AU",
     period: "88 দিন",
@@ -1697,6 +1986,36 @@ const CELESTIAL_DATA = [
     rotationSpeed: 0.008,
     inclination: 0.12,
     eccentricity: 0.08,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "উত্তপ্ত ধাতব বাষ্প ও অতি-ক্ষীণ এক্সোস্ফিয়ার ঝড়",
+      weatherStatusEn: "Superheated Vaporized Silicate & Solar Sputtering Storms",
+      windSpeed: "৭৫ - ১৫০ km/h (সৌর বিকিরণ বায়ুপ্রবাহ)",
+      windSpeedEn: "75 - 150 km/h (Radiation Pressure Winds)",
+      avgWindKmh: 95,
+      windDirection: "দিনভাগ থেকে অন্ধকার রাতের মেরুর দিকে",
+      windDirectionEn: "Subsolar Point to Nightside Terminator",
+      surfacePressure: "10⁻¹⁴ bar (চরম ক্ষীণ ভ্যাকুয়াম স্তর)",
+      stormActivity: "সৌর কণিকা বোমাবর্ষণ ও ভূত্বকের ধাতব বিস্ফোরণ",
+      stormActivityEn: "Intense Proton Sputtering & Thermal Micrometeors",
+      precipitation: "গলিত সীসা ও জিঙ্কের অনুদ্বায়ী ঘনীভবন",
+      precipitationEn: "Vaporized Metallic Condensation",
+      cloudCoverage: "০% (মেঘহীন উন্মুক্ত আকাশ)",
+      gases: [
+        { name: "সোডিয়াম বাষ্প (Na)", nameEn: "Sodium (Na)", percent: 42.0, color: "#fbbf24" },
+        { name: "ম্যাগনেসিয়াম গ্যাস (Mg)", nameEn: "Magnesium (Mg)", percent: 29.0, color: "#e2e8f0" },
+        { name: "অক্সিজেন আয়ন (O)", nameEn: "Oxygen Ions (O)", percent: 22.0, color: "#38bdf8" },
+        { name: "পটাশিয়াম ও হিলিয়াম (K/He)", nameEn: "Potassium/Helium", percent: 7.0, color: "#a855f7" }
+      ],
+      layers: [
+        { name: "সারফেস বাউন্ডারি এক্সোস্ফিয়ার", nameEn: "Surface Boundary Exosphere", alt: "0 - 1,200 km", desc: "পরমাণুগুলো পরস্পরের সাথে ধাক্কা না খেয়ে উন্মুক্ত মহাশূন্যে ঘুরে বেড়ায়", descEn: "Collisionless atomic drift governed by solar photon pressure" }
+      ],
+      internalStructure: [
+        { layer: "গলিত ব্যাসাল্টিক ক্রাস্ট", depth: "0 - 35 km", temp: "420°C" },
+        { layer: "সিলিকন-ম্যাগনেসিয়াম ম্যান্টল", depth: "35 - 550 km", temp: "1,200°C" },
+        { layer: "বিশালাকার তরল লোহা কোর (৭৫% ব্যাসার্ধ)", depth: "550 - 2,440 km", temp: "2,200°C" }
+      ]
+    },
     moons: [
       {
         id: "vulcan_pyros",
@@ -1723,7 +2042,7 @@ const CELESTIAL_DATA = [
     spectral: "Nitrogen-Oxygen Biome",
     radiusKm: "6,371 km",
     mass: "5.97 × 10²⁴ kg",
-    temp: "15°C (Average)",
+    temp: "15°C (Average: -40°C to +48°C)",
     velocity: "29.8 km/s",
     distanceAu: "1.00 AU",
     period: "365 দিন",
@@ -1739,6 +2058,42 @@ const CELESTIAL_DATA = [
     hasAtmosphereGlow: true,
     atmosphereColor: 0x00b4d8,
     hasClouds: true,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "নাতিশীতোষ্ণ মহাসাগরীয় সাইক্লোন ও আর্দ্র মৌসুমী বর্ষণ",
+      weatherStatusEn: "Temperate Maritime Systems, Tropical Cyclones & Monsoon Fronts",
+      windSpeed: "১৫ - ৩২০ km/h (জেট স্ট্রিম ও টাইফুন)",
+      windSpeedEn: "15 - 320 km/h (Jet Streams & Category 5 Cyclones)",
+      avgWindKmh: 42,
+      windDirection: "পশ্চিম থেকে পূর্বমুখী করিওলিস জেট স্ট্রিম (Westerlies & Trades)",
+      windDirectionEn: "Mid-latitude Westerlies & Equatorial Trade Winds",
+      surfacePressure: "1.013 bar (1.00 atm sea level)",
+      stormActivity: "ক্রান্তীয় সামুদ্রিক সাইক্লোন ও সুপারসেল বজ্রঝড়",
+      stormActivityEn: "Oceanic Cyclones, Supercell Thunderstorms & Polar Blizzards",
+      precipitation: "বিশুদ্ধ পানির বৃষ্টি, শিলাবৃষ্টি ও আল্পাইন তুষারপাত",
+      precipitationEn: "Liquid H₂O Rainfall, Hail & Mountain Snowfall",
+      cloudCoverage: "৬২% (ঘূর্ণায়মান কিউমুলাস ও সাইরাস মেঘমালা)",
+      gases: [
+        { name: "নাইট্রোজেন (N₂)", nameEn: "Nitrogen (N₂)", percent: 78.08, color: "#38bdf8" },
+        { name: "অক্সিজেন (O₂)", nameEn: "Oxygen (O₂)", percent: 20.95, color: "#4ade80" },
+        { name: "আর্গন (Ar)", nameEn: "Argon (Ar)", percent: 0.93, color: "#a855f7" },
+        { name: "কার্বন ডাই-অক্সাইড (CO₂)", nameEn: "CO₂ & Vapor", percent: 0.04, color: "#f97316" }
+      ],
+      layers: [
+        { name: "ট্রপোস্ফিয়ার (Troposphere)", nameEn: "Troposphere", alt: "0 - 12 km", desc: "সকল মেঘ, বৃষ্টি, ঝড় ও বায়ুপ্রবাহের প্রধান কেন্দ্র", descEn: "Drives 99% of weather dynamics, clouds, and storms" },
+        { name: "স্ট্র্যাটোস্ফিয়ার (Stratosphere)", nameEn: "Stratosphere", alt: "12 - 50 km", desc: "ওজোন গ্যাস স্তর যা ইউভি রশ্মি শোষণ করে; শান্ত বিমান চলাচলের স্তর", descEn: "Ozone absorption zone, home to high-speed jet streams" },
+        { name: "মেসোস্ফিয়ার (Mesosphere)", nameEn: "Mesosphere", alt: "50 - 85 km", desc: "মহাকাশের উল্কাপিন্ড পুড়ে ছাই হয়ে যাওয়ার শীতল স্তর (-৯০°C)", descEn: "Meteor burn-up zone; coldest planetary layer (-90°C)" },
+        { name: "থার্মোস্ফিয়ার ও আয়নোস্ফিয়ার", nameEn: "Thermosphere", alt: "85 - 600 km", desc: "মেরুজ্যোতি (Aurora) ও রেডিও তরঙ্গ প্রতিফলন স্তর", descEn: "Auroral displays and satellite orbital highway" },
+        { name: "এক্সোস্ফিয়ার (Exosphere)", nameEn: "Exosphere", alt: "600 - 10,000 km", desc: "মহাকাশের সাথে বায়ুমণ্ডলের উন্মুক্ত প্রান্তিক মিলনস্থল", descEn: "Diffuse hydrogen envelope bleeding into vacuum" }
+      ],
+      internalStructure: [
+        { layer: "মহাসাগর ও সিলিকেট গ্রানাইট ভূত্বক", depth: "0 - 40 km", temp: "15°C - 450°C" },
+        { layer: "সান্দ্র অলিভাইন ম্যান্টল (Upper Mantle)", depth: "40 - 670 km", temp: "1,100°C" },
+        { layer: "লোয়ার ম্যান্টল ও ব্রিগম্যানাইট", depth: "670 - 2,890 km", temp: "2,400°C" },
+        { layer: "গলিত তরল লোহা বহিঃকোর (Outer Core)", depth: "2,890 - 5,150 km", temp: "4,400°C" },
+        { layer: "কঠিন স্ফটিকায়িত লোহা-নিকেল অন্তঃকোর", depth: "5,150 - 6,371 km", temp: "5,400°C" }
+      ]
+    },
     moons: [
       {
         id: "terra_luna",
@@ -1765,7 +2120,7 @@ const CELESTIAL_DATA = [
     spectral: "Ferrous Carbonate",
     radiusKm: "3,389 km",
     mass: "6.42 × 10²³ kg",
-    temp: "-63°C",
+    temp: "-63°C (-140°C to +20°C)",
     velocity: "24.1 km/s",
     distanceAu: "1.52 AU",
     period: "687 দিন",
@@ -1780,6 +2135,38 @@ const CELESTIAL_DATA = [
     eccentricity: 0.07,
     hasAtmosphereGlow: true,
     atmosphereColor: 0xe07a5f,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "গ্রহজোড়া রক্তিম ধূলিঝড় ও কার্বন ডাই-অক্সাইড তুষারপাত",
+      weatherStatusEn: "Global Ferrous Dust Storms, Towering Dust Devils & Dry Ice Frost",
+      windSpeed: "৬৫ - ৪০০ km/h (মার্শিয়ান সুপার-গেল)",
+      windSpeedEn: "65 - 400 km/h (Martian Supersonic Dust Gails)",
+      avgWindKmh: 85,
+      windDirection: "গ্রীষ্মের দক্ষিণ গোলার্ধ থেকে উত্তর মেরুর দিকে",
+      windDirectionEn: "Subtropical Hadley Cell to Polar Vortex",
+      surfacePressure: "0.006 bar (পৃথিবীর মাত্র ০.৬% চাপ)",
+      stormActivity: "কিলোমিটার উঁচু ঘূর্ণি টর্নেডো (Dust Devils)",
+      stormActivityEn: "Kilometer-tall Dust Devils & Planet-Enveloping Sandstorms",
+      precipitation: "শুষ্ক ড্রাই আইস (CO₂) বরফের সূক্ষ্ম স্ফটিক",
+      precipitationEn: "Sublimated CO₂ Dry Ice Snow & Micro-Frost",
+      cloudCoverage: "২৫% (পাতলা বরফ-ধূলির সাইরাস মেঘ)",
+      gases: [
+        { name: "কার্বন ডাই-অক্সাইড (CO₂)", nameEn: "Carbon Dioxide", percent: 95.32, color: "#f97316" },
+        { name: "নাইট্রোজেন (N₂)", nameEn: "Nitrogen (N₂)", percent: 2.60, color: "#38bdf8" },
+        { name: "আর্গন (Ar)", nameEn: "Argon (Ar)", percent: 1.90, color: "#a855f7" },
+        { name: "অক্সিজেন ও জলীয় বাষ্প", nameEn: "O₂ / H₂O Trace", percent: 0.18, color: "#4ade80" }
+      ],
+      layers: [
+        { name: "নিম্ন বায়ুমণ্ডল (Lower Atmosphere)", nameEn: "Lower Atmosphere", alt: "0 - 45 km", desc: "ধূলিকণা দ্বারা উত্তপ্ত ও ঘন ধূলিঝড়ের উৎসস্থল", descEn: "Dust heating layer producing massive dust devils" },
+        { name: "মধ্য বায়ুমণ্ডল (Middle Atmosphere)", nameEn: "Middle Atmosphere", alt: "45 - 110 km", desc: "ড্রাই আইসের অত্যন্ত পাতলা সাইরাস মেঘ", descEn: "Cold CO₂ cloud condensation deck" },
+        { name: "থার্মোস্ফিয়ার ও এক্সোস্ফিয়ার", nameEn: "Upper Atmosphere", alt: "110 - 500 km", desc: "চৌম্বকক্ষেত্রহীন সৌর বায়ুর আঘাতে গ্যাস ক্ষয়", descEn: "Unshielded atmospheric stripping by solar wind" }
+      ],
+      internalStructure: [
+        { layer: "লৌহ অক্সাইড সমৃদ্ধ ব্যাসাল্ট ক্রাস্ট", depth: "0 - 50 km", temp: "-60°C" },
+        { layer: "সিলিকেট শক্ত ম্যান্টল", depth: "50 - 1,700 km", temp: "1,200°C" },
+        { layer: "আংশিক গলিত লোহা-সালফার কোর", depth: "1,700 - 3,389 km", temp: "1,900°C" }
+      ]
+    },
     moons: [
       {
         id: "ares_phobos",
@@ -1821,7 +2208,7 @@ const CELESTIAL_DATA = [
     spectral: "Hydrogen-Helium Complex",
     radiusKm: "69,911 km",
     mass: "1.898 × 10²⁷ kg",
-    temp: "-110°C",
+    temp: "-110°C (Cloud Deck) / 24,000°C (Core)",
     velocity: "13.1 km/s",
     distanceAu: "2.85 AU",
     period: "11.8 বছর",
@@ -1836,6 +2223,40 @@ const CELESTIAL_DATA = [
     eccentricity: 0.04,
     hasAtmosphereGlow: true,
     atmosphereColor: 0xf4a261,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "গ্রেট রেড স্পট মেগা-ঘূর্ণিঝড় ও সুপারসনিক বিপরীত জেট স্ট্রিম",
+      weatherStatusEn: "The Great Red Spot Anticyclone & Supersonic Opposing Jet Streams",
+      windSpeed: "৪৩০ - ৬৮০ km/h (স্ট্রাটোস্ফিয়ারিক কারেন্ট)",
+      windSpeedEn: "430 - 680 km/h (Relentless Equatorial Counter-Currents)",
+      avgWindKmh: 540,
+      windDirection: "পর্যায়ক্রমিক পূর্ব-পশ্চিমমুখী করিওলিস ব্যান্ড (Alternating Belts)",
+      windDirectionEn: "Zonal Flow Belts (Light Zones Rising, Dark Belts Sinking)",
+      surfacePressure: "2 bar (Cloud Tops) থেকে ২০ লক্ষ bar (অভ্যন্তরে)",
+      stormActivity: "হাজার গুণ শক্তিশালী সুপারবোল্ট মেগা-বজ্রপাত",
+      stormActivityEn: "Continent-sized Superbolt Lightning & Millennium Storms",
+      precipitation: "তরল অ্যামোনিয়া বরফ ও অতি-উচ্চচাপে তরল হিলিয়াম বৃষ্টি",
+      precipitationEn: "Ammonia Ice Hail, Liquid Water-Ammonia Droplets & Helium Rain",
+      cloudCoverage: "১০০% (ঘন রঙিন হাইড্রোকার্বন ও অ্যামোনিয়া মেঘের স্তর)",
+      gases: [
+        { name: "আণবিক হাইড্রোজেন (H₂)", nameEn: "Hydrogen (H₂)", percent: 89.80, color: "#f59e0b" },
+        { name: "হিলিয়াম গ্যাস (He)", nameEn: "Helium (He)", percent: 10.20, color: "#fbbf24" },
+        { name: "মিথেন ও অ্যামোনিয়া (CH₄/NH₃)", nameEn: "Methane/Ammonia", percent: 0.35, color: "#38bdf8" },
+        { name: "ফসফরাস ও সালফার ধোঁয়াশা", nameEn: "Phosphorus Tholins", percent: 0.05, color: "#ef4444" }
+      ],
+      layers: [
+        { name: "উচ্চ অ্যামোনিয়া বরফ ডেক", nameEn: "Ammonia Ice Cirrus", alt: "0 - 50 km (0.5 bar)", desc: "সাদা রঙের স্ফটিক বরফের বহিরাবরণ (-১৪০°C)", descEn: "White crystalline ammonia ice clouds at -140°C" },
+        { name: "অ্যামোনিয়াম হাইড্রোসালফাইড স্তর", nameEn: "Hydrosulfide Layer", alt: "50 - 120 km (2 bar)", desc: "বাদামি-লালচে বর্ণের প্রধান রঙের ব্যান্ডসমূহ", descEn: "Tawny orange-brown cloud belts enriched with sulfur" },
+        { name: "ঘন পানি ও বরফের মেঘমালা", nameEn: "Water Cloud Base", alt: "120 - 200 km (5 bar)", desc: "বিশাল সুপারবোল্ট বজ্রপাত সৃষ্টিকারী উষ্ণ স্তর", descEn: "Violent moist convection zone generating mega-lightning" },
+        { name: "ধাতব তরল হাইড্রোজেন সাগর", nameEn: "Supercritical Fluid Mantle", alt: "200 - 20,000 km", desc: "চরম চাপে গ্যাসীয় হাইড্রোজেন তরল ধাতুতে রূপান্তরিত", descEn: "Liquid molecular hydrogen transitioning to metallic ocean" }
+      ],
+      internalStructure: [
+        { layer: "বায়ুমণ্ডলীয় রঙিন ক্লাউড ডেক", depth: "0 - 3,000 km", temp: "-110°C - 2,000°C" },
+        { layer: "তরল আণবিক হাইড্রোজেন মহাসাগর", depth: "3,000 - 22,000 km", temp: "5,000°C" },
+        { layer: "তরল ধাতব হাইড্রোজেন ম্যান্টল (চৌম্বক ডায়নামো)", depth: "22,000 - 58,000 km", temp: "11,000°C" },
+        { layer: "দানবীয় ঘন সিলিকা-লোহা পাথুরে কোর", depth: "58,000 - 69,911 km", temp: "24,000°C" }
+      ]
+    },
     moons: [
       {
         id: "zeus_io",
@@ -1907,7 +2328,7 @@ const CELESTIAL_DATA = [
     spectral: "Volatile Ammonia-Ice",
     radiusKm: "58,232 km",
     mass: "5.68 × 10²⁶ kg",
-    temp: "-140°C",
+    temp: "-140°C (Cloud Tops) / 11,700°C (Core)",
     velocity: "9.7 km/s",
     distanceAu: "4.20 AU",
     period: "29.4 বছর",
@@ -1926,6 +2347,40 @@ const CELESTIAL_DATA = [
     ringTilt: 0.46,
     hasAtmosphereGlow: true,
     atmosphereColor: 0xe9c46a,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "উত্তর মেরুর ৩০,০০০ কিমি বিশালাকার ষড়ভুজ ঝড় ও সুপারসনিক জেট উইন্ড",
+      weatherStatusEn: "Colossal 30,000 km North Polar Hexagon Vortex & Supersonic Equatorial Roar",
+      windSpeed: "১,২০০ - ১,৮০০ km/h (সৌরজগতের দ্বিতীয় দ্রুততম ঝড়)",
+      windSpeedEn: "1,200 - 1,800 km/h (Mach 1.5 Supersonic Equatorial Storms)",
+      avgWindKmh: 1450,
+      windDirection: "নিরক্ষীয় পূর্বমুখী সুপারসনিক প্রবাহ (Prograde Jet Streams)",
+      windDirectionEn: "Unbroken Broad Equatorial Eastward Prograde Current",
+      surfacePressure: "1.4 bar (Cloud Tops) থেকে ১০ লক্ষ bar (অভ্যন্তর)",
+      stormActivity: "মেরু হেক্সাগন সাইক্লোন ও প্রতি ৩০ বছর অন্তর গ্রেট হোয়াইট স্পট",
+      stormActivityEn: "Persistent Hexagonal Polar Jet & Decadal Great White Spots",
+      precipitation: "তরল মিথেন শিশির ও অভ্যন্তরে হীরা/হিলিয়াম বৃষ্টি",
+      precipitationEn: "Liquid Methane/Ethane Drizzle & Internal Helium Smear",
+      cloudCoverage: "১০০% (স্বর্ণালী ফ্যাকাশে অ্যামোনিয়া ও কুয়াশা স্ট্রাইপ)",
+      gases: [
+        { name: "আণবিক হাইড্রোজেন (H₂)", nameEn: "Hydrogen (H₂)", percent: 96.30, color: "#f59e0b" },
+        { name: "হিলিয়াম গ্যাস (He)", nameEn: "Helium (He)", percent: 3.25, color: "#fbbf24" },
+        { name: "মিথেন গ্যাস (CH₄)", nameEn: "Methane (CH₄)", percent: 0.45, color: "#38bdf8" },
+        { name: "অ্যামোনিয়া ও ফসফাইন", nameEn: "Ammonia/Phosphine", percent: 0.01, color: "#ec4899" }
+      ],
+      layers: [
+        { name: "উত্তর মেরুর হেক্সাগন জেট", nameEn: "Polar Hexagon Vortex", alt: "0 - 75 km", desc: "জ্যামিতিক নিখুঁত ষড়ভুজাকৃতির ৩২০ কিমি/ঘণ্টার ঘূর্ণিঝড়", descEn: "Symmetric hexagonal atmospheric standing wave" },
+        { name: "উচ্চ অ্যামোনিয়া কুয়াশা স্তর", nameEn: "Upper Photochemical Haze", alt: "75 - 150 km", desc: "সূর্যালোকের প্রভাবে সোনালী হালকা রঙের চাদর", descEn: "Dull golden-butterscotch smog veil" },
+        { name: "অ্যামোনিয়াম ডেক ও বরফ ক্লাউড", nameEn: "Ammonium Hydrosulfide Deck", alt: "150 - 250 km", desc: "ঘন ভারী মেঘ ও বরফ বলয়ের দীর্ঘ ছায়া অঞ্চল", descEn: "Dense cloud base influenced by ring shadow cooling" },
+        { name: "তরল ধাতব হাইড্রোজেন স্তর", nameEn: "Liquid Metallic Mantle", alt: "250 - 30,000 km", desc: "তীব্র চাপে পরিবাহী ধাতব হাইড্রোজেন সাগরের প্রবাহ", descEn: "High-temperature conducting fluid generating magnetosphere" }
+      ],
+      internalStructure: [
+        { layer: "বহিস্থ রঙিন ক্লাউড ব্যান্ড", depth: "0 - 1,000 km", temp: "-140°C - 300°C" },
+        { layer: "তরল আণবিক হাইড্রোজেন আবরণ", depth: "1,000 - 20,000 km", temp: "4,000°C" },
+        { layer: "তরল ধাতব হাইড্রোজেন ও হিলিয়াম ড্রপলেট জোন", depth: "20,000 - 45,000 km", temp: "8,500°C" },
+        { layer: "ঘন পাথুরে-বরফ কোর (পৃথিবীর ৯-২২ গুণ ভর)", depth: "45,000 - 58,232 km", temp: "11,700°C" }
+      ]
+    },
     moons: [
       {
         id: "chronos_mimas",
@@ -1970,7 +2425,32 @@ const CELESTIAL_DATA = [
         orbitTilt: 0.18,
         textureType: "titan",
         description: "ঘন নাইট্রোজেন ও মিথেন গ্যাসের সোনালী কুয়াশাময় বায়ুমণ্ডল এবং তরল মিথেনের হ্রদ বিশিষ্ট মহিমান্বিত উপগ্রহ।",
-        descriptionEn: "Magnificent moon cloaked in dense golden smog with liquid hydrocarbon seas."
+        descriptionEn: "Magnificent moon cloaked in dense golden smog with liquid hydrocarbon seas.",
+        atmosphereData: {
+          hasAtmosphere: true,
+          weatherStatus: "তরল মিথেন ও ইথেনের বৃষ্টি, হ্রদ এবং সোনালী নাইট্রোজেন কুয়াশা",
+          weatherStatusEn: "Liquid Methane Rainstorms, Hydrocarbon Seas & Golden Nitrogen Smog",
+          windSpeed: "১২ - ৩৫ km/h (পৃষ্ঠে শান্ত, উচ্চে দ্রুত)",
+          windSpeedEn: "12 - 35 km/h (Gentle Surface Breezes, Fast Stratospheric Winds)",
+          avgWindKmh: 18,
+          windDirection: "নিরক্ষীয় পশ্চিমা বায়ু ও মেরু মেঘ ঘূর্ণি",
+          windDirectionEn: "Equatorial Prograde Superrotation",
+          surfacePressure: "1.47 bar (পৃথিবীর চেয়ে ৫০% বেশি বায়ুমণ্ডলীয় চাপ!)",
+          stormActivity: "মৌসুমী ভারী তরল মিথেন সাইক্লোন",
+          stormActivityEn: "Seasonal Polar Hydrocarbon Monsoons",
+          precipitation: "তরল মিথেন (CH₄) ও ইথেন ড্রপলেট",
+          precipitationEn: "Liquid Methane (CH₄) Rain Filling Kraken Mare",
+          cloudCoverage: "৮৫% (ঘন সোনালী থোলিন অ্যারোসল কুয়াশা)",
+          gases: [
+            { name: "নাইট্রোজেন গ্যাস (N₂)", nameEn: "Nitrogen (N₂)", percent: 94.20, color: "#38bdf8" },
+            { name: "মিথেন গ্যাস (CH₄)", nameEn: "Methane (CH₄)", percent: 5.65, color: "#f59e0b" },
+            { name: "হাইড্রোজেন ও জটিল থোলিন", nameEn: "Hydrogen/Tholins", percent: 0.15, color: "#ec4899" }
+          ],
+          layers: [
+            { name: "ঘন থোলিন স্মগ ডেক", nameEn: "Orange Tholin Stratosphere", alt: "50 - 300 km", desc: "সূর্যরশ্মি থেকে আসা সোনালী আলোক বিচ্ছুরণ", descEn: "Dense organic smog filtering ultraviolet light" },
+            { name: "মিথেন ট্রপোস্ফিয়ার", nameEn: "Methane Weather Stratum", alt: "0 - 50 km", desc: "মিথেন মেঘ ও তরল বর্ষণের অঞ্চল (-১৭৯°C)", descEn: "Cryogenic weather zone with hydrocarbon precipitation" }
+          ]
+        }
       },
       {
         id: "chronos_rhea",
@@ -1997,7 +2477,7 @@ const CELESTIAL_DATA = [
     spectral: "Methane-Ice Mantle",
     radiusKm: "25,362 km",
     mass: "8.68 × 10²⁵ kg",
-    temp: "-195°C",
+    temp: "-195°C (-224°C Coldest recorded)",
     velocity: "6.8 km/s",
     distanceAu: "6.10 AU",
     period: "84 বছর",
@@ -2013,9 +2493,41 @@ const CELESTIAL_DATA = [
     hasRings: true,
     ringInner: 3.4,
     ringOuter: 4.8,
-    ringTilt: 1.52, // Near vertical 87 degree tilt (like Uranus!)
+    ringTilt: 1.52,
     hasAtmosphereGlow: true,
     atmosphereColor: 0x48cae4,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "অতি-শীতল ফিরোজা মিথেন কুয়াশা ও অভ্যন্তরে হীরক বৃষ্টি (Diamond Rain)",
+      weatherStatusEn: "Super-chilled Cyan Methane Smog & Deep Mantle Diamond Rain",
+      windSpeed: "৫০০ - ৯০০ km/h (বিপরীতগামী তীব্র ঝড়)",
+      windSpeedEn: "500 - 900 km/h (Retrograde Equatorial Gales)",
+      avgWindKmh: 680,
+      windDirection: "অক্ষীয় কাত অনুযায়ী উল্লম্ব করিওলিস ঘূর্ণি (98° Axial Tilt)",
+      windDirectionEn: "Extreme Oblique Vortices aligned with 98° Tilt",
+      surfacePressure: "1.3 bar (Cloud Deck) থেকে কোটি bar",
+      stormActivity: "উজ্জ্বল মিথেন সাইরাস বরফ ঝড় ও আলোক বিচ্ছুরণ",
+      stormActivityEn: "Occasional Translucent Convective Cirrus Flares",
+      precipitation: "গভীর ম্যান্টলে কঠিন হীরার বর্ষণ ও অ্যামোনিয়া বরফ",
+      precipitationEn: "Solid Diamond Precipitation & Methane Hail",
+      cloudCoverage: "১০০% (মসৃণ মায়াবী অ্যাকোয়ামেরিন গ্যাসীয় চাদর)",
+      gases: [
+        { name: "আণবিক হাইড্রোজেন (H₂)", nameEn: "Hydrogen (H₂)", percent: 82.50, color: "#f59e0b" },
+        { name: "হিলিয়াম গ্যাস (He)", nameEn: "Helium (He)", percent: 15.20, color: "#fbbf24" },
+        { name: "মিথেন গ্যাস (CH₄ - নীল বর্ণ দেয়)", nameEn: "Methane (CH₄)", percent: 2.30, color: "#00f0ff" },
+        { name: "হাইড্রোজেন ডিউটেরাইড (HD)", nameEn: "Deuteride Trace", percent: 0.01, color: "#a855f7" }
+      ],
+      layers: [
+        { name: "উচ্চ মিথেন সাইরাস ক্লাউড", nameEn: "Methane Cirrus Haze", alt: "0 - 50 km", desc: "লাল আলো শোষণ করে ফিরোজা রঙ তৈরি করে", descEn: "Red absorption layer yielding pristine cyan hue" },
+        { name: "হাইড্রোজেন সালফাইড ও অ্যামোনিয়া ডেক", nameEn: "Hydrogen Sulfide Deck", alt: "50 - 150 km", desc: "অত্যন্ত তীব্র ঝাঁজালো গন্ধযুক্ত দুর্গম মেঘমালা", descEn: "Pungent, highly compressed sulfide ice layer" },
+        { name: "সুপারক্রিটিক্যাল আইস ও ডায়মন্ড সাগর", nameEn: "Diamond Mantle Ocean", alt: "150 - 15,000 km", desc: "চরম তাপে সংকুচিত গলিত পানি, মিথেন ও হীরার বৃষ্টি", descEn: "Superdense hot water-ammonia slush with diamond precipitation" }
+      ],
+      internalStructure: [
+        { layer: "বহিস্থ ফিরোজা গ্যাস স্তর", depth: "0 - 5,000 km", temp: "-195°C - 700°C" },
+        { layer: "সুপার-আয়নিক পানি ও মিথেন বরফ ম্যান্টল", depth: "5,000 - 20,000 km", temp: "2,000°C - 5,000°C" },
+        { layer: "কঠিন সিলিকেট ও লোহা-নিকেল কোর", depth: "20,000 - 25,362 km", temp: "6,800°C" }
+      ]
+    },
     moons: [
       {
         id: "aether_miranda",
@@ -2057,7 +2569,7 @@ const CELESTIAL_DATA = [
     spectral: "Nitrogen Ice Crust",
     radiusKm: "1,188 km",
     mass: "1.30 × 10²² kg",
-    temp: "-230°C",
+    temp: "-230°C (-240°C to -218°C)",
     velocity: "4.7 km/s",
     distanceAu: "8.40 AU",
     period: "248 বছর",
@@ -2070,6 +2582,35 @@ const CELESTIAL_DATA = [
     rotationSpeed: 0.005,
     inclination: 0.19,
     eccentricity: 0.12,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "নাইট্রোজেন বরফের ধোঁয়াশা ও ঋতুভিত্তিক ক্রায়ো-শৈত্য",
+      weatherStatusEn: "Tenuous Nitrogen-Methane Hazes & Seasonal Condensation Freeze",
+      windSpeed: "১৫ - ৪৫ km/h (শান্ত কিন্তু অতি-শীতল)",
+      windSpeedEn: "15 - 45 km/h (Sublimation-Driven Sub-surface Breezes)",
+      avgWindKmh: 24,
+      windDirection: "স্পুটনিক প্ল্যানিটিয়া হিমবাহ থেকে মেরুর দিকে",
+      windDirectionEn: "Glacial Outflow from Sputnik Planitia Nitrogen Basin",
+      surfacePressure: "10⁻⁵ bar (১০ মাইক্রোবার)",
+      stormActivity: "ক্রায়ো-ভলকানিক নাইট্রোজেন বাষ্প উদ্গীরণ",
+      stormActivityEn: "Cryovolcanic Sublimation Plumes & Nitrogen Geysers",
+      precipitation: "নাইট্রোজেন ও মিথেন বরফের সূক্ষ্ম তুষার",
+      precipitationEn: "Fine Tholin & Methane Micro-Snow",
+      cloudCoverage: "১৫% (নীলাভ আলোক বিচ্ছুরণকারী থোলিন হ্যাজ)",
+      gases: [
+        { name: "নাইট্রোজেন গ্যাস (N₂)", nameEn: "Nitrogen (N₂)", percent: 98.50, color: "#38bdf8" },
+        { name: "মিথেন গ্যাস (CH₄)", nameEn: "Methane (CH₄)", percent: 1.00, color: "#f59e0b" },
+        { name: "কার্বন মনোক্সাইড (CO)", nameEn: "Carbon Monoxide", percent: 0.50, color: "#a855f7" }
+      ],
+      layers: [
+        { name: "নীল কুয়াশা স্তর (Blue Haze Rings)", alt: "0 - 200 km", desc: "২০টির বেশি সূক্ষ্ম স্তরে বিভক্ত নীলাভ থোলিন ধোঁয়াশা", descEn: "Stratified layers of complex organic photochemical aerosols" }
+      ],
+      internalStructure: [
+        { layer: "নাইট্রোজেন ও মিথেন বরফের মসৃণ ক্রাস্ট", depth: "0 - 20 km", temp: "-230°C" },
+        { layer: "পানি-বরফের শক্ত সাবসারফেস ম্যান্টল", depth: "20 - 250 km", temp: "-120°C" },
+        { layer: "ঘন পাথুরে সিলিকেট কোর", depth: "250 - 1,188 km", temp: "450°C" }
+      ]
+    },
     moons: [
       {
         id: "hades_charon",
@@ -2912,6 +3453,38 @@ class CosmicAudio {
     noise.start(t);
   }
 
+  playWindScan() {
+    if (!this.ctx || this.isMuted) return;
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+
+    const t = this.ctx.currentTime;
+    const bufferSize = this.ctx.sampleRate * 0.8;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * i / bufferSize);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(220, t);
+    filter.frequency.linearRampToValueAtTime(650, t + 0.4);
+    filter.frequency.exponentialRampToValueAtTime(180, t + 0.8);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, t);
+    gain.gain.linearRampToValueAtTime(0.15, t + 0.3);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noise.start(t);
+  }
+
   toggle() {
     this.init();
     this.isMuted = !this.isMuted;
@@ -2928,9 +3501,9 @@ class CosmicAudio {
 window.cosmicAudio = new CosmicAudio();
 </script>
   <script>/**
- * CELESTIAL MECHANICS 3D SIMULATION ENGINE - ENHANCED VISUAL EDITION
- * Ultra-detailed planetary textures, comprehensive moon systems (উপগ্রহ মণ্ডল),
- * volumetric nebulae, solar wind particles, atmospheric glow, and astrometric blueprint HUD.
+ * CELESTIAL MECHANICS 3D SIMULATION ENGINE - REAL-TIME ATMOSPHERE & WEATHER EDITION
+ * Features live planetary wind stream particle simulation, supersonic jet currents,
+ * atmospheric gas spectroscopy, altitude layers, internal core strata, and comprehensive moon systems.
  */
 
 class CelestialSimulation {
@@ -2954,6 +3527,11 @@ class CelestialSimulation {
     this.nebulaClouds = [];
     this.cloudsMesh = null; // Terra Nova cloud shell
 
+    // Active Atmospheric Wind Stream Field
+    this.activeWindField = null;
+    this.isInspectorMode = false;
+    this.inspectedBody = null;
+
     // Simulation state
     this.time = 0;
     this.timeScale = 1.0;
@@ -2975,6 +3553,7 @@ class CelestialSimulation {
     this.showHudLabels = true;
     this.showGrid = true;
     this.showAsteroids = true;
+    this.showWindParticles = true;
 
     // Raycaster for click/hover
     this.raycaster = new THREE.Raycaster();
@@ -3004,7 +3583,7 @@ class CelestialSimulation {
     this.animate = this.animate.bind(this);
     requestAnimationFrame(this.animate);
 
-    console.log("Celestial 3D Simulation initialized with full visual details and moon systems.");
+    console.log("Celestial 3D Simulation initialized with Real-time Atmosphere & Weather Engine.");
   }
 
   setupThree() {
@@ -3031,23 +3610,20 @@ class CelestialSimulation {
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.05;
-    this.controls.minDistance = 3.5;
+    this.controls.minDistance = 2.5;
     this.controls.maxDistance = 750;
     this.controls.maxPolarAngle = Math.PI / 2 + 0.18;
     this.controls.target.copy(this.defaultTarget);
   }
 
   setupLighting() {
-    // Ambient deep cosmic light
     const ambientLight = new THREE.AmbientLight(0x18243c, 0.85);
     this.scene.add(ambientLight);
 
-    // Sun Primary PointLight
     const sunLight = new THREE.PointLight(0xfff0dc, 3.4, 1200, 1.1);
     sunLight.position.set(0, 0, 0);
     this.scene.add(sunLight);
 
-    // Secondary fill light for 3D sphere relief
     const dirLight = new THREE.DirectionalLight(0x7090b8, 0.45);
     dirLight.position.set(45, 90, 45);
     this.scene.add(dirLight);
@@ -3061,11 +3637,11 @@ class CelestialSimulation {
     const sizes = new Float32Array(starCount);
 
     const colorChoices = [
-      new THREE.Color(0xaaccff), // Blue-white
-      new THREE.Color(0xffffff), // Pure white
-      new THREE.Color(0xffe4b5), // Warm gold
-      new THREE.Color(0x70e0ff), // Cyan
-      new THREE.Color(0xffb07c)  // Terracotta
+      new THREE.Color(0xaaccff),
+      new THREE.Color(0xffffff),
+      new THREE.Color(0xffe4b5),
+      new THREE.Color(0x70e0ff),
+      new THREE.Color(0xffb07c)
     ];
 
     for (let i = 0; i < starCount; i++) {
@@ -3101,7 +3677,6 @@ class CelestialSimulation {
   }
 
   setupNebulae() {
-    // Soft volumetric nebula clouds in background
     const nebulaColors = ['#2e1065', '#1e3a8a', '#065f46', '#701a75'];
     nebulaColors.forEach((col, idx) => {
       const tex = TextureGenerator.createNebulaTexture(col, 512);
@@ -3126,7 +3701,6 @@ class CelestialSimulation {
   }
 
   setupSolarWind() {
-    // Radiant particles streaming outward from the Sun
     const count = 350;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(count * 3);
@@ -3171,7 +3745,6 @@ class CelestialSimulation {
   setupCoordinateGrid() {
     this.gridGroup = new THREE.Group();
 
-    // Concentric celestial distance rings
     const radii = [10, 15, 23, 32, 44, 58, 72, 86, 110];
     radii.forEach((r, idx) => {
       const ringGeo = new THREE.BufferGeometry();
@@ -3192,7 +3765,6 @@ class CelestialSimulation {
       this.gridGroup.add(new THREE.Line(ringGeo, ringMat));
     });
 
-    // Radial coordinate spokes
     const spokeCount = 12;
     for (let i = 0; i < spokeCount; i++) {
       const angle = (i / spokeCount) * Math.PI * 2;
@@ -3210,7 +3782,6 @@ class CelestialSimulation {
       this.gridGroup.add(new THREE.Line(spokeGeo, spokeMat));
     }
 
-    // Central Blueprint Compass Reticle
     const reticleGeo = new THREE.RingGeometry(6.8, 7.2, 64);
     const reticleMat = new THREE.MeshBasicMaterial({
       color: 0x00f0ff,
@@ -3227,7 +3798,6 @@ class CelestialSimulation {
   }
 
   setupGravitationalWaveTrack() {
-    // Oscillating waveform line seen in the reference blueprint (mid-left)
     const points = [];
     const count = 120;
     const startX = -35;
@@ -3257,14 +3827,12 @@ class CelestialSimulation {
       const group = new THREE.Group();
 
       if (data.id === 'sun') {
-        // High-res Sun Sphere
         const geo = new THREE.SphereGeometry(data.size, 64, 64);
         const tex = TextureGenerator.createSunTexture();
         const mat = new THREE.MeshBasicMaterial({ map: tex });
         mesh = new THREE.Mesh(geo, mat);
         group.add(mesh);
 
-        // Multi-tier Radiant Corona Sprites
         const coronaTex = TextureGenerator.createCoronaTexture('#ffaa33', 512);
         const coronaMat = new THREE.SpriteMaterial({
           map: coronaTex,
@@ -3276,7 +3844,6 @@ class CelestialSimulation {
         coronaSprite.scale.set(data.size * 5.4, data.size * 5.4, 1);
         group.add(coronaSprite);
 
-        // Secondary white-hot glare core
         const coreMat = new THREE.SpriteMaterial({
           map: coronaTex,
           blending: THREE.AdditiveBlending,
@@ -3288,7 +3855,6 @@ class CelestialSimulation {
         group.add(coreSprite);
 
       } else if (data.id === 'cygnus_beacon') {
-        // Secondary Luminous Beacon Node
         const geo = new THREE.SphereGeometry(data.size, 32, 32);
         const mat = new THREE.MeshStandardMaterial({
           color: 0xffaa44,
@@ -3314,7 +3880,6 @@ class CelestialSimulation {
         group.add(beaconLight);
 
       } else {
-        // Standard Planets with custom procedural textures
         const geo = new THREE.SphereGeometry(data.size, 64, 64);
         let tex;
 
@@ -3340,7 +3905,6 @@ class CelestialSimulation {
         mesh = new THREE.Mesh(geo, mat);
         group.add(mesh);
 
-        // 3D Atmosphere Glow Rim Shell
         if (data.hasAtmosphereGlow) {
           const atmoGeo = new THREE.SphereGeometry(data.size * 1.055, 36, 36);
           const atmoMat = new THREE.MeshBasicMaterial({
@@ -3354,7 +3918,6 @@ class CelestialSimulation {
           group.add(atmoMesh);
         }
 
-        // Terra Nova: Separate 3D Volumetric Swirling Cloud Layer
         if (data.hasClouds) {
           const cloudGeo = new THREE.SphereGeometry(data.size * 1.022, 48, 48);
           const cloudTex = TextureGenerator.createEarthCloudsTexture();
@@ -3369,7 +3932,6 @@ class CelestialSimulation {
           group.add(this.cloudsMesh);
         }
 
-        // Saturn-like Chronos Magister Rings
         if (data.hasRings && data.id === 'chronos_magister') {
           const ringGeo = new THREE.RingGeometry(data.ringInner, data.ringOuter, 128);
           const ringTex = TextureGenerator.createSaturnRingTexture();
@@ -3396,7 +3958,6 @@ class CelestialSimulation {
           group.add(ringMesh);
         }
 
-        // Uranus-like Aether Cyan Vertical Dust Rings
         if (data.hasRings && data.id === 'aether_cyan') {
           const ringGeo = new THREE.RingGeometry(data.ringInner, data.ringOuter, 96);
           const ringMat = new THREE.MeshBasicMaterial({
@@ -3411,13 +3972,12 @@ class CelestialSimulation {
           group.add(ringMesh);
         }
 
-        // Comprehensive Moon Systems (উপগ্রহ মণ্ডল)
+        // Moons
         if (data.moons && data.moons.length > 0) {
           data.moons.forEach(m => {
             const moonPivot = new THREE.Group();
             moonPivot.rotation.x = m.orbitTilt || 0;
 
-            // Moon circular orbit track
             const orbitSegments = 64;
             const orbitPoints = [];
             for (let i = 0; i <= orbitSegments; i++) {
@@ -3433,7 +3993,6 @@ class CelestialSimulation {
             const orbitTrack = new THREE.LineLoop(orbitGeo, orbitMat);
             moonPivot.add(orbitTrack);
 
-            // Moon sphere mesh with custom procedural texture
             const moonGeo = new THREE.SphereGeometry(m.size, 24, 24);
             let moonTex;
             if (m.textureType === 'io') {
@@ -3473,7 +4032,6 @@ class CelestialSimulation {
       group.userData.bodyData = data;
       this.scene.add(group);
 
-      // Create Primary Orbit Path Line & Travelling Signal Pulse
       if (data.orbitRadius > 0) {
         const orbitCurve = this.createOrbitGeometry(data);
         const orbitLine = new THREE.Line(orbitCurve.geometry, orbitCurve.material);
@@ -3504,7 +4062,6 @@ class CelestialSimulation {
       this.createHudLabel(data);
     });
 
-    // 3D Selection Reticle Ring
     const retGeo = new THREE.RingGeometry(1.2, 1.35, 32);
     const retMat = new THREE.MeshBasicMaterial({
       color: 0x00f0ff,
@@ -3583,6 +4140,120 @@ class CelestialSimulation {
     this.scene.add(this.asteroidBelt);
   }
 
+  /**
+   * 3D ATMOSPHERIC WIND STREAM PARTICLE SYSTEM
+   * Spawns real-time swirling wind streamlines around the inspected planet.
+   */
+  setupAtmosphericWindField(targetObj, atmoData) {
+    if (this.activeWindField) {
+      if (this.activeWindField.parent) {
+        this.activeWindField.parent.remove(this.activeWindField.mesh);
+      }
+      this.activeWindField = null;
+    }
+
+    if (!atmoData || !atmoData.hasAtmosphere || !this.showWindParticles) return;
+
+    const count = 520;
+    const geo = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const particleData = [];
+
+    const radius = (targetObj.data.size || 2.0) * 1.055;
+    const isZeus = targetObj.data.id === 'zeus_major';
+    const isSaturn = targetObj.data.id === 'chronos_magister';
+    const isSun = targetObj.data.id === 'sun';
+
+    const baseColor = new THREE.Color(targetObj.data.color || 0x00f0ff);
+
+    for (let i = 0; i < count; i++) {
+      const phi = (Math.random() - 0.5) * Math.PI * 0.92; // Latitude -80 to +80
+      const theta = Math.random() * Math.PI * 2; // Longitude 0 to 2pi
+
+      const x = radius * Math.cos(phi) * Math.cos(theta);
+      const y = radius * Math.sin(phi);
+      const z = radius * Math.cos(phi) * Math.sin(theta);
+
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = z;
+
+      // Latitude-dependent jet stream direction
+      let dirMultiplier = 1.0;
+      if (isZeus) {
+        // Alternating Coriolis belts
+        dirMultiplier = Math.sin(phi * 9.0) > 0 ? 1.6 : -1.4;
+      } else if (isSaturn) {
+        // Fast equatorial prograde
+        dirMultiplier = Math.abs(phi) < 0.25 ? 2.4 : 0.8;
+      } else if (isSun) {
+        dirMultiplier = 2.0 + Math.random() * 2.0;
+      } else {
+        // Earth / Mars westerlies and trades
+        dirMultiplier = Math.abs(phi) > 0.4 ? 1.4 : -0.9;
+      }
+
+      const pSpeed = (0.012 + Math.random() * 0.015) * dirMultiplier;
+
+      particleData.push({
+        phi: phi,
+        theta: theta,
+        radius: radius,
+        speed: pSpeed
+      });
+
+      // Stream colors with neon glow
+      const c = baseColor.clone().offsetHSL((Math.random() - 0.5) * 0.1, 0, (Math.random() - 0.5) * 0.2);
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const mat = new THREE.PointsMaterial({
+      size: 1.4,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending
+    });
+
+    const mesh = new THREE.Points(geo, mat);
+    targetObj.group.add(mesh);
+
+    this.activeWindField = {
+      mesh: mesh,
+      parent: targetObj.group,
+      data: particleData,
+      count: count,
+      targetObj: targetObj
+    };
+  }
+
+  updateAtmosphericWindField() {
+    if (!this.activeWindField || !this.showWindParticles) return;
+
+    const positions = this.activeWindField.mesh.geometry.attributes.position.array;
+    const pData = this.activeWindField.data;
+    const count = this.activeWindField.count;
+    const tScale = this.timeScale;
+
+    for (let i = 0; i < count; i++) {
+      const p = pData[i];
+      p.theta += p.speed * tScale;
+
+      const r = p.radius;
+      positions[i * 3] = r * Math.cos(p.phi) * Math.cos(p.theta);
+      positions[i * 3 + 1] = r * Math.sin(p.phi);
+      positions[i * 3 + 2] = r * Math.cos(p.phi) * Math.sin(p.theta);
+    }
+
+    this.activeWindField.mesh.geometry.attributes.position.needsUpdate = true;
+  }
+
   createHudLabel(data) {
     const el = document.createElement('div');
     el.className = 'hud-tag';
@@ -3608,7 +4279,7 @@ class CelestialSimulation {
   }
 
   updateHudPositions() {
-    if (!this.showHudLabels) {
+    if (!this.showHudLabels || this.isInspectorMode) {
       this.hudContainer.style.display = 'none';
       this.svgLinesContainer.innerHTML = '';
       return;
@@ -3680,6 +4351,9 @@ class CelestialSimulation {
 
     this.updateTelemetryCard(planetObj.data);
 
+    // Setup active wind field
+    this.setupAtmosphericWindField(planetObj, planetObj.data.atmosphereData);
+
     const targetWorldPos = new THREE.Vector3();
     planetObj.group.getWorldPosition(targetWorldPos);
 
@@ -3719,6 +4393,167 @@ class CelestialSimulation {
     this.startCameraAnimation(cameraTargetPos, targetWorldPos, 1100);
   }
 
+  /**
+   * OPEN DEDICATED PLANETARY ATMOSPHERE & WEATHER INSPECTOR
+   */
+  openAtmosphereInspector(bodyId, isMoon = false) {
+    let targetObj = null;
+    let data = null;
+    let parentPlanet = null;
+
+    if (isMoon) {
+      const moonEntry = this.moons.find(m => m.data.id === bodyId);
+      if (moonEntry) {
+        targetObj = { group: moonEntry.pivot, data: moonEntry.data };
+        data = moonEntry.data;
+        parentPlanet = moonEntry.parentPlanet;
+      }
+    } else {
+      targetObj = this.planets.find(p => p.data.id === bodyId);
+      if (targetObj) data = targetObj.data;
+    }
+
+    if (!data) return;
+
+    this.isInspectorMode = true;
+    this.inspectedBody = targetObj;
+
+    // Activate sound
+    if (window.cosmicAudio) {
+      window.cosmicAudio.playWindScan();
+    }
+
+    // Camera fly-in close up
+    const targetWorldPos = new THREE.Vector3();
+    targetObj.group.getWorldPosition(targetWorldPos);
+    const closeDist = Math.max(data.size * 2.35, 7.5);
+    const cameraClosePos = targetWorldPos.clone().add(new THREE.Vector3(closeDist * 0.85, closeDist * 0.35, closeDist));
+
+    this.startCameraAnimation(cameraClosePos, targetWorldPos, 1000);
+
+    // Setup wind field
+    this.setupAtmosphericWindField(targetObj, data.atmosphereData);
+
+    // Populate and show the Atmosphere Inspector Panel
+    this.renderAtmosphereInspectorUI(data, parentPlanet);
+
+    // Hide solar map tags while in deep inspector mode
+    this.hudContainer.style.display = 'none';
+    this.svgLinesContainer.innerHTML = '';
+  }
+
+  closeAtmosphereInspector() {
+    this.isInspectorMode = false;
+    this.inspectedBody = null;
+
+    const panel = document.getElementById('atmo-inspector-panel');
+    if (panel) panel.classList.remove('visible');
+
+    // Return camera to orbital distance
+    if (this.selectedBody) {
+      const targetWorldPos = new THREE.Vector3();
+      this.selectedBody.group.getWorldPosition(targetWorldPos);
+      const offsetDist = Math.max(this.selectedBody.data.size * 3.6, 12);
+      const cameraTargetPos = targetWorldPos.clone().add(new THREE.Vector3(offsetDist * 0.8, offsetDist * 0.5, offsetDist));
+      this.startCameraAnimation(cameraTargetPos, targetWorldPos, 1100);
+    } else {
+      this.resetCamera();
+    }
+
+    if (window.cosmicAudio) {
+      window.cosmicAudio.playWhoosh();
+    }
+  }
+
+  renderAtmosphereInspectorUI(data, parentPlanet = null) {
+    const panel = document.getElementById('atmo-inspector-panel');
+    if (!panel) return;
+
+    const isBn = this.currentLanguage === 'bn';
+    const atmo = data.atmosphereData || {
+      hasAtmosphere: false,
+      weatherStatus: "অতি-ক্ষীণ বায়ুশূন্য এক্সোস্ফিয়ার",
+      weatherStatusEn: "Airless Vacuum Surface Boundary Exosphere",
+      windSpeed: "০ km/h (ভ্যাকুয়াম)",
+      windSpeedEn: "0 km/h (Vacuum)",
+      windDirection: "কোনো বায়ুপ্রবাহ নেই",
+      windDirectionEn: "No measurable atmospheric flow",
+      surfacePressure: "0.000 bar",
+      stormActivity: "সৌর বায়ু ও মহাজাগতিক বিকিরণ",
+      stormActivityEn: "Micrometeorite bombardment & solar wind",
+      precipitation: "বৃষ্টিহীন",
+      precipitationEn: "None",
+      cloudCoverage: "০%",
+      gases: [{ name: "সিলিকা ধূলি", nameEn: "Silica Regolith", percent: 100, color: "#9ca3af" }],
+      layers: [{ name: "সারফেস এক্সোস্ফিয়ার", nameEn: "Surface Exosphere", alt: "0 km", desc: "হার্ড ভ্যাকুয়াম", descEn: "Hard vacuum" }]
+    };
+
+    document.getElementById('atmo-planet-name').textContent = isBn ? data.name : data.nameEn;
+    document.getElementById('atmo-planet-type').textContent = data.type;
+    document.getElementById('atmo-weather-summary').textContent = isBn ? atmo.weatherStatus : atmo.weatherStatusEn;
+
+    // Wind Speed & Direction
+    document.getElementById('atmo-wind-speed').textContent = isBn ? atmo.windSpeed : atmo.windSpeedEn;
+    document.getElementById('atmo-wind-dir').textContent = isBn ? atmo.windDirection : atmo.windDirectionEn;
+
+    // Climate Metrics
+    document.getElementById('atmo-temp').textContent = data.temp;
+    document.getElementById('atmo-pressure').textContent = atmo.surfacePressure;
+    document.getElementById('atmo-clouds').textContent = atmo.cloudCoverage;
+    document.getElementById('atmo-precip').textContent = isBn ? atmo.precipitation : atmo.precipitationEn;
+    document.getElementById('atmo-storms').textContent = isBn ? atmo.stormActivity : atmo.stormActivityEn;
+
+    // Chemical Spectroscopy Gas Bars
+    const gasesContainer = document.getElementById('atmo-gases-list');
+    if (gasesContainer && atmo.gases) {
+      gasesContainer.innerHTML = atmo.gases.map(g => `
+        <div class="gas-bar-container">
+          <div class="gas-bar-label">
+            <span>${isBn ? g.name : g.nameEn}</span>
+            <span style="font-weight: bold; color: ${g.color};">${g.percent}%</span>
+          </div>
+          <div class="gas-progress-track">
+            <div class="gas-progress-fill" style="width: ${g.percent}%; background: ${g.color}; color: ${g.color};"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Altitude Strata Layers
+    const strataContainer = document.getElementById('atmo-strata-list');
+    if (strataContainer && atmo.layers) {
+      strataContainer.innerHTML = atmo.layers.map(l => `
+        <div class="stratum-item">
+          <div class="stratum-title">
+            <span>${isBn ? l.name : l.nameEn}</span>
+            <span class="stratum-alt">${l.alt}</span>
+          </div>
+          <div class="stratum-desc">${isBn ? l.desc : l.descEn}</div>
+        </div>
+      `).join('');
+    }
+
+    // Internal Core Strata
+    const coreContainer = document.getElementById('atmo-core-list');
+    if (coreContainer) {
+      if (atmo.internalStructure) {
+        coreContainer.innerHTML = atmo.internalStructure.map(c => `
+          <div class="stratum-item" style="border-left-color: #f59e0b;">
+            <div class="stratum-title">
+              <span>${c.layer}</span>
+              <span class="stratum-alt" style="color: #f59e0b;">${c.depth}</span>
+            </div>
+            <div class="stratum-desc">${isBn ? 'গড় তাপমাত্রা' : 'Avg Temp'}: ${c.temp}</div>
+          </div>
+        `).join('');
+      } else {
+        coreContainer.innerHTML = `<div style="font-size: 11px; color: rgba(200,225,255,0.6);">${isBn ? 'অভ্যন্তরীণ তথ্য উপলব্ধ নয়' : 'Core telemetry unmapped'}</div>`;
+      }
+    }
+
+    panel.classList.add('visible');
+  }
+
   startCameraAnimation(toPos, toTarget, duration = 1000) {
     this.cameraAnimation = {
       fromPos: this.camera.position.clone(),
@@ -3753,6 +4588,16 @@ class CelestialSimulation {
     this.selectedBody = null;
     this.isTracking = false;
     this.isAutoTouring = false;
+    this.isInspectorMode = false;
+
+    if (this.activeWindField) {
+      if (this.activeWindField.parent) this.activeWindField.parent.remove(this.activeWindField.mesh);
+      this.activeWindField = null;
+    }
+
+    const panel = document.getElementById('atmo-inspector-panel');
+    if (panel) panel.classList.remove('visible');
+
     this.startCameraAnimation(this.defaultCameraPos, this.defaultTarget, 1400);
 
     document.querySelectorAll('.hud-tag').forEach(tag => tag.classList.remove('active'));
@@ -3782,7 +4627,18 @@ class CelestialSimulation {
     document.getElementById('tel-color-accent').style.borderColor = data.color;
     document.getElementById('tel-status-light').style.background = data.color;
 
-    // Render Sub-Moons List inside Telemetry Card
+    // Atmospheric weather scanner action button
+    const atmoBtnContainer = document.getElementById('tel-atmo-btn-container');
+    if (atmoBtnContainer) {
+      atmoBtnContainer.innerHTML = `
+        <button class="hud-btn scan-btn" style="width: 100%; margin-top: 10px; justify-content: center; background: rgba(0, 240, 255, 0.22); border-color: var(--cyan-glow); font-weight: bold; padding: 7px 10px;" 
+                onclick="simulation.openAtmosphereInspector('${data.id}')">
+          🌪️ ${isBn ? 'বায়ুমণ্ডল ও আবহাওয়া স্ক্যানার' : 'Inspect Atmosphere & Weather'}
+        </button>
+      `;
+    }
+
+    // Moons List
     const moonsContainer = document.getElementById('tel-moons-list');
     if (moonsContainer) {
       if (data.moons && data.moons.length > 0) {
@@ -3826,6 +4682,20 @@ class CelestialSimulation {
     document.getElementById('tel-color-accent').style.borderColor = moonData.color;
     document.getElementById('tel-status-light').style.background = moonData.color;
 
+    const atmoBtnContainer = document.getElementById('tel-atmo-btn-container');
+    if (atmoBtnContainer) {
+      if (moonData.atmosphereData) {
+        atmoBtnContainer.innerHTML = `
+          <button class="hud-btn scan-btn" style="width: 100%; margin-top: 10px; justify-content: center; background: rgba(0, 240, 255, 0.22); border-color: var(--cyan-glow); font-weight: bold; padding: 7px 10px;" 
+                  onclick="simulation.openAtmosphereInspector('${moonData.id}', true)">
+            🌪️ ${isBn ? 'বায়ুমণ্ডল ও পৃষ্ঠ স্ক্যানার' : 'Inspect Atmosphere & Surface'}
+          </button>
+        `;
+      } else {
+        atmoBtnContainer.innerHTML = '';
+      }
+    }
+
     const moonsContainer = document.getElementById('tel-moons-list');
     if (moonsContainer) {
       moonsContainer.style.display = 'block';
@@ -3852,7 +4722,6 @@ class CelestialSimulation {
       this.renderer.setSize(width, height);
     });
 
-    // Raycast on click for Planets & Moons
     this.container.addEventListener('pointerdown', (e) => {
       const rect = this.renderer.domElement.getBoundingClientRect();
       this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -3867,13 +4736,11 @@ class CelestialSimulation {
 
       if (intersects.length > 0) {
         const hitMesh = intersects[0].object;
-        // Check if planet
         const hitPlanet = this.planets.find(p => p.mesh === hitMesh);
         if (hitPlanet) {
           this.selectCelestialBody(hitPlanet.data.id);
           return;
         }
-        // Check if moon
         const hitMoon = this.moons.find(m => m.mesh === hitMesh);
         if (hitMoon) {
           this.selectMoon(hitMoon);
@@ -3881,7 +4748,6 @@ class CelestialSimulation {
       }
     });
 
-    // Hover cursor
     this.container.addEventListener('pointermove', (e) => {
       const rect = this.renderer.domElement.getBoundingClientRect();
       this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -3982,6 +4848,11 @@ class CelestialSimulation {
         this.selectedBody = null;
       });
     }
+
+    const closeAtmo = document.getElementById('atmo-close-btn');
+    if (closeAtmo) {
+      closeAtmo.addEventListener('click', () => this.closeAtmosphereInspector());
+    }
   }
 
   updateLanguageTexts() {
@@ -4002,6 +4873,10 @@ class CelestialSimulation {
         this.updateTelemetryCard(this.selectedBody.data);
       }
     }
+
+    if (this.isInspectorMode && this.inspectedBody) {
+      this.renderAtmosphereInspectorUI(this.inspectedBody.data);
+    }
   }
 
   animate() {
@@ -4012,7 +4887,6 @@ class CelestialSimulation {
     if (this.isPlaying) {
       this.time += delta * this.timeScale;
 
-      // Update planetary axial rotations and orbital revolutions
       this.planets.forEach(p => {
         const data = p.data;
 
@@ -4035,12 +4909,10 @@ class CelestialSimulation {
         }
       });
 
-      // Terra Nova: Independent atmospheric cloud shell rotation
       if (this.cloudsMesh) {
         this.cloudsMesh.rotation.y += 0.0018 * this.timeScale;
       }
 
-      // Update Moons revolving around parent planets
       this.moons.forEach(m => {
         m.angle += m.speed * this.timeScale * 0.5;
         m.mesh.position.set(
@@ -4051,7 +4923,9 @@ class CelestialSimulation {
         m.mesh.rotation.y += 0.01 * this.timeScale;
       });
 
-      // Orbit signal pulses
+      // Update Atmospheric Wind Stream particles
+      this.updateAtmosphericWindField();
+
       this.orbitPulses.forEach(pulse => {
         pulse.progress = (pulse.progress + pulse.data.orbitSpeed * 0.5 * this.timeScale) % 1.0;
         const theta = pulse.progress * Math.PI * 2;
@@ -4066,7 +4940,6 @@ class CelestialSimulation {
         );
       });
 
-      // Solar wind particle animation
       if (this.solarWindParticles) {
         const pos = this.solarWindParticles.mesh.geometry.attributes.position.array;
         const vels = this.solarWindParticles.velocities;
@@ -4082,12 +4955,10 @@ class CelestialSimulation {
         this.solarWindParticles.mesh.geometry.attributes.position.needsUpdate = true;
       }
 
-      // Asteroid belt drift
       if (this.asteroidBelt) {
         this.asteroidBelt.rotation.y += 0.0006 * this.timeScale;
       }
 
-      // Auto Tour logic
       if (this.isAutoTouring) {
         this.tourTimer += delta;
         if (this.tourTimer > 8.0) {
@@ -4098,7 +4969,6 @@ class CelestialSimulation {
       }
     }
 
-    // Camera follow / tracking
     if (this.isTracking && this.selectedBody && !this.cameraAnimation) {
       const targetPos = new THREE.Vector3();
       this.selectedBody.group.getWorldPosition(targetPos);

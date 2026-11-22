@@ -1,7 +1,7 @@
 /**
- * CELESTIAL MECHANICS 3D SIMULATION ENGINE - ENHANCED VISUAL EDITION
- * Ultra-detailed planetary textures, comprehensive moon systems (উপগ্রহ মণ্ডল),
- * volumetric nebulae, solar wind particles, atmospheric glow, and astrometric blueprint HUD.
+ * CELESTIAL MECHANICS 3D SIMULATION ENGINE - REAL-TIME ATMOSPHERE & WEATHER EDITION
+ * Features live planetary wind stream particle simulation, supersonic jet currents,
+ * atmospheric gas spectroscopy, altitude layers, internal core strata, and comprehensive moon systems.
  */
 
 class CelestialSimulation {
@@ -25,6 +25,11 @@ class CelestialSimulation {
     this.nebulaClouds = [];
     this.cloudsMesh = null; // Terra Nova cloud shell
 
+    // Active Atmospheric Wind Stream Field
+    this.activeWindField = null;
+    this.isInspectorMode = false;
+    this.inspectedBody = null;
+
     // Simulation state
     this.time = 0;
     this.timeScale = 1.0;
@@ -46,6 +51,7 @@ class CelestialSimulation {
     this.showHudLabels = true;
     this.showGrid = true;
     this.showAsteroids = true;
+    this.showWindParticles = true;
 
     // Raycaster for click/hover
     this.raycaster = new THREE.Raycaster();
@@ -75,7 +81,7 @@ class CelestialSimulation {
     this.animate = this.animate.bind(this);
     requestAnimationFrame(this.animate);
 
-    console.log("Celestial 3D Simulation initialized with full visual details and moon systems.");
+    console.log("Celestial 3D Simulation initialized with Real-time Atmosphere & Weather Engine.");
   }
 
   setupThree() {
@@ -102,23 +108,20 @@ class CelestialSimulation {
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.05;
-    this.controls.minDistance = 3.5;
+    this.controls.minDistance = 2.5;
     this.controls.maxDistance = 750;
     this.controls.maxPolarAngle = Math.PI / 2 + 0.18;
     this.controls.target.copy(this.defaultTarget);
   }
 
   setupLighting() {
-    // Ambient deep cosmic light
     const ambientLight = new THREE.AmbientLight(0x18243c, 0.85);
     this.scene.add(ambientLight);
 
-    // Sun Primary PointLight
     const sunLight = new THREE.PointLight(0xfff0dc, 3.4, 1200, 1.1);
     sunLight.position.set(0, 0, 0);
     this.scene.add(sunLight);
 
-    // Secondary fill light for 3D sphere relief
     const dirLight = new THREE.DirectionalLight(0x7090b8, 0.45);
     dirLight.position.set(45, 90, 45);
     this.scene.add(dirLight);
@@ -132,11 +135,11 @@ class CelestialSimulation {
     const sizes = new Float32Array(starCount);
 
     const colorChoices = [
-      new THREE.Color(0xaaccff), // Blue-white
-      new THREE.Color(0xffffff), // Pure white
-      new THREE.Color(0xffe4b5), // Warm gold
-      new THREE.Color(0x70e0ff), // Cyan
-      new THREE.Color(0xffb07c)  // Terracotta
+      new THREE.Color(0xaaccff),
+      new THREE.Color(0xffffff),
+      new THREE.Color(0xffe4b5),
+      new THREE.Color(0x70e0ff),
+      new THREE.Color(0xffb07c)
     ];
 
     for (let i = 0; i < starCount; i++) {
@@ -172,7 +175,6 @@ class CelestialSimulation {
   }
 
   setupNebulae() {
-    // Soft volumetric nebula clouds in background
     const nebulaColors = ['#2e1065', '#1e3a8a', '#065f46', '#701a75'];
     nebulaColors.forEach((col, idx) => {
       const tex = TextureGenerator.createNebulaTexture(col, 512);
@@ -197,7 +199,6 @@ class CelestialSimulation {
   }
 
   setupSolarWind() {
-    // Radiant particles streaming outward from the Sun
     const count = 350;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(count * 3);
@@ -242,7 +243,6 @@ class CelestialSimulation {
   setupCoordinateGrid() {
     this.gridGroup = new THREE.Group();
 
-    // Concentric celestial distance rings
     const radii = [10, 15, 23, 32, 44, 58, 72, 86, 110];
     radii.forEach((r, idx) => {
       const ringGeo = new THREE.BufferGeometry();
@@ -263,7 +263,6 @@ class CelestialSimulation {
       this.gridGroup.add(new THREE.Line(ringGeo, ringMat));
     });
 
-    // Radial coordinate spokes
     const spokeCount = 12;
     for (let i = 0; i < spokeCount; i++) {
       const angle = (i / spokeCount) * Math.PI * 2;
@@ -281,7 +280,6 @@ class CelestialSimulation {
       this.gridGroup.add(new THREE.Line(spokeGeo, spokeMat));
     }
 
-    // Central Blueprint Compass Reticle
     const reticleGeo = new THREE.RingGeometry(6.8, 7.2, 64);
     const reticleMat = new THREE.MeshBasicMaterial({
       color: 0x00f0ff,
@@ -298,7 +296,6 @@ class CelestialSimulation {
   }
 
   setupGravitationalWaveTrack() {
-    // Oscillating waveform line seen in the reference blueprint (mid-left)
     const points = [];
     const count = 120;
     const startX = -35;
@@ -328,14 +325,12 @@ class CelestialSimulation {
       const group = new THREE.Group();
 
       if (data.id === 'sun') {
-        // High-res Sun Sphere
         const geo = new THREE.SphereGeometry(data.size, 64, 64);
         const tex = TextureGenerator.createSunTexture();
         const mat = new THREE.MeshBasicMaterial({ map: tex });
         mesh = new THREE.Mesh(geo, mat);
         group.add(mesh);
 
-        // Multi-tier Radiant Corona Sprites
         const coronaTex = TextureGenerator.createCoronaTexture('#ffaa33', 512);
         const coronaMat = new THREE.SpriteMaterial({
           map: coronaTex,
@@ -347,7 +342,6 @@ class CelestialSimulation {
         coronaSprite.scale.set(data.size * 5.4, data.size * 5.4, 1);
         group.add(coronaSprite);
 
-        // Secondary white-hot glare core
         const coreMat = new THREE.SpriteMaterial({
           map: coronaTex,
           blending: THREE.AdditiveBlending,
@@ -359,7 +353,6 @@ class CelestialSimulation {
         group.add(coreSprite);
 
       } else if (data.id === 'cygnus_beacon') {
-        // Secondary Luminous Beacon Node
         const geo = new THREE.SphereGeometry(data.size, 32, 32);
         const mat = new THREE.MeshStandardMaterial({
           color: 0xffaa44,
@@ -385,7 +378,6 @@ class CelestialSimulation {
         group.add(beaconLight);
 
       } else {
-        // Standard Planets with custom procedural textures
         const geo = new THREE.SphereGeometry(data.size, 64, 64);
         let tex;
 
@@ -411,7 +403,6 @@ class CelestialSimulation {
         mesh = new THREE.Mesh(geo, mat);
         group.add(mesh);
 
-        // 3D Atmosphere Glow Rim Shell
         if (data.hasAtmosphereGlow) {
           const atmoGeo = new THREE.SphereGeometry(data.size * 1.055, 36, 36);
           const atmoMat = new THREE.MeshBasicMaterial({
@@ -425,7 +416,6 @@ class CelestialSimulation {
           group.add(atmoMesh);
         }
 
-        // Terra Nova: Separate 3D Volumetric Swirling Cloud Layer
         if (data.hasClouds) {
           const cloudGeo = new THREE.SphereGeometry(data.size * 1.022, 48, 48);
           const cloudTex = TextureGenerator.createEarthCloudsTexture();
@@ -440,7 +430,6 @@ class CelestialSimulation {
           group.add(this.cloudsMesh);
         }
 
-        // Saturn-like Chronos Magister Rings
         if (data.hasRings && data.id === 'chronos_magister') {
           const ringGeo = new THREE.RingGeometry(data.ringInner, data.ringOuter, 128);
           const ringTex = TextureGenerator.createSaturnRingTexture();
@@ -467,7 +456,6 @@ class CelestialSimulation {
           group.add(ringMesh);
         }
 
-        // Uranus-like Aether Cyan Vertical Dust Rings
         if (data.hasRings && data.id === 'aether_cyan') {
           const ringGeo = new THREE.RingGeometry(data.ringInner, data.ringOuter, 96);
           const ringMat = new THREE.MeshBasicMaterial({
@@ -482,13 +470,12 @@ class CelestialSimulation {
           group.add(ringMesh);
         }
 
-        // Comprehensive Moon Systems (উপগ্রহ মণ্ডল)
+        // Moons
         if (data.moons && data.moons.length > 0) {
           data.moons.forEach(m => {
             const moonPivot = new THREE.Group();
             moonPivot.rotation.x = m.orbitTilt || 0;
 
-            // Moon circular orbit track
             const orbitSegments = 64;
             const orbitPoints = [];
             for (let i = 0; i <= orbitSegments; i++) {
@@ -504,7 +491,6 @@ class CelestialSimulation {
             const orbitTrack = new THREE.LineLoop(orbitGeo, orbitMat);
             moonPivot.add(orbitTrack);
 
-            // Moon sphere mesh with custom procedural texture
             const moonGeo = new THREE.SphereGeometry(m.size, 24, 24);
             let moonTex;
             if (m.textureType === 'io') {
@@ -544,7 +530,6 @@ class CelestialSimulation {
       group.userData.bodyData = data;
       this.scene.add(group);
 
-      // Create Primary Orbit Path Line & Travelling Signal Pulse
       if (data.orbitRadius > 0) {
         const orbitCurve = this.createOrbitGeometry(data);
         const orbitLine = new THREE.Line(orbitCurve.geometry, orbitCurve.material);
@@ -575,7 +560,6 @@ class CelestialSimulation {
       this.createHudLabel(data);
     });
 
-    // 3D Selection Reticle Ring
     const retGeo = new THREE.RingGeometry(1.2, 1.35, 32);
     const retMat = new THREE.MeshBasicMaterial({
       color: 0x00f0ff,
@@ -654,6 +638,120 @@ class CelestialSimulation {
     this.scene.add(this.asteroidBelt);
   }
 
+  /**
+   * 3D ATMOSPHERIC WIND STREAM PARTICLE SYSTEM
+   * Spawns real-time swirling wind streamlines around the inspected planet.
+   */
+  setupAtmosphericWindField(targetObj, atmoData) {
+    if (this.activeWindField) {
+      if (this.activeWindField.parent) {
+        this.activeWindField.parent.remove(this.activeWindField.mesh);
+      }
+      this.activeWindField = null;
+    }
+
+    if (!atmoData || !atmoData.hasAtmosphere || !this.showWindParticles) return;
+
+    const count = 520;
+    const geo = new THREE.BufferGeometry();
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const particleData = [];
+
+    const radius = (targetObj.data.size || 2.0) * 1.055;
+    const isZeus = targetObj.data.id === 'zeus_major';
+    const isSaturn = targetObj.data.id === 'chronos_magister';
+    const isSun = targetObj.data.id === 'sun';
+
+    const baseColor = new THREE.Color(targetObj.data.color || 0x00f0ff);
+
+    for (let i = 0; i < count; i++) {
+      const phi = (Math.random() - 0.5) * Math.PI * 0.92; // Latitude -80 to +80
+      const theta = Math.random() * Math.PI * 2; // Longitude 0 to 2pi
+
+      const x = radius * Math.cos(phi) * Math.cos(theta);
+      const y = radius * Math.sin(phi);
+      const z = radius * Math.cos(phi) * Math.sin(theta);
+
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = z;
+
+      // Latitude-dependent jet stream direction
+      let dirMultiplier = 1.0;
+      if (isZeus) {
+        // Alternating Coriolis belts
+        dirMultiplier = Math.sin(phi * 9.0) > 0 ? 1.6 : -1.4;
+      } else if (isSaturn) {
+        // Fast equatorial prograde
+        dirMultiplier = Math.abs(phi) < 0.25 ? 2.4 : 0.8;
+      } else if (isSun) {
+        dirMultiplier = 2.0 + Math.random() * 2.0;
+      } else {
+        // Earth / Mars westerlies and trades
+        dirMultiplier = Math.abs(phi) > 0.4 ? 1.4 : -0.9;
+      }
+
+      const pSpeed = (0.012 + Math.random() * 0.015) * dirMultiplier;
+
+      particleData.push({
+        phi: phi,
+        theta: theta,
+        radius: radius,
+        speed: pSpeed
+      });
+
+      // Stream colors with neon glow
+      const c = baseColor.clone().offsetHSL((Math.random() - 0.5) * 0.1, 0, (Math.random() - 0.5) * 0.2);
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const mat = new THREE.PointsMaterial({
+      size: 1.4,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending
+    });
+
+    const mesh = new THREE.Points(geo, mat);
+    targetObj.group.add(mesh);
+
+    this.activeWindField = {
+      mesh: mesh,
+      parent: targetObj.group,
+      data: particleData,
+      count: count,
+      targetObj: targetObj
+    };
+  }
+
+  updateAtmosphericWindField() {
+    if (!this.activeWindField || !this.showWindParticles) return;
+
+    const positions = this.activeWindField.mesh.geometry.attributes.position.array;
+    const pData = this.activeWindField.data;
+    const count = this.activeWindField.count;
+    const tScale = this.timeScale;
+
+    for (let i = 0; i < count; i++) {
+      const p = pData[i];
+      p.theta += p.speed * tScale;
+
+      const r = p.radius;
+      positions[i * 3] = r * Math.cos(p.phi) * Math.cos(p.theta);
+      positions[i * 3 + 1] = r * Math.sin(p.phi);
+      positions[i * 3 + 2] = r * Math.cos(p.phi) * Math.sin(p.theta);
+    }
+
+    this.activeWindField.mesh.geometry.attributes.position.needsUpdate = true;
+  }
+
   createHudLabel(data) {
     const el = document.createElement('div');
     el.className = 'hud-tag';
@@ -679,7 +777,7 @@ class CelestialSimulation {
   }
 
   updateHudPositions() {
-    if (!this.showHudLabels) {
+    if (!this.showHudLabels || this.isInspectorMode) {
       this.hudContainer.style.display = 'none';
       this.svgLinesContainer.innerHTML = '';
       return;
@@ -751,6 +849,9 @@ class CelestialSimulation {
 
     this.updateTelemetryCard(planetObj.data);
 
+    // Setup active wind field
+    this.setupAtmosphericWindField(planetObj, planetObj.data.atmosphereData);
+
     const targetWorldPos = new THREE.Vector3();
     planetObj.group.getWorldPosition(targetWorldPos);
 
@@ -790,6 +891,167 @@ class CelestialSimulation {
     this.startCameraAnimation(cameraTargetPos, targetWorldPos, 1100);
   }
 
+  /**
+   * OPEN DEDICATED PLANETARY ATMOSPHERE & WEATHER INSPECTOR
+   */
+  openAtmosphereInspector(bodyId, isMoon = false) {
+    let targetObj = null;
+    let data = null;
+    let parentPlanet = null;
+
+    if (isMoon) {
+      const moonEntry = this.moons.find(m => m.data.id === bodyId);
+      if (moonEntry) {
+        targetObj = { group: moonEntry.pivot, data: moonEntry.data };
+        data = moonEntry.data;
+        parentPlanet = moonEntry.parentPlanet;
+      }
+    } else {
+      targetObj = this.planets.find(p => p.data.id === bodyId);
+      if (targetObj) data = targetObj.data;
+    }
+
+    if (!data) return;
+
+    this.isInspectorMode = true;
+    this.inspectedBody = targetObj;
+
+    // Activate sound
+    if (window.cosmicAudio) {
+      window.cosmicAudio.playWindScan();
+    }
+
+    // Camera fly-in close up
+    const targetWorldPos = new THREE.Vector3();
+    targetObj.group.getWorldPosition(targetWorldPos);
+    const closeDist = Math.max(data.size * 2.35, 7.5);
+    const cameraClosePos = targetWorldPos.clone().add(new THREE.Vector3(closeDist * 0.85, closeDist * 0.35, closeDist));
+
+    this.startCameraAnimation(cameraClosePos, targetWorldPos, 1000);
+
+    // Setup wind field
+    this.setupAtmosphericWindField(targetObj, data.atmosphereData);
+
+    // Populate and show the Atmosphere Inspector Panel
+    this.renderAtmosphereInspectorUI(data, parentPlanet);
+
+    // Hide solar map tags while in deep inspector mode
+    this.hudContainer.style.display = 'none';
+    this.svgLinesContainer.innerHTML = '';
+  }
+
+  closeAtmosphereInspector() {
+    this.isInspectorMode = false;
+    this.inspectedBody = null;
+
+    const panel = document.getElementById('atmo-inspector-panel');
+    if (panel) panel.classList.remove('visible');
+
+    // Return camera to orbital distance
+    if (this.selectedBody) {
+      const targetWorldPos = new THREE.Vector3();
+      this.selectedBody.group.getWorldPosition(targetWorldPos);
+      const offsetDist = Math.max(this.selectedBody.data.size * 3.6, 12);
+      const cameraTargetPos = targetWorldPos.clone().add(new THREE.Vector3(offsetDist * 0.8, offsetDist * 0.5, offsetDist));
+      this.startCameraAnimation(cameraTargetPos, targetWorldPos, 1100);
+    } else {
+      this.resetCamera();
+    }
+
+    if (window.cosmicAudio) {
+      window.cosmicAudio.playWhoosh();
+    }
+  }
+
+  renderAtmosphereInspectorUI(data, parentPlanet = null) {
+    const panel = document.getElementById('atmo-inspector-panel');
+    if (!panel) return;
+
+    const isBn = this.currentLanguage === 'bn';
+    const atmo = data.atmosphereData || {
+      hasAtmosphere: false,
+      weatherStatus: "অতি-ক্ষীণ বায়ুশূন্য এক্সোস্ফিয়ার",
+      weatherStatusEn: "Airless Vacuum Surface Boundary Exosphere",
+      windSpeed: "০ km/h (ভ্যাকুয়াম)",
+      windSpeedEn: "0 km/h (Vacuum)",
+      windDirection: "কোনো বায়ুপ্রবাহ নেই",
+      windDirectionEn: "No measurable atmospheric flow",
+      surfacePressure: "0.000 bar",
+      stormActivity: "সৌর বায়ু ও মহাজাগতিক বিকিরণ",
+      stormActivityEn: "Micrometeorite bombardment & solar wind",
+      precipitation: "বৃষ্টিহীন",
+      precipitationEn: "None",
+      cloudCoverage: "০%",
+      gases: [{ name: "সিলিকা ধূলি", nameEn: "Silica Regolith", percent: 100, color: "#9ca3af" }],
+      layers: [{ name: "সারফেস এক্সোস্ফিয়ার", nameEn: "Surface Exosphere", alt: "0 km", desc: "হার্ড ভ্যাকুয়াম", descEn: "Hard vacuum" }]
+    };
+
+    document.getElementById('atmo-planet-name').textContent = isBn ? data.name : data.nameEn;
+    document.getElementById('atmo-planet-type').textContent = data.type;
+    document.getElementById('atmo-weather-summary').textContent = isBn ? atmo.weatherStatus : atmo.weatherStatusEn;
+
+    // Wind Speed & Direction
+    document.getElementById('atmo-wind-speed').textContent = isBn ? atmo.windSpeed : atmo.windSpeedEn;
+    document.getElementById('atmo-wind-dir').textContent = isBn ? atmo.windDirection : atmo.windDirectionEn;
+
+    // Climate Metrics
+    document.getElementById('atmo-temp').textContent = data.temp;
+    document.getElementById('atmo-pressure').textContent = atmo.surfacePressure;
+    document.getElementById('atmo-clouds').textContent = atmo.cloudCoverage;
+    document.getElementById('atmo-precip').textContent = isBn ? atmo.precipitation : atmo.precipitationEn;
+    document.getElementById('atmo-storms').textContent = isBn ? atmo.stormActivity : atmo.stormActivityEn;
+
+    // Chemical Spectroscopy Gas Bars
+    const gasesContainer = document.getElementById('atmo-gases-list');
+    if (gasesContainer && atmo.gases) {
+      gasesContainer.innerHTML = atmo.gases.map(g => `
+        <div class="gas-bar-container">
+          <div class="gas-bar-label">
+            <span>${isBn ? g.name : g.nameEn}</span>
+            <span style="font-weight: bold; color: ${g.color};">${g.percent}%</span>
+          </div>
+          <div class="gas-progress-track">
+            <div class="gas-progress-fill" style="width: ${g.percent}%; background: ${g.color}; color: ${g.color};"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Altitude Strata Layers
+    const strataContainer = document.getElementById('atmo-strata-list');
+    if (strataContainer && atmo.layers) {
+      strataContainer.innerHTML = atmo.layers.map(l => `
+        <div class="stratum-item">
+          <div class="stratum-title">
+            <span>${isBn ? l.name : l.nameEn}</span>
+            <span class="stratum-alt">${l.alt}</span>
+          </div>
+          <div class="stratum-desc">${isBn ? l.desc : l.descEn}</div>
+        </div>
+      `).join('');
+    }
+
+    // Internal Core Strata
+    const coreContainer = document.getElementById('atmo-core-list');
+    if (coreContainer) {
+      if (atmo.internalStructure) {
+        coreContainer.innerHTML = atmo.internalStructure.map(c => `
+          <div class="stratum-item" style="border-left-color: #f59e0b;">
+            <div class="stratum-title">
+              <span>${c.layer}</span>
+              <span class="stratum-alt" style="color: #f59e0b;">${c.depth}</span>
+            </div>
+            <div class="stratum-desc">${isBn ? 'গড় তাপমাত্রা' : 'Avg Temp'}: ${c.temp}</div>
+          </div>
+        `).join('');
+      } else {
+        coreContainer.innerHTML = `<div style="font-size: 11px; color: rgba(200,225,255,0.6);">${isBn ? 'অভ্যন্তরীণ তথ্য উপলব্ধ নয়' : 'Core telemetry unmapped'}</div>`;
+      }
+    }
+
+    panel.classList.add('visible');
+  }
+
   startCameraAnimation(toPos, toTarget, duration = 1000) {
     this.cameraAnimation = {
       fromPos: this.camera.position.clone(),
@@ -824,6 +1086,16 @@ class CelestialSimulation {
     this.selectedBody = null;
     this.isTracking = false;
     this.isAutoTouring = false;
+    this.isInspectorMode = false;
+
+    if (this.activeWindField) {
+      if (this.activeWindField.parent) this.activeWindField.parent.remove(this.activeWindField.mesh);
+      this.activeWindField = null;
+    }
+
+    const panel = document.getElementById('atmo-inspector-panel');
+    if (panel) panel.classList.remove('visible');
+
     this.startCameraAnimation(this.defaultCameraPos, this.defaultTarget, 1400);
 
     document.querySelectorAll('.hud-tag').forEach(tag => tag.classList.remove('active'));
@@ -853,7 +1125,18 @@ class CelestialSimulation {
     document.getElementById('tel-color-accent').style.borderColor = data.color;
     document.getElementById('tel-status-light').style.background = data.color;
 
-    // Render Sub-Moons List inside Telemetry Card
+    // Atmospheric weather scanner action button
+    const atmoBtnContainer = document.getElementById('tel-atmo-btn-container');
+    if (atmoBtnContainer) {
+      atmoBtnContainer.innerHTML = `
+        <button class="hud-btn scan-btn" style="width: 100%; margin-top: 10px; justify-content: center; background: rgba(0, 240, 255, 0.22); border-color: var(--cyan-glow); font-weight: bold; padding: 7px 10px;" 
+                onclick="simulation.openAtmosphereInspector('${data.id}')">
+          🌪️ ${isBn ? 'বায়ুমণ্ডল ও আবহাওয়া স্ক্যানার' : 'Inspect Atmosphere & Weather'}
+        </button>
+      `;
+    }
+
+    // Moons List
     const moonsContainer = document.getElementById('tel-moons-list');
     if (moonsContainer) {
       if (data.moons && data.moons.length > 0) {
@@ -897,6 +1180,20 @@ class CelestialSimulation {
     document.getElementById('tel-color-accent').style.borderColor = moonData.color;
     document.getElementById('tel-status-light').style.background = moonData.color;
 
+    const atmoBtnContainer = document.getElementById('tel-atmo-btn-container');
+    if (atmoBtnContainer) {
+      if (moonData.atmosphereData) {
+        atmoBtnContainer.innerHTML = `
+          <button class="hud-btn scan-btn" style="width: 100%; margin-top: 10px; justify-content: center; background: rgba(0, 240, 255, 0.22); border-color: var(--cyan-glow); font-weight: bold; padding: 7px 10px;" 
+                  onclick="simulation.openAtmosphereInspector('${moonData.id}', true)">
+            🌪️ ${isBn ? 'বায়ুমণ্ডল ও পৃষ্ঠ স্ক্যানার' : 'Inspect Atmosphere & Surface'}
+          </button>
+        `;
+      } else {
+        atmoBtnContainer.innerHTML = '';
+      }
+    }
+
     const moonsContainer = document.getElementById('tel-moons-list');
     if (moonsContainer) {
       moonsContainer.style.display = 'block';
@@ -923,7 +1220,6 @@ class CelestialSimulation {
       this.renderer.setSize(width, height);
     });
 
-    // Raycast on click for Planets & Moons
     this.container.addEventListener('pointerdown', (e) => {
       const rect = this.renderer.domElement.getBoundingClientRect();
       this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -938,13 +1234,11 @@ class CelestialSimulation {
 
       if (intersects.length > 0) {
         const hitMesh = intersects[0].object;
-        // Check if planet
         const hitPlanet = this.planets.find(p => p.mesh === hitMesh);
         if (hitPlanet) {
           this.selectCelestialBody(hitPlanet.data.id);
           return;
         }
-        // Check if moon
         const hitMoon = this.moons.find(m => m.mesh === hitMesh);
         if (hitMoon) {
           this.selectMoon(hitMoon);
@@ -952,7 +1246,6 @@ class CelestialSimulation {
       }
     });
 
-    // Hover cursor
     this.container.addEventListener('pointermove', (e) => {
       const rect = this.renderer.domElement.getBoundingClientRect();
       this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -1053,6 +1346,11 @@ class CelestialSimulation {
         this.selectedBody = null;
       });
     }
+
+    const closeAtmo = document.getElementById('atmo-close-btn');
+    if (closeAtmo) {
+      closeAtmo.addEventListener('click', () => this.closeAtmosphereInspector());
+    }
   }
 
   updateLanguageTexts() {
@@ -1073,6 +1371,10 @@ class CelestialSimulation {
         this.updateTelemetryCard(this.selectedBody.data);
       }
     }
+
+    if (this.isInspectorMode && this.inspectedBody) {
+      this.renderAtmosphereInspectorUI(this.inspectedBody.data);
+    }
   }
 
   animate() {
@@ -1083,7 +1385,6 @@ class CelestialSimulation {
     if (this.isPlaying) {
       this.time += delta * this.timeScale;
 
-      // Update planetary axial rotations and orbital revolutions
       this.planets.forEach(p => {
         const data = p.data;
 
@@ -1106,12 +1407,10 @@ class CelestialSimulation {
         }
       });
 
-      // Terra Nova: Independent atmospheric cloud shell rotation
       if (this.cloudsMesh) {
         this.cloudsMesh.rotation.y += 0.0018 * this.timeScale;
       }
 
-      // Update Moons revolving around parent planets
       this.moons.forEach(m => {
         m.angle += m.speed * this.timeScale * 0.5;
         m.mesh.position.set(
@@ -1122,7 +1421,9 @@ class CelestialSimulation {
         m.mesh.rotation.y += 0.01 * this.timeScale;
       });
 
-      // Orbit signal pulses
+      // Update Atmospheric Wind Stream particles
+      this.updateAtmosphericWindField();
+
       this.orbitPulses.forEach(pulse => {
         pulse.progress = (pulse.progress + pulse.data.orbitSpeed * 0.5 * this.timeScale) % 1.0;
         const theta = pulse.progress * Math.PI * 2;
@@ -1137,7 +1438,6 @@ class CelestialSimulation {
         );
       });
 
-      // Solar wind particle animation
       if (this.solarWindParticles) {
         const pos = this.solarWindParticles.mesh.geometry.attributes.position.array;
         const vels = this.solarWindParticles.velocities;
@@ -1153,12 +1453,10 @@ class CelestialSimulation {
         this.solarWindParticles.mesh.geometry.attributes.position.needsUpdate = true;
       }
 
-      // Asteroid belt drift
       if (this.asteroidBelt) {
         this.asteroidBelt.rotation.y += 0.0006 * this.timeScale;
       }
 
-      // Auto Tour logic
       if (this.isAutoTouring) {
         this.tourTimer += delta;
         if (this.tourTimer > 8.0) {
@@ -1169,7 +1467,6 @@ class CelestialSimulation {
       }
     }
 
-    // Camera follow / tracking
     if (this.isTracking && this.selectedBody && !this.cameraAnimation) {
       const targetPos = new THREE.Vector3();
       this.selectedBody.group.getWorldPosition(targetPos);

@@ -409,12 +409,146 @@
       border-radius: 0 3px 3px 0;
     }
 
+    /* Atmospheric Inspector Modal / Scanner Interface */
+    .atmo-inspector-panel {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      bottom: 14px;
+      width: 440px;
+      max-width: calc(100vw - 28px);
+      background: rgba(3, 10, 22, 0.94);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      border-radius: 6px;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 0 35px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 240, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-480px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .atmo-inspector-panel.visible {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .atmo-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+      background: linear-gradient(180deg, rgba(0, 240, 255, 0.12) 0%, rgba(0, 240, 255, 0.02) 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .atmo-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .atmo-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      font-family: var(--font-mono);
+    }
+
+    .wind-speed-card {
+      background: rgba(4, 16, 34, 0.75);
+      border: 1px solid rgba(0, 240, 255, 0.22);
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      text-align: center;
+      position: relative;
+    }
+
+    .wind-val-display {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--cyan-glow);
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+      margin: 4px 0 2px 0;
+    }
+
+    .wind-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: rgba(0, 240, 255, 0.15);
+      border: 1px solid var(--cyan-glow);
+      color: #fff;
+      margin-top: 4px;
+    }
+
+    .gas-bar-container {
+      margin-bottom: 8px;
+    }
+    .gas-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      margin-bottom: 3px;
+      color: rgba(220, 240, 255, 0.85);
+    }
+    .gas-progress-track {
+      height: 6px;
+      background: rgba(10, 30, 55, 0.6);
+      border-radius: 3px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 240, 255, 0.15);
+    }
+    .gas-progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.6s ease;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .stratum-item {
+      padding: 7px 10px;
+      background: rgba(3, 14, 28, 0.55);
+      border-left: 3px solid var(--cyan-glow);
+      margin-bottom: 6px;
+      border-radius: 0 3px 3px 0;
+      font-size: 11px;
+    }
+    .stratum-title {
+      font-weight: bold;
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+    }
+    .stratum-alt {
+      color: var(--cyan-glow);
+      font-size: 10px;
+    }
+    .stratum-desc {
+      color: rgba(200, 225, 255, 0.75);
+      font-size: 10px;
+      margin-top: 3px;
+    }
+
     /* Mobile adjustments */
     @media (max-width: 640px) {
       .top-title-group p { display: none; }
       .toggle-group { font-size: 10px; gap: 8px; }
       .bottom-bar { padding: 6px 10px; }
       .telemetry-card { width: calc(100vw - 28px); right: 14px; top: 68px; }
+      .atmo-inspector-panel { width: calc(100vw - 20px); left: 10px; top: 10px; bottom: 10px; }
     }
   </style>
 </head>
@@ -568,6 +702,97 @@
 
     <!-- Moons / Sub-satellites List -->
     <div id="tel-moons-list" style="margin-top: 10px;"></div>
+
+    <!-- Atmosphere & Weather Scanner Action Button -->
+    <div id="tel-atmo-btn-container"></div>
+  </aside>
+
+  <!-- Deep Planetary Atmosphere & Weather Inspector Interface -->
+  <aside class="atmo-inspector-panel" id="atmo-inspector-panel">
+    <div class="atmo-header">
+      <div class="atmo-title">
+        <span class="live-pulse" style="background: var(--cyan-glow);"></span>
+        <div>
+          <div id="atmo-planet-name" style="font-size: 15px; font-weight: bold; color: #fff;">টেরা নোভা</div>
+          <div id="atmo-planet-type" style="font-size: 10px; color: var(--cyan-glow);">মহাসাগরীয় বাসযোগ্য গ্রহ</div>
+        </div>
+      </div>
+      <button class="hud-btn" id="atmo-close-btn" style="padding: 4px 10px; font-size: 11px;">✕ ব্যাক</button>
+    </div>
+
+    <div class="atmo-body">
+      <!-- Weather Status Summary -->
+      <div style="background: rgba(0, 240, 255, 0.08); border-left: 3px solid var(--cyan-glow); padding: 8px 10px; border-radius: 0 4px 4px 0; margin-bottom: 12px; font-size: 11px;">
+        <div style="font-size: 9px; color: rgba(180, 220, 255, 0.6); text-transform: uppercase;">আবহাওয়া ও জলবায়ু অবস্থা // Weather Status:</div>
+        <div id="atmo-weather-summary" style="font-weight: bold; color: #e2f1ff; margin-top: 2px;">নাতিশীতোষ্ণ জলবায়ু ও সাইক্লোন</div>
+      </div>
+
+      <!-- Real-Time Wind Speedometer Card -->
+      <div class="wind-speed-card">
+        <div style="font-size: 9px; color: rgba(180, 220, 255, 0.65); text-transform: uppercase; letter-spacing: 0.8px;">
+          বায়ুপ্রবাহ ও গতিবেগ // Real-time Wind Speed
+        </div>
+        <div class="wind-val-display" id="atmo-wind-speed">১৫ - ৩২০ km/h</div>
+        <div style="font-size: 10px; color: rgba(220, 240, 255, 0.85); margin-top: 2px;" id="atmo-wind-dir">
+          পশ্চিম থেকে পূর্বমুখী করিওলিস জেট স্ট্রিম
+        </div>
+        <div class="wind-badge">🌪️ লাইভ ৩ডি অ্যারোডায়নামিক সিমুলেশন সক্রিয়</div>
+      </div>
+
+      <!-- Planetary Climate Metrics Grid -->
+      <div class="tel-grid" style="margin-bottom: 14px;">
+        <div class="tel-metric">
+          <div class="tel-label">পৃষ্ঠ চাপ (Pressure)</div>
+          <div class="tel-val" id="atmo-pressure">1.013 bar</div>
+        </div>
+        <div class="tel-metric">
+          <div class="tel-label">গড় তাপমাত্রা (Temp)</div>
+          <div class="tel-val" id="atmo-temp">15°C</div>
+        </div>
+        <div class="tel-metric">
+          <div class="tel-label">মেঘের ঘনত্ব (Clouds)</div>
+          <div class="tel-val" id="atmo-clouds">62%</div>
+        </div>
+        <div class="tel-metric">
+          <div class="tel-label">বর্ষণ প্রকৃতি (Precip)</div>
+          <div class="tel-val" id="atmo-precip">পানি ও তুষার</div>
+        </div>
+      </div>
+
+      <!-- Storm Activity -->
+      <div style="background: rgba(3, 15, 30, 0.55); border: 1px solid rgba(0, 240, 255, 0.15); padding: 8px 10px; border-radius: 4px; margin-bottom: 14px; font-size: 11px;">
+        <span style="font-size: 9px; color: rgba(180, 220, 255, 0.6); text-transform: uppercase;">ঝড় ও টার্বুলেন্স // Storm Activity:</span>
+        <div id="atmo-storms" style="color: #e2f1ff; font-weight: bold; margin-top: 2px;">মহাসাগরীয় সাইক্লোন ও বজ্রঝড়</div>
+      </div>
+
+      <!-- Chemical Spectroscopy -->
+      <div style="margin-bottom: 14px;">
+        <div style="font-size: 10px; color: var(--cyan-glow); font-weight: bold; margin-bottom: 6px; letter-spacing: 0.5px;">
+          গ্যাসীয় উপাদান বিশ্লেষণ // Chemical Spectroscopy:
+        </div>
+        <div id="atmo-gases-list"></div>
+      </div>
+
+      <!-- Altitude Strata Layers -->
+      <div style="margin-bottom: 14px;">
+        <div style="font-size: 10px; color: var(--cyan-glow); font-weight: bold; margin-bottom: 6px; letter-spacing: 0.5px;">
+          বায়ুমণ্ডলীয় স্তরবিন্যাস // Atmospheric Altitude Strata:
+        </div>
+        <div id="atmo-strata-list"></div>
+      </div>
+
+      <!-- Internal Core Architecture -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 10px; color: #f59e0b; font-weight: bold; margin-bottom: 6px; letter-spacing: 0.5px;">
+          অভ্যন্তরীণ ভূত্বক ও কোর // Internal Core Architecture:
+        </div>
+        <div id="atmo-core-list"></div>
+      </div>
+
+      <button class="hud-btn" style="width: 100%; justify-content: center; padding: 10px; font-weight: bold; background: rgba(0, 240, 255, 0.2); border-color: var(--cyan-glow);" onclick="simulation.closeAtmosphereInspector()">
+        ⬅️ সোলার সিস্টেম মানচিত্রে ফিরুন (Return to Map)
+      </button>
+    </div>
   </aside>
 
   <!-- Three.js & OrbitControls Local/CDN Scripts -->

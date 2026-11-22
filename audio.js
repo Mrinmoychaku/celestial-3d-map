@@ -144,6 +144,38 @@ class CosmicAudio {
     noise.start(t);
   }
 
+  playWindScan() {
+    if (!this.ctx || this.isMuted) return;
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+
+    const t = this.ctx.currentTime;
+    const bufferSize = this.ctx.sampleRate * 0.8;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * i / bufferSize);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(220, t);
+    filter.frequency.linearRampToValueAtTime(650, t + 0.4);
+    filter.frequency.exponentialRampToValueAtTime(180, t + 0.8);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, t);
+    gain.gain.linearRampToValueAtTime(0.15, t + 0.3);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noise.start(t);
+  }
+
   toggle() {
     this.init();
     this.isMuted = !this.isMuted;
