@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Celestial Orbital Map - 3D থ্রিডি মহাজাগতিক ম্যাপ</title>
+  <style>
+    :root {
+      --bg-dark: #02040a;
+      --cyan-glow: #00f0ff;
+      --amber-glow: #ffaa33;
+      --blue-accent: #1e5c94;
+      --hud-panel: rgba(5, 12, 24, 0.85);
+      --hud-border: rgba(0, 240, 255, 0.28);
+      --hud-text: #d5e6f8;
+      --font-mono: 'Courier New', 'Consolas', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-dark);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: var(--hud-text);
+    }
+
+    /* 3D WebGL Canvas Container */
+    #webgl-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* SVG Leader Lines Layer */
+    #hud-svg-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* 2D Projected HUD Tags */
+    #hud-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .hud-tag {
+      position: absolute;
+      pointer-events: auto;
+      cursor: pointer;
+      background: rgba(3, 10, 22, 0.75);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      padding: 4px 8px;
+      border-radius: 2px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      white-space: nowrap;
+      box-shadow: 0 0 12px rgba(0, 180, 255, 0.15);
+      transition: all 0.2s ease;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .hud-tag:hover, .hud-tag.active {
+      border-color: var(--cyan-glow);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.45);
+      background: rgba(0, 30, 60, 0.9);
+      transform: scale(1.05);
+    }
+
+    .hud-tag-header {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .hud-tag-indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      box-shadow: 0 0 6px currentColor;
+    }
+
+    .hud-tag-title {
+      font-weight: bold;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    .hud-tag-sub {
+      font-size: 9px;
+      color: rgba(200, 225, 255, 0.65);
+      margin-top: 1px;
+    }
+
+    /* Screen Sci-Fi Blueprint Vignette & Corner Accents */
+    .blueprint-frame {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 20;
+      border: 1px solid rgba(0, 240, 255, 0.12);
+      margin: 8px;
+    }
+
+    .corner {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--cyan-glow);
+    }
+    .corner-tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+    .corner-tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+    .corner-br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+    /* Top HUD Header */
+    .top-bar {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 30;
+      pointer-events: auto;
+      background: linear-gradient(180deg, rgba(3, 8, 20, 0.85) 0%, rgba(3, 8, 20, 0.2) 100%);
+      padding: 8px 14px;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    .top-title-group h1 {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+    }
+
+    .top-title-group .live-pulse {
+      width: 8px;
+      height: 8px;
+      background: var(--cyan-glow);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--cyan-glow);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .top-title-group p {
+      font-size: 10px;
+      color: rgba(180, 220, 255, 0.65);
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hud-btn {
+      background: rgba(8, 24, 48, 0.7);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      color: var(--hud-text);
+      padding: 6px 10px;
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+
+    .hud-btn:hover, .hud-btn.active {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: var(--cyan-glow);
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+
+    /* Bottom Control Bar */
+    .bottom-bar {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      z-index: 30;
+      background: rgba(4, 11, 25, 0.9);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      padding: 8px 14px;
+      border-radius: 4px;
+      backdrop-filter: blur(8px);
+    }
+
+    .playback-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .speed-select {
+      background: rgba(6, 18, 38, 0.8);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      color: var(--hud-text);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 5px 8px;
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      color: rgba(220, 240, 255, 0.8);
+    }
+
+    .toggle-item input {
+      accent-color: var(--cyan-glow);
+      cursor: pointer;
+    }
+
+    /* Planet Quick Jump Carousel */
+    .quick-jump-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      max-width: 100%;
+      padding-bottom: 2px;
+    }
+
+    .jump-chip {
+      background: rgba(8, 20, 42, 0.65);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .jump-chip:hover {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: var(--cyan-glow);
+      color: #fff;
+    }
+
+    /* Telemetry Detail Slideout Card */
+    .telemetry-card {
+      position: absolute;
+      top: 75px;
+      right: 18px;
+      width: 320px;
+      max-width: calc(100vw - 36px);
+      background: var(--hud-panel);
+      border: 1px solid var(--hud-border);
+      border-radius: 4px;
+      padding: 16px;
+      z-index: 40;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 240, 255, 0.15);
+      transform: translateX(360px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .telemetry-card.visible {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .tel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .tel-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--cyan-glow);
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .tel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-mono);
+    }
+
+    .tel-type {
+      font-size: 11px;
+      color: rgba(0, 240, 255, 0.8);
+      margin-top: 2px;
+    }
+
+    .tel-close {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .tel-close:hover { color: #fff; }
+
+    .tel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 8px;
+      margin-bottom: 14px;
+      font-family: var(--font-mono);
+    }
+
+    .tel-metric {
+      background: rgba(3, 15, 30, 0.55);
+      border: 1px solid rgba(0, 240, 255, 0.12);
+      padding: 6px 8px;
+      border-radius: 2px;
+    }
+
+    .tel-label {
+      font-size: 9px;
+      color: rgba(180, 215, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tel-val {
+      font-size: 12px;
+      font-weight: bold;
+      color: #e2f1ff;
+      margin-top: 2px;
+    }
+
+    .tel-desc {
+      font-size: 12px;
+      line-height: 1.5;
+      color: rgba(220, 235, 255, 0.85);
+      background: rgba(2, 8, 18, 0.45);
+      border-left: 2px solid var(--cyan-glow);
+      padding: 8px 10px;
+      border-radius: 0 3px 3px 0;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 640px) {
+      .top-title-group p { display: none; }
+      .toggle-group { font-size: 10px; gap: 8px; }
+      .bottom-bar { padding: 6px 10px; }
+      .telemetry-card { width: calc(100vw - 28px); right: 14px; top: 68px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 3D Canvas WebGL Container -->
+  <div id="webgl-container"></div>
+
+  <!-- SVG Overlay for Crisp Dynamic Leader Lines -->
+  <svg id="hud-svg-lines"></svg>
+
+  <!-- HTML Projected Floating Callouts -->
+  <div id="hud-overlay"></div>
+
+  <!-- Sci-Fi Blueprint Corner Brackets -->
+  <div class="blueprint-frame">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+  </div>
+
+  <!-- Top HUD Bar -->
+  <header class="top-bar">
+    <div class="top-title-group">
+      <h1>
+        <span class="live-pulse"></span>
+        CELESTIAL BLUEPRINT // মহাজাগতিক থ্রিডি মডেল
+      </h1>
+      <p>SYS.ID: SOLIS-IX // 3D ORBITAL MECHANICS SIMULATION // E-328</p>
+    </div>
+
+    <div class="top-actions">
+      <button class="hud-btn" id="btn-audio" title="সাউন্ড টগল (Audio FX)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+        <span id="audio-lbl">Audio</span>
+      </button>
+
+      <button class="hud-btn" id="btn-auto-tour" title="অটো ট্যুর মোড (Cinematic Auto Tour)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polygon points="10 8 16 12 10 16 10 8"/>
+        </svg>
+        <span>Tour</span>
+      </button>
+
+      <button class="hud-btn" id="btn-lang" title="ভাষা পরিবর্তন">English</button>
+
+      <button class="hud-btn" id="btn-reset" title="ভিউ রিসেট">Reset</button>
+    </div>
+  </header>
+
+  <!-- Bottom Control Bar -->
+  <footer class="bottom-bar">
+    <div class="playback-controls">
+      <button class="hud-btn" id="btn-play-pause" title="প্লে / পজ">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="6" y="4" width="4" height="16"/>
+          <rect x="14" y="4" width="4" height="16"/>
+        </svg>
+      </button>
+
+      <select class="speed-select" id="speed-select" title="অরবিট গতি">
+        <option value="0.25">0.25x (Slow)</option>
+        <option value="0.5">0.5x</option>
+        <option value="1.0" selected>1.0x (Normal)</option>
+        <option value="2.0">2.0x (Fast)</option>
+        <option value="4.0">4.0x (Warp)</option>
+      </select>
+    </div>
+
+    <!-- Quick Jump Planet Selector -->
+    <div class="quick-jump-bar">
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('sun')">☀️ Solis</span>
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('cygnus_beacon')">⚡ Beacon</span>
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('vulcanus')">🌋 Vulcan</span>
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('terra_nova')">🌍 Terra</span>
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('ares_crimson')">🔴 Ares</span>
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('zeus_major')">🪐 Zeus</span>
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('chronos_magister')">🪐 Chronos</span>
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('aether_cyan')">💎 Aether</span>
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('hades_outpost')">❄️ Hades</span>
+    </div>
+
+    <div class="toggle-group">
+      <label class="toggle-item">
+        <input type="checkbox" id="toggle-orbits" checked>
+        <span>Orbits</span>
+      </label>
+      <label class="toggle-item">
+        <input type="checkbox" id="toggle-hud" checked>
+        <span>Labels</span>
+      </label>
+      <label class="toggle-item">
+        <input type="checkbox" id="toggle-grid" checked>
+        <span>Grid</span>
+      </label>
+    </div>
+  </footer>
+
+  <!-- Telemetry Detail Slideout Card -->
+  <aside class="telemetry-card" id="telemetry-card">
+    <div class="tel-header">
+      <div class="tel-title-wrap">
+        <div class="status-dot" id="tel-status-light"></div>
+        <div>
+          <div class="tel-title" id="tel-title">ক্রোনস মেজিস্টার</div>
+          <div class="tel-type" id="tel-type">বলয়যুক্ত গ্যাস দানব</div>
+        </div>
+      </div>
+      <button class="tel-close" id="tel-close" title="বন্ধ করুন">&times;</button>
+    </div>
+
+    <div class="tel-grid">
+      <div class="tel-metric">
+        <div class="tel-label">ব্যাস (Radius)</div>
+        <div class="tel-val" id="tel-radius">58,232 km</div>
+      </div>
+      <div class="tel-metric">
+        <div class="tel-label">দূরত্ব (Distance)</div>
+        <div class="tel-val" id="tel-distance">4.20 AU</div>
+      </div>
+      <div class="tel-metric">
+        <div class="tel-label">আবর্তন কাল (Period)</div>
+        <div class="tel-val" id="tel-period">29.4 বছর</div>
+      </div>
+      <div class="tel-metric">
+        <div class="tel-label">কক্ষপথ গতি (Velocity)</div>
+        <div class="tel-val" id="tel-velocity">9.7 km/s</div>
+      </div>
+      <div class="tel-metric">
+        <div class="tel-label">তাপমাত্রা (Temp)</div>
+        <div class="tel-val" id="tel-temp">-140°C</div>
+      </div>
+      <div class="tel-metric">
+        <div class="tel-label">স্পেকট্রাল ক্লাস (Spectral)</div>
+        <div class="tel-val" id="tel-spectral">Volatile Ice</div>
+      </div>
+    </div>
+
+    <div class="tel-desc" id="tel-desc">
+      মূল রেফারেন্স ছবির সবচেয়ে আকর্ষণীয় রিংযুক্ত গ্রহ। এর মহিমান্বিত বরফ ও পাথুরে বলয় সিস্টেম এবং সুস্পষ্ট ক্যাবিনী ফাঁক রয়েছে।
+    </div>
+  </aside>
+
+  <!-- Three.js & OrbitControls Local/CDN Scripts -->
+  <script src="./libs/three.min.js"></script>
+  <script src="./libs/OrbitControls.js"></script>
+  <!-- Fallback if local scripts missing -->
+  <script>
+    if (typeof THREE === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+      document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
+    }
+  </script>
+
+  <!-- Application Modules -->
+  <script src="./celestial-data.js"></script>
+  <script src="./textures.js"></script>
+  <script src="./audio.js"></script>
+  <script src="./main.js"></script>
+
+</body>
+</html>
