@@ -1038,7 +1038,10 @@ const STRINGS = {
     searchPlaceholder: 'Search bodies (e.g. Zeus, Luna, Halcyon, Solis)...',
     solarFlareAlert: '⚡ SOLAR FLARE DETECTED — MAGNITUDE X2.4 // RADIAL PROTON WAVE',
     scaleTitle: 'CELESTIAL SCALE SILHOUETTE COMPARISON',
-    scaleSubtitle: 'True-to-Scale Silhouettes normalized vs Earth Reference (40px base)'
+    scaleSubtitle: 'True-to-Scale Silhouettes normalized vs Earth Reference (40px base)',
+    timeline: 'Timeline',
+    playEpochs: '▶ Play Epochs',
+    pauseEpochs: '⏸ Pause Epochs'
   },
   bn: {
     title: 'সোলিস-৯ · সেলেস্টিয়াল ব্লুপ্রিন্ট',
@@ -1079,6 +1082,160 @@ const STRINGS = {
     searchPlaceholder: 'গ্রহ, চাঁদ বা ধূমকেতু খুঁজুন (যেমন: Zeus, Luna, Halcyon)...',
     solarFlareAlert: '⚡ তীব্র সৌরশিখা সনাক্ত — মাত্রা X2.4 // উচ্চগতির প্রোটন তরঙ্গ বিচ্ছুরিত',
     scaleTitle: 'মহাজাগতিক ব্যাস ও আকৃতির আপেক্ষিক তুলনা',
-    scaleSubtitle: 'পৃথিবীর মাপকে আদর্শ (৪০ পিক্সেল) ধরে সঠিক জ্যামিতিক স্কেলিং'
+    scaleSubtitle: 'পৃথিবীর মাপকে আদর্শ (৪০ পিক্সেল) ধরে সঠিক জ্যামিতিক স্কেলিং',
+    timeline: 'টাইমলাইন',
+    playEpochs: '▶ যুগ ভ্রমণ',
+    pauseEpochs: '⏸ থামুন'
   }
 };
+
+/**
+ * 6 DEEP COSMIC TIMELINE EPOCHS (PAST, PRESENT, DEEP FUTURE)
+ * Defines historical transformations, planetary evolutions, solar states, and lore.
+ */
+const TIMELINE_EPOCHS = [
+  {
+    id: "primordial",
+    timeLabel: "T -4.5 Gyr",
+    yearNumber: -4500000000,
+    name: "আদিম প্রোটো-স্টেলার সৃষ্টি যুগ (Primordial Accretion)",
+    nameEn: "Primordial Accretion Era",
+    badge: "T -4.5 BILLION YEARS // PRIMORDIAL COLLAPSE",
+    cosmicAge: "৪.৫ বিলিয়ন বছর আগে (4.5 Billion Years Ago)",
+    summary: "সৌরজগতের জন্মলগ্নে সৌরনীহারিকা ঘনীভূত হয়ে প্রোটো-সূর্যের সৃষ্টি হয়েছে। নবজাত গ্রহগুলো প্রচণ্ড মহাজাগতিক সংঘর্ষ ও লাভা সমুদ্রে নিমজ্জিত। টেরা নোভা এবং এরেসে তরল পানি নেই—কেবল তপ্ত ব্যাসাল্ট শিলা ও বিষাক্ত গ্যাসীয় মেঘ।",
+    summaryEn: "The dawn of Solis-IX as the protoplanetary nebula collapses into a violent proto-star. Newly formed planets endure extreme bombardment, glowing with global magma oceans under toxic silicate clouds.",
+    sunState: {
+      scale: 1.35,
+      color: "#ff5500",
+      coronaColor: "#ff3300",
+      lightColor: 0xff6622,
+      lightIntensity: 4.5,
+      flareMultiplier: 3.0
+    },
+    planetChanges: [
+      { id: "terra_nova", state: "molten", descBn: "লাভা সমুদ্র ও ফুটন্ত শিলা", descEn: "Global magma ocean, zero liquid water" },
+      { id: "ares_crimson", state: "molten", descBn: "তপ্ত ব্যাসাল্ট ও উল্কা খাদ", descEn: "Violent basalt bombardment" },
+      { id: "chronos_magister", state: "dense_dust", descBn: "অতি-ঘন ধ্বংসাবশেষের ঘূর্ণায়মান রিং", descEn: "Chaotic primordial debris disc" }
+    ]
+  },
+  {
+    id: "ancient",
+    timeLabel: "T -500 Myr",
+    yearNumber: -500000000,
+    name: "প্রাচীন জলমগ্ন ও প্রথম প্রাণ যুগ (Ancient Hydrosphere)",
+    nameEn: "Ancient Hydrosphere Era",
+    badge: "T -500 MILLION YEARS // ANCIENT RIVERS & OCEANS",
+    cosmicAge: "৫০ কোটি বছর আগে (500 Million Years Ago)",
+    summary: "সৌরজগতে প্রশান্তি ফিরে এসেছে। প্রাচীন এরেস (মঙ্গল) গ্রহে তখন ছিল গভীর নীল সাগর, নদী উপত্যকা ও ঘন জলীয় মেঘ! টেরা নোভায় আদিম মহাসাগরে প্রথম এককোষী প্রাণের বিকাশ শুরু হয়েছে। ক্রোনসের বলয় সদ্য জন্ম নেওয়া বরফের মতো স্ফটিক দ্যুতি ছড়াচ্ছে।",
+    summaryEn: "Golden ancient era. Ancient Ares possessed rolling blue oceans, river valleys, and a thick nitrogen atmosphere. Terra Nova harbors primordial microbial ocean life, and Chronos's rings shine like pristine mirror ice.",
+    sunState: {
+      scale: 1.0,
+      color: "#ffaa33",
+      coronaColor: "#ff9900",
+      lightColor: 0xffeedd,
+      lightIntensity: 3.5,
+      flareMultiplier: 1.0
+    },
+    planetChanges: [
+      { id: "terra_nova", state: "ancient_ocean", descBn: "৮৫% গভীর নীল মহাসাগর ও আদিম শৈবাল", descEn: "Deep global blue ocean, single-cell life" },
+      { id: "ares_crimson", state: "oceanic_mars", descBn: "বহমান নীল নদী ও মহাসাগরীয় অববাহিকা", descEn: "Blue Mars: liquid lakes and active clouds" },
+      { id: "chronos_magister", state: "pristine_rings", descBn: "স্ফটিকের মতো অতি-উজ্জ্বল রিং", descEn: "Newly formed razor-sharp ice rings" }
+    ]
+  },
+  {
+    id: "current",
+    timeLabel: "CE 2349",
+    yearNumber: 2349,
+    name: "বর্তমান আধুনিক মহাকাশ যুগ (Current Astrometric Era)",
+    nameEn: "Current Astrometric Era",
+    badge: "CE 2349 // PRESENT HUMAN EPOCH",
+    cosmicAge: "বর্তমান কাল (Present Human Epoch)",
+    summary: "আমাদের বর্তমান আধুনিক সভ্যতা। সিগনাস বীকন-৯ আন্তঃনক্ষত্র নেভিগেশন স্টেশন সক্রিয়, টেরা নোভা মহাসাগরীয় বাসযোগ্য বিশ্ব, এবং সৌরজগতের গভীর মহাকাশ কাইপার বেল্ট পর্যন্ত ছড়িয়ে পড়েছে গবেষণা ও টেলিমেট্রি নজরদারি।",
+    summaryEn: "The present human exploration era. Solis-IX is balanced; Cygnus Beacon-9 serves as an interstellar waypoint, Terra Nova thrives as a technological cradle, and mining outposts dot the gas giant moons.",
+    sunState: {
+      scale: 1.0,
+      color: "#ffaa33",
+      coronaColor: "#ffaa33",
+      lightColor: 0xfff5e6,
+      lightIntensity: 3.6,
+      flareMultiplier: 1.0
+    },
+    planetChanges: [
+      { id: "terra_nova", state: "current", descBn: "আধুনিক মহাসাগরীয় মহাজাগতিক বিশ্ব", descEn: "Oceanic cradle of civilization" },
+      { id: "ares_crimson", state: "current", descBn: "শুষ্ক লাল মরুভূমি ও গ্র্যান্ড ক্যানিয়ন", descEn: "Ferric red deserts and deep canyons" },
+      { id: "chronos_magister", state: "current", descBn: "ক্লাসিক্যাল বলয় ও গ্যাসীয় মেঘমালা", descEn: "Banded gas storm giant with rings" }
+    ]
+  },
+  {
+    id: "terraformed",
+    timeLabel: "CE +10,000 yr",
+    yearNumber: 12349,
+    name: "উন্নত টেরাফর্মিং ও মেগাস্ট্রাকচার যুগ (Cybernetic Expansion)",
+    nameEn: "Cybernetic Terraforming Era",
+    badge: "CE +10,000 YEARS // TERRAFORMED SOLAR HORIZON",
+    cosmicAge: "১০,০০০ বছর পরে (10,000 Years in the Future)",
+    summary: "মানবজাতির টাইপ-২ সভ্যতায় রূপান্তর। এরেস গ্রহের জলবায়ু প্রকৌশল সম্পন্ন হয়েছে—সবুজ অরণ্য, কৃত্রিম লেক ও শ্বাসযোগ্য বায়ুমণ্ডল গড়ে উঠেছে। সূর্যের চারপাশে তৈরি হয়েছে আংশিক ডাইসন সোয়ার্ম এনার্জি রিং এবং সিগনাস বীকনে আলোকোজ্জ্বল মহাকাশ শহর।",
+    summaryEn: "Post-planetary expansion. Ares Crimson is fully terraformed with lush boreal forests and artificial seas. A partial Dyson energy swarm orbits Solis, while Cygnus Beacon expands into a massive orbital city.",
+    sunState: {
+      scale: 1.0,
+      color: "#ffbb44",
+      coronaColor: "#00f0ff",
+      lightColor: 0xfffaea,
+      lightIntensity: 3.8,
+      flareMultiplier: 0.6
+    },
+    planetChanges: [
+      { id: "terra_nova", state: "megacity", descBn: "অরবিটাল এলিভেটর ও মেগাসিটি গ্রিড", descEn: "Orbital rings, hyper-connected ecumenopolis" },
+      { id: "ares_crimson", state: "terraformed_green", descBn: "টেরাফর্মড সবুজ অরণ্য ও নীল সাগর", descEn: "Terraformed: green biomes and fresh seas" },
+      { id: "cygnus_beacon", state: "megastructure", descBn: "উন্নত অরবিটাল হাব ও ডাইসন নোড", descEn: "Holographic mega-station and Dyson node" }
+    ]
+  },
+  {
+    id: "red_giant",
+    timeLabel: "T +3.0 Gyr",
+    yearNumber: 3000000000,
+    name: "সৌর লোহিত দানব ও বরফ চাঁদ জাগরণ (Solar Red Giant Era)",
+    nameEn: "Stellar Red Giant & Ice Thaw Era",
+    badge: "T +3.0 BILLION YEARS // RED GIANT EXPANSION",
+    cosmicAge: "৩০০ কোটি বছর পরে (3.0 Billion Years in the Future)",
+    summary: "সোলিস-৯ তার হাইড্রোজেন শেষ করে বিশাল লোহিত দানব নক্ষত্রে ফুলে উঠেছে! এর তীব্র তাপে ভলকানাস ভস্মীভূত এবং টেরা নোভার সমস্ত মহাসাগর বাষ্পীভূত হয়ে শুকিয়ে পাথুরে মরুভূমিতে রূপ নিয়েছে। আশ্চর্যজনকভাবে, জিউসের বরফ চাঁদ ইউরোপা এবং ক্রোনসের টাইটান বরফ গলে নতুন উষ্ণ গ্রীষ্মমণ্ডলীয় সাগরে পরিণত হয়েছে!",
+    summaryEn: "Solis exhausts core hydrogen and swells into an enormous Red Giant star. Mercury-Vulcanus is incinerated; Terra Nova's oceans boil away into space. Yet Jupiter-Zeus's Europa and Saturn's Titan thaw into warm, thriving tropical ocean worlds!",
+    sunState: {
+      scale: 2.3,
+      color: "#ff2200",
+      coronaColor: "#ff1100",
+      lightColor: 0xff4422,
+      lightIntensity: 5.2,
+      flareMultiplier: 2.2
+    },
+    planetChanges: [
+      { id: "terra_nova", state: "scorched_dry", descBn: "বাষ্পীভূত শুকনো সমুদ্রতল ও উত্তপ্ত মরুভূমি", descEn: "Oceans boiled away; scorched arid wasteland" },
+      { id: "ares_crimson", state: "baked", descBn: "চরম উত্তপ্ত শিলাভূমি ও পাতলা ধোঁয়াশা", descEn: "Sun-baked crust stripped of atmosphere" },
+      { id: "zeus_europa", state: "tropical_ocean", descBn: "বরফ গলে সৃষ্টি হওয়া উষ্ণ গ্রীষ্মমণ্ডলীয় সাগর", descEn: "Europa thawed: tropical planetary ocean world" }
+    ]
+  },
+  {
+    id: "white_dwarf",
+    timeLabel: "T +6.0 Gyr",
+    yearNumber: 6000000000,
+    name: "শ্বেত বামন ও মহাজাগতিক গোধূলি (Cosmic Twilight & White Dwarf)",
+    nameEn: "White Dwarf & Cosmic Twilight",
+    badge: "T +6.0 BILLION YEARS // WHITE DWARF & NEBULA",
+    cosmicAge: "৬০০ কোটি বছর পরে (6.0 Billion Years in the Future)",
+    summary: "সোলিস-৯ তার গ্যাসীয় খোলস মহাকাশে উড়িয়ে দিয়ে একটি নীলাভ-সাদা ক্ষুদ্র ও অতি-ঘন শ্বেত বামন নক্ষত্রে সংকুচিত হয়েছে। পুরো সিস্টেমে বিস্তৃত হয়েছে একটি মনোমুগ্ধকর প্ল্যানেটারি নেবুলা বলয়। সমস্ত বহিঃস্থ গ্রহ চরম শৈত্যে বরফে জমে শান্ত মহাজাগতিক সমাধিতে রূপ নিয়েছে।",
+    summaryEn: "The final cosmic chapter. Solis sheds its outer envelopes, forming an iridescent planetary nebula, leaving behind a cold, ultra-dense White Dwarf. Endless cosmic freeze blankets the silent frozen planets under perpetual starlight.",
+    sunState: {
+      scale: 0.38,
+      color: "#e0f2fe",
+      coronaColor: "#38bdf8",
+      lightColor: 0x93c5fd,
+      lightIntensity: 2.4,
+      flareMultiplier: 0.2
+    },
+    planetChanges: [
+      { id: "terra_nova", state: "frozen_grave", descBn: "হিমায়িত মিথেন বরফ ও নিথর আঁধার", descEn: "Frozen atmospheric frost and utter silence" },
+      { id: "ares_crimson", state: "deep_freeze", descBn: "চরম শীতল জমাটবাঁধা তুষারভূমি", descEn: "Deep cosmic freeze; glacial methane dunes" },
+      { id: "chronos_magister", state: "dissipated_rings", descBn: "বলয় ক্ষয়ে যাওয়া শান্ত বরফ দানব", descEn: "Dissipated faint rings under faint starlight" }
+    ]
+  }
+];

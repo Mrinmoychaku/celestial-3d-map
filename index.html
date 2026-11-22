@@ -752,6 +752,152 @@
       display: block;
     }
 
+    /* Cosmic Epoch Evolution Timeline Drawer */
+    .timeline-drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(3, 10, 24, 0.96);
+      border-top: 2px solid #f59e0b;
+      box-shadow: 0 -10px 45px rgba(0, 0, 0, 0.85), 0 0 25px rgba(245, 158, 11, 0.2);
+      z-index: 85;
+      backdrop-filter: blur(12px);
+      padding: 14px 20px 18px 20px;
+      transform: translateY(110%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: var(--font-mono);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .timeline-drawer.visible {
+      transform: translateY(0);
+    }
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(245, 158, 11, 0.25);
+      padding-bottom: 8px;
+    }
+    .timeline-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .timeline-epoch-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .timeline-epoch-badge {
+      font-size: 10px;
+      color: #f59e0b;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+    .timeline-header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .timeline-scrubber-container {
+      position: relative;
+      margin: 16px 12px 14px 12px;
+    }
+    .timeline-track-bar {
+      position: relative;
+      height: 4px;
+      background: rgba(0, 240, 255, 0.18);
+      border-radius: 2px;
+    }
+    .timeline-progress-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, #ff5500, #f59e0b, #00f0ff);
+      border-radius: 2px;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+      transition: width 0.3s ease-out;
+    }
+    .timeline-node {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 5;
+    }
+    .node-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #02060f;
+      border: 2px solid var(--cyan-glow);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+      transition: all 0.2s;
+    }
+    .timeline-node:hover .node-dot, .timeline-node.active .node-dot {
+      background: #f59e0b;
+      border-color: #ffffff;
+      transform: scale(1.35);
+      box-shadow: 0 0 14px #f59e0b;
+    }
+    .node-label {
+      position: absolute;
+      top: 18px;
+      font-size: 9px;
+      color: rgba(200, 235, 255, 0.75);
+      white-space: nowrap;
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+    .timeline-node.active .node-label {
+      color: #f59e0b;
+      font-weight: bold;
+    }
+    .timeline-slider-input {
+      position: absolute;
+      top: -8px;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .timeline-lore-card {
+      background: rgba(4, 14, 30, 0.7);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-size: 11px;
+    }
+    .lore-desc {
+      color: #e2f1ff;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .lore-changes-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .change-chip {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fcd34d;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
     /* Mobile adjustments */
     @media (max-width: 640px) {
       .top-title-group p { display: none; }
@@ -795,6 +941,10 @@
     <div class="top-actions">
       <button class="hud-btn" id="btn-search" title="কমান্ড প্যালেট / অনুসন্ধান (⌘K)">
         <span id="search-lbl">Search (⌘K)</span>
+      </button>
+
+      <button class="hud-btn" id="btn-timeline" title="মহাজাগতিক টাইমলাইন ও ইতিহাস (Cosmic Epoch Timeline)">
+        <span id="timeline-lbl">⏳ Timeline</span>
       </button>
 
       <button class="hud-btn" id="btn-thermal" title="থার্মাল ইনফ্রারেড মোড (T)">
@@ -969,6 +1119,64 @@
     <div class="tel-footer-actions" style="display: flex; gap: 8px; margin-top: 14px; border-top: 1px solid rgba(0, 240, 255, 0.2); padding-top: 10px;">
       <button class="hud-btn" id="btn-scale-compare" style="flex: 1; font-size: 10px; justify-content: center;">◐ SCALE</button>
       <button class="hud-btn" id="btn-export-json" style="flex: 1; font-size: 10px; justify-content: center;">⤓ JSON</button>
+    </div>
+  </aside>
+
+  <!-- Cosmic Epoch Evolution Timeline Drawer -->
+  <aside class="timeline-drawer" id="timeline-drawer">
+    <div class="timeline-header">
+      <div class="timeline-title-wrap">
+        <span class="live-pulse" style="background: #f59e0b;"></span>
+        <div>
+          <div class="timeline-epoch-title" id="tl-epoch-title">বর্তমান আধুনিক মহাকাশ যুগ (Current Astrometric Era)</div>
+          <div class="timeline-epoch-badge" id="tl-epoch-badge">CE 2349 // PRESENT HUMAN EPOCH</div>
+        </div>
+      </div>
+      <div class="timeline-header-actions">
+        <button class="hud-btn" id="tl-play-pause-btn" title="টাইমলাইন অটো-প্লে (Auto-scrub Timeline)">▶ Play Epochs</button>
+        <button class="hud-btn" id="tl-close-btn" title="টাইমলাইন বন্ধ করুন">✕</button>
+      </div>
+    </div>
+
+    <!-- Scrubber Track & Milestone Nodes -->
+    <div class="timeline-scrubber-container">
+      <div class="timeline-track-bar">
+        <div class="timeline-progress-fill" id="tl-progress-fill" style="width: 40%;"></div>
+        <!-- 6 Epoch Milestone Nodes -->
+        <div class="timeline-node" data-epoch="0" style="left: 0%;" title="T -4.5 Gyr">
+          <div class="node-dot"></div>
+          <span class="node-label">T -4.5G</span>
+        </div>
+        <div class="timeline-node" data-epoch="1" style="left: 20%;" title="T -500 Myr">
+          <div class="node-dot"></div>
+          <span class="node-label">T -500M</span>
+        </div>
+        <div class="timeline-node active" data-epoch="2" style="left: 40%;" title="CE 2349 (Current)">
+          <div class="node-dot"></div>
+          <span class="node-label">PRESENT</span>
+        </div>
+        <div class="timeline-node" data-epoch="3" style="left: 60%;" title="CE +10,000 yr">
+          <div class="node-dot"></div>
+          <span class="node-label">+10k yr</span>
+        </div>
+        <div class="timeline-node" data-epoch="4" style="left: 80%;" title="T +3.0 Gyr">
+          <div class="node-dot"></div>
+          <span class="node-label">+3.0 Gyr</span>
+        </div>
+        <div class="timeline-node" data-epoch="5" style="left: 100%;" title="T +6.0 Gyr">
+          <div class="node-dot"></div>
+          <span class="node-label">+6.0 Gyr</span>
+        </div>
+      </div>
+      <input type="range" class="timeline-slider-input" id="tl-slider-input" min="0" max="5" step="1" value="2" />
+    </div>
+
+    <!-- Epoch Scientific Lore Card -->
+    <div class="timeline-lore-card" id="tl-lore-card">
+      <div class="lore-desc" id="tl-lore-desc">
+        আমাদের বর্তমান আধুনিক সভ্যতা। সিগনাস বীকন-৯ আন্তঃনক্ষত্র নেভিগেশন স্টেশন সক্রিয়, টেরা নোভা মহাসাগরীয় বাসযোগ্য বিশ্ব...
+      </div>
+      <div class="lore-changes-grid" id="tl-changes-grid"></div>
     </div>
   </aside>
 

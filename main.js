@@ -89,6 +89,14 @@ class CelestialSimulation {
     this.solarFlareTimer = 45 + Math.random() * 30;
     this.flareDuration = 0;
 
+    // Cosmic Timeline Evolution State
+    this.currentEpochIndex = parseInt(localStorage.getItem('solisix.epoch')) || 2;
+    this.isTimelineOpen = false;
+    this.isTimelineAutoPlaying = false;
+    this.timelineAutoPlayTimer = 0;
+    this.planetaryNebulaRing = null;
+    this.chronosRingMesh = null;
+
     // Performance monitor
     this.perfVisible = false;
     this.fps = 60;
@@ -116,6 +124,7 @@ class CelestialSimulation {
     this.setupCoordinateGrid();
     this.setupGravitationalWaveTrack();
     this.setupGravitationalWaveRings();
+    this.setupPlanetaryNebulaRing();
     this.buildSolarSystem();
     this.buildAsteroidBelt();
     this.setupOrbitalTrails();
@@ -123,6 +132,8 @@ class CelestialSimulation {
     this.setupEvents();
     this.setupKeyboardShortcuts();
     this.setupHudUi();
+    this.setupTimeline();
+    this.applyEpoch(this.currentEpochIndex, false);
     this.restoreStateFromHash();
 
     // Start render loop
@@ -478,6 +489,22 @@ class CelestialSimulation {
     });
   }
 
+  setupPlanetaryNebulaRing() {
+    const geo = new THREE.RingGeometry(25, 82, 64);
+    const tex = TextureGenerator.createNebulaTexture('#38bdf8', 512);
+    const mat = new THREE.MeshBasicMaterial({
+      map: tex,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.55,
+      blending: THREE.AdditiveBlending
+    });
+    this.planetaryNebulaRing = new THREE.Mesh(geo, mat);
+    this.planetaryNebulaRing.rotation.x = Math.PI / 2;
+    this.planetaryNebulaRing.visible = false;
+    this.scene.add(this.planetaryNebulaRing);
+  }
+
   setupOrbitalTrails() {
     this.orbitalTrails = [];
     this.planets.forEach(p => {
@@ -824,6 +851,7 @@ class CelestialSimulation {
           const ringMesh = new THREE.Mesh(ringGeo, ringMat);
           ringMesh.rotation.x = Math.PI / 2 + (data.ringTilt || 0.45);
           group.add(ringMesh);
+          this.chronosRingMesh = ringMesh;
         }
 
         // Vertical Dust Rings for Aether Cyan
@@ -1802,6 +1830,11 @@ class CelestialSimulation {
         case '_':
           this.controls.dollyOut(1.15);
           break;
+        case 'y':
+        case 'Y':
+          const tlBtn = document.getElementById('btn-timeline');
+          if (tlBtn) tlBtn.click();
+          break;
         case '1': this.selectCelestialBody('sun'); break;
         case '2': this.selectCelestialBody('cygnus_beacon'); break;
         case '3': this.selectCelestialBody('vulcanus'); break;
@@ -2027,6 +2060,240 @@ class CelestialSimulation {
     this.updateLanguageTexts();
   }
 
+  setupTimeline() {
+    const timelineBtn = document.getElementById('btn-timeline');
+    const timelineDrawer = document.getElementById('timeline-drawer');
+    const closeBtn = document.getElementById('tl-close-btn');
+    const playPauseBtn = document.getElementById('tl-play-pause-btn');
+    const sliderInput = document.getElementById('tl-slider-input');
+    const nodes = document.querySelectorAll('.timeline-node');
+
+    if (timelineBtn && timelineDrawer) {
+      timelineBtn.addEventListener('click', () => {
+        this.isTimelineOpen = !this.isTimelineOpen;
+        timelineDrawer.classList.toggle('visible', this.isTimelineOpen);
+        timelineBtn.classList.toggle('active', this.isTimelineOpen);
+        if (window.cosmicAudio && this.isTimelineOpen) {
+          window.cosmicAudio.playSelect();
+        }
+      });
+    }
+
+    if (closeBtn && timelineDrawer && timelineBtn) {
+      closeBtn.addEventListener('click', () => {
+        this.isTimelineOpen = false;
+        timelineDrawer.classList.remove('visible');
+        timelineBtn.classList.remove('active');
+        if (this.isTimelineAutoPlaying) {
+          this.toggleTimelineAutoPlay();
+        }
+      });
+    }
+
+    if (playPauseBtn) {
+      playPauseBtn.addEventListener('click', () => {
+        this.toggleTimelineAutoPlay();
+      });
+    }
+
+    if (sliderInput) {
+      sliderInput.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        if (!isNaN(val)) {
+          this.applyEpoch(val, true);
+        }
+      });
+    }
+
+    nodes.forEach(node => {
+      node.addEventListener('click', () => {
+        const epochIdx = parseInt(node.dataset.epoch, 10);
+        if (!isNaN(epochIdx)) {
+          this.applyEpoch(epochIdx, true);
+        }
+      });
+    });
+  }
+
+  toggleTimelineAutoPlay() {
+    this.isTimelineAutoPlaying = !this.isTimelineAutoPlaying;
+    const playPauseBtn = document.getElementById('tl-play-pause-btn');
+    const isBn = this.currentLanguage === 'bn';
+
+    if (playPauseBtn) {
+      playPauseBtn.textContent = this.isTimelineAutoPlaying
+        ? (isBn ? '⏸ থামান' : '⏸ Pause Epochs')
+        : (isBn ? '▶ চালান' : '▶ Play Epochs');
+      playPauseBtn.classList.toggle('active', this.isTimelineAutoPlaying);
+    }
+    this.timelineAutoPlayTimer = 0;
+    if (window.cosmicAudio) {
+      window.cosmicAudio.playSelect();
+    }
+  }
+
+  applyEpoch(index, playSound = true) {
+    if (typeof TIMELINE_EPOCHS === 'undefined' || !TIMELINE_EPOCHS.length) return;
+    index = Math.max(0, Math.min(index, TIMELINE_EPOCHS.length - 1));
+    this.currentEpochIndex = index;
+    localStorage.setItem('solisix.epoch', index);
+
+    if (playSound && window.cosmicAudio) {
+      window.cosmicAudio.playTemporalWarp();
+    }
+
+    const epoch = TIMELINE_EPOCHS[index];
+    const isBn = this.currentLanguage === 'bn';
+
+    // Update Scrubber Range & Progress
+    const sliderInput = document.getElementById('tl-slider-input');
+    if (sliderInput) sliderInput.value = index;
+
+    const progressFill = document.getElementById('tl-progress-fill');
+    if (progressFill) {
+      progressFill.style.width = ((index / (TIMELINE_EPOCHS.length - 1)) * 100) + '%';
+    }
+
+    document.querySelectorAll('.timeline-node').forEach(node => {
+      const nIdx = parseInt(node.dataset.epoch, 10);
+      node.classList.toggle('active', nIdx === index);
+    });
+
+    // Update Title, Badge, and Summary Lore
+    const titleEl = document.getElementById('tl-epoch-title');
+    if (titleEl) titleEl.textContent = isBn ? epoch.name : epoch.nameEn;
+
+    const badgeEl = document.getElementById('tl-epoch-badge');
+    if (badgeEl) badgeEl.textContent = epoch.badge;
+
+    const descEl = document.getElementById('tl-lore-desc');
+    if (descEl) descEl.textContent = isBn ? epoch.summary : epoch.summaryEn;
+
+    const changesGrid = document.getElementById('tl-changes-grid');
+    if (changesGrid && epoch.planetChanges) {
+      changesGrid.innerHTML = epoch.planetChanges.map(c => `
+        <div class="change-chip">
+          <span class="chip-planet">${c.id.replace('_', ' ').toUpperCase()}:</span>
+          <span>${isBn ? c.descBn : c.descEn}</span>
+        </div>
+      `).join('');
+    }
+
+    // Cached Textures Helper
+    if (!this.cachedTextures) this.cachedTextures = {};
+    const getTex = (key, fn) => {
+      if (!this.cachedTextures[key]) {
+        this.cachedTextures[key] = fn();
+      }
+      return this.cachedTextures[key];
+    };
+
+    // Update Sun
+    const sunPlanet = this.planets.find(p => p.data.id === 'sun');
+    if (sunPlanet && epoch.sunState) {
+      const s = epoch.sunState.scale || 1.0;
+      sunPlanet.mesh.scale.set(s, s, s);
+      if (this.sunCorona) {
+        this.sunCorona.scale.set(sunPlanet.data.size * 5.4 * s, sunPlanet.data.size * 5.4 * s, 1);
+      }
+      if (this.sunLight) {
+        this.sunLight.color.setHex(epoch.sunState.lightColor);
+        this.sunLight.intensity = epoch.sunState.lightIntensity;
+      }
+    }
+
+    // Planetary Nebula Ring
+    if (this.planetaryNebulaRing) {
+      this.planetaryNebulaRing.visible = (epoch.id === 'white_dwarf');
+    }
+
+    // Chronos Rings Opacity
+    if (this.chronosRingMesh) {
+      if (epoch.id === 'white_dwarf') {
+        this.chronosRingMesh.material.opacity = 0.22;
+      } else if (epoch.id === 'primordial') {
+        this.chronosRingMesh.material.opacity = 0.45;
+      } else {
+        this.chronosRingMesh.material.opacity = 0.94;
+      }
+    }
+
+    // Update Terra Nova
+    const terra = this.planets.find(p => p.data.id === 'terra_nova');
+    if (terra && terra.mesh) {
+      let tTex;
+      if (epoch.id === 'primordial') {
+        tTex = getTex('molten_earth', () => TextureGenerator.createIoTexture());
+      } else if (epoch.id === 'red_giant') {
+        tTex = getTex('scorched_earth', () => TextureGenerator.createScorchedEarthTexture());
+      } else if (epoch.id === 'white_dwarf') {
+        tTex = getTex('frozen_earth', () => TextureGenerator.createFrozenEarthTexture());
+      } else {
+        tTex = getTex('normal_earth', () => TextureGenerator.createEarthTexture());
+      }
+      if (!this.isThermalMode) {
+        terra.mesh.material.map = tTex;
+        terra.mesh.material.needsUpdate = true;
+      }
+      if (terra.originalMaterial) {
+        terra.originalMaterial.map = tTex;
+        terra.originalMaterial.needsUpdate = true;
+      }
+    }
+
+    // Update Ares Crimson
+    const ares = this.planets.find(p => p.data.id === 'ares_crimson');
+    if (ares && ares.mesh) {
+      let aTex;
+      if (epoch.id === 'primordial') {
+        aTex = getTex('molten_ares', () => TextureGenerator.createRockyTexture(512, 256, 0.08));
+      } else if (epoch.id === 'ancient') {
+        aTex = getTex('ancient_ares', () => TextureGenerator.createAncientMarsTexture());
+      } else if (epoch.id === 'terraformed') {
+        aTex = getTex('terraformed_ares', () => TextureGenerator.createTerraformedMarsTexture());
+      } else if (epoch.id === 'white_dwarf') {
+        aTex = getTex('frozen_earth', () => TextureGenerator.createFrozenEarthTexture());
+      } else {
+        aTex = getTex('normal_ares', () => TextureGenerator.createMarsTexture());
+      }
+      if (!this.isThermalMode) {
+        ares.mesh.material.map = aTex;
+        ares.mesh.material.needsUpdate = true;
+      }
+      if (ares.originalMaterial) {
+        ares.originalMaterial.map = aTex;
+        ares.originalMaterial.needsUpdate = true;
+      }
+    }
+
+    // Update Moons: Europa & Titan
+    const europa = this.moons.find(m => m.data.id === 'zeus_europa');
+    if (europa && europa.mesh) {
+      let eTex;
+      if (epoch.id === 'red_giant') {
+        eTex = getTex('tropical_moon', () => TextureGenerator.createTropicalOceanTexture());
+      } else {
+        eTex = getTex('normal_europa', () => TextureGenerator.createEuropaTexture());
+      }
+      europa.mesh.material.map = eTex;
+      europa.mesh.material.needsUpdate = true;
+    }
+
+    const titan = this.moons.find(m => m.data.id === 'chronos_titan');
+    if (titan && titan.mesh) {
+      let tiTex;
+      if (epoch.id === 'red_giant') {
+        tiTex = getTex('tropical_moon', () => TextureGenerator.createTropicalOceanTexture());
+      } else if (epoch.id === 'white_dwarf') {
+        tiTex = getTex('frozen_earth', () => TextureGenerator.createFrozenEarthTexture());
+      } else {
+        tiTex = getTex('normal_titan', () => TextureGenerator.createTitanTexture());
+      }
+      titan.mesh.material.map = tiTex;
+      titan.mesh.material.needsUpdate = true;
+    }
+  }
+
   updateLanguageTexts() {
     const isBn = this.currentLanguage === 'bn';
     const dict = STRINGS[this.currentLanguage] || STRINGS.en;
@@ -2078,6 +2345,36 @@ class CelestialSimulation {
       } else {
         this.updateTelemetryCard(this.selectedBody.data);
       }
+    }
+
+    // Update Timeline labels & lore texts
+    const tlEpoch = (typeof TIMELINE_EPOCHS !== 'undefined') ? TIMELINE_EPOCHS[this.currentEpochIndex] : null;
+    if (tlEpoch) {
+      const tlTitle = document.getElementById('tl-epoch-title');
+      if (tlTitle) tlTitle.textContent = isBn ? tlEpoch.name : tlEpoch.nameEn;
+      const tlDesc = document.getElementById('tl-lore-desc');
+      if (tlDesc) tlDesc.textContent = isBn ? tlEpoch.summary : tlEpoch.summaryEn;
+      const tlBadge = document.getElementById('tl-epoch-badge');
+      if (tlBadge) tlBadge.textContent = tlEpoch.badge;
+      const changesGrid = document.getElementById('tl-changes-grid');
+      if (changesGrid && tlEpoch.planetChanges) {
+        changesGrid.innerHTML = tlEpoch.planetChanges.map(c => `
+          <div class="change-chip">
+            <span class="chip-planet">${c.id.replace('_', ' ').toUpperCase()}:</span>
+            <span>${isBn ? c.descBn : c.descEn}</span>
+          </div>
+        `).join('');
+      }
+    }
+    const tlPlayBtn = document.getElementById('tl-play-pause-btn');
+    if (tlPlayBtn) {
+      tlPlayBtn.textContent = this.isTimelineAutoPlaying
+        ? (isBn ? '⏸ থামান' : '⏸ Pause Epochs')
+        : (isBn ? '▶ চালান' : '▶ Play Epochs');
+    }
+    const tlLbl = document.getElementById('timeline-lbl');
+    if (tlLbl) {
+      tlLbl.textContent = dict.timeline || (isBn ? '⏳ টাইমলাইন' : '⏳ Timeline');
     }
   }
 
@@ -2242,6 +2539,21 @@ class CelestialSimulation {
           this.tourIndex = (this.tourIndex + 1) % this.planets.length;
           this.selectCelestialBody(this.planets[this.tourIndex].data.id);
         }
+      }
+
+      // Cosmic Timeline Auto-Play Evolution Scrubber
+      if (this.isTimelineAutoPlaying && typeof TIMELINE_EPOCHS !== 'undefined') {
+        this.timelineAutoPlayTimer += delta;
+        if (this.timelineAutoPlayTimer >= 6.5) {
+          this.timelineAutoPlayTimer = 0;
+          const nextEpoch = (this.currentEpochIndex + 1) % TIMELINE_EPOCHS.length;
+          this.applyEpoch(nextEpoch, true);
+        }
+      }
+
+      // Rotate Planetary Nebula Ring in White Dwarf epoch
+      if (this.planetaryNebulaRing && this.planetaryNebulaRing.visible) {
+        this.planetaryNebulaRing.rotation.z += 0.0012 * this.timeScale;
       }
     }
 

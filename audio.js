@@ -242,6 +242,39 @@ class CosmicAudio {
     noise.start(t);
   }
 
+  playTemporalWarp() {
+    if (!this.ctx || this.isMuted) return;
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+
+    const t = this.ctx.currentTime;
+
+    // Pitch-shifting cosmic glide
+    const osc = this.ctx.createOscillator();
+    const filter = this.ctx.createBiquadFilter();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(140, t);
+    osc.frequency.exponentialRampToValueAtTime(520, t + 0.35);
+    osc.frequency.exponentialRampToValueAtTime(110, t + 0.9);
+
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(400, t);
+    filter.frequency.exponentialRampToValueAtTime(1600, t + 0.35);
+    filter.frequency.exponentialRampToValueAtTime(200, t + 0.9);
+
+    gain.gain.setValueAtTime(0.01, t);
+    gain.gain.linearRampToValueAtTime(0.12, t + 0.25);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.95);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(t);
+    osc.stop(t + 0.95);
+  }
+
   toggle() {
     this.init();
     this.isMuted = !this.isMuted;

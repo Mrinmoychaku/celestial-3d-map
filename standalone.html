@@ -752,6 +752,152 @@
       display: block;
     }
 
+    /* Cosmic Epoch Evolution Timeline Drawer */
+    .timeline-drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(3, 10, 24, 0.96);
+      border-top: 2px solid #f59e0b;
+      box-shadow: 0 -10px 45px rgba(0, 0, 0, 0.85), 0 0 25px rgba(245, 158, 11, 0.2);
+      z-index: 85;
+      backdrop-filter: blur(12px);
+      padding: 14px 20px 18px 20px;
+      transform: translateY(110%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: var(--font-mono);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .timeline-drawer.visible {
+      transform: translateY(0);
+    }
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(245, 158, 11, 0.25);
+      padding-bottom: 8px;
+    }
+    .timeline-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .timeline-epoch-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .timeline-epoch-badge {
+      font-size: 10px;
+      color: #f59e0b;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+    .timeline-header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .timeline-scrubber-container {
+      position: relative;
+      margin: 16px 12px 14px 12px;
+    }
+    .timeline-track-bar {
+      position: relative;
+      height: 4px;
+      background: rgba(0, 240, 255, 0.18);
+      border-radius: 2px;
+    }
+    .timeline-progress-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, #ff5500, #f59e0b, #00f0ff);
+      border-radius: 2px;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+      transition: width 0.3s ease-out;
+    }
+    .timeline-node {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 5;
+    }
+    .node-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #02060f;
+      border: 2px solid var(--cyan-glow);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+      transition: all 0.2s;
+    }
+    .timeline-node:hover .node-dot, .timeline-node.active .node-dot {
+      background: #f59e0b;
+      border-color: #ffffff;
+      transform: scale(1.35);
+      box-shadow: 0 0 14px #f59e0b;
+    }
+    .node-label {
+      position: absolute;
+      top: 18px;
+      font-size: 9px;
+      color: rgba(200, 235, 255, 0.75);
+      white-space: nowrap;
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+    .timeline-node.active .node-label {
+      color: #f59e0b;
+      font-weight: bold;
+    }
+    .timeline-slider-input {
+      position: absolute;
+      top: -8px;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .timeline-lore-card {
+      background: rgba(4, 14, 30, 0.7);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-size: 11px;
+    }
+    .lore-desc {
+      color: #e2f1ff;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .lore-changes-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .change-chip {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #fcd34d;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
     /* Mobile adjustments */
     @media (max-width: 640px) {
       .top-title-group p { display: none; }
@@ -795,6 +941,10 @@
     <div class="top-actions">
       <button class="hud-btn" id="btn-search" title="কমান্ড প্যালেট / অনুসন্ধান (⌘K)">
         <span id="search-lbl">Search (⌘K)</span>
+      </button>
+
+      <button class="hud-btn" id="btn-timeline" title="মহাজাগতিক টাইমলাইন ও ইতিহাস (Cosmic Epoch Timeline)">
+        <span id="timeline-lbl">⏳ Timeline</span>
       </button>
 
       <button class="hud-btn" id="btn-thermal" title="থার্মাল ইনফ্রারেড মোড (T)">
@@ -969,6 +1119,64 @@
     <div class="tel-footer-actions" style="display: flex; gap: 8px; margin-top: 14px; border-top: 1px solid rgba(0, 240, 255, 0.2); padding-top: 10px;">
       <button class="hud-btn" id="btn-scale-compare" style="flex: 1; font-size: 10px; justify-content: center;">◐ SCALE</button>
       <button class="hud-btn" id="btn-export-json" style="flex: 1; font-size: 10px; justify-content: center;">⤓ JSON</button>
+    </div>
+  </aside>
+
+  <!-- Cosmic Epoch Evolution Timeline Drawer -->
+  <aside class="timeline-drawer" id="timeline-drawer">
+    <div class="timeline-header">
+      <div class="timeline-title-wrap">
+        <span class="live-pulse" style="background: #f59e0b;"></span>
+        <div>
+          <div class="timeline-epoch-title" id="tl-epoch-title">বর্তমান আধুনিক মহাকাশ যুগ (Current Astrometric Era)</div>
+          <div class="timeline-epoch-badge" id="tl-epoch-badge">CE 2349 // PRESENT HUMAN EPOCH</div>
+        </div>
+      </div>
+      <div class="timeline-header-actions">
+        <button class="hud-btn" id="tl-play-pause-btn" title="টাইমলাইন অটো-প্লে (Auto-scrub Timeline)">▶ Play Epochs</button>
+        <button class="hud-btn" id="tl-close-btn" title="টাইমলাইন বন্ধ করুন">✕</button>
+      </div>
+    </div>
+
+    <!-- Scrubber Track & Milestone Nodes -->
+    <div class="timeline-scrubber-container">
+      <div class="timeline-track-bar">
+        <div class="timeline-progress-fill" id="tl-progress-fill" style="width: 40%;"></div>
+        <!-- 6 Epoch Milestone Nodes -->
+        <div class="timeline-node" data-epoch="0" style="left: 0%;" title="T -4.5 Gyr">
+          <div class="node-dot"></div>
+          <span class="node-label">T -4.5G</span>
+        </div>
+        <div class="timeline-node" data-epoch="1" style="left: 20%;" title="T -500 Myr">
+          <div class="node-dot"></div>
+          <span class="node-label">T -500M</span>
+        </div>
+        <div class="timeline-node active" data-epoch="2" style="left: 40%;" title="CE 2349 (Current)">
+          <div class="node-dot"></div>
+          <span class="node-label">PRESENT</span>
+        </div>
+        <div class="timeline-node" data-epoch="3" style="left: 60%;" title="CE +10,000 yr">
+          <div class="node-dot"></div>
+          <span class="node-label">+10k yr</span>
+        </div>
+        <div class="timeline-node" data-epoch="4" style="left: 80%;" title="T +3.0 Gyr">
+          <div class="node-dot"></div>
+          <span class="node-label">+3.0 Gyr</span>
+        </div>
+        <div class="timeline-node" data-epoch="5" style="left: 100%;" title="T +6.0 Gyr">
+          <div class="node-dot"></div>
+          <span class="node-label">+6.0 Gyr</span>
+        </div>
+      </div>
+      <input type="range" class="timeline-slider-input" id="tl-slider-input" min="0" max="5" step="1" value="2" />
+    </div>
+
+    <!-- Epoch Scientific Lore Card -->
+    <div class="timeline-lore-card" id="tl-lore-card">
+      <div class="lore-desc" id="tl-lore-desc">
+        আমাদের বর্তমান আধুনিক সভ্যতা। সিগনাস বীকন-৯ আন্তঃনক্ষত্র নেভিগেশন স্টেশন সক্রিয়, টেরা নোভা মহাসাগরীয় বাসযোগ্য বিশ্ব...
+      </div>
+      <div class="lore-changes-grid" id="tl-changes-grid"></div>
     </div>
   </aside>
 
@@ -3194,7 +3402,10 @@ const STRINGS = {
     searchPlaceholder: 'Search bodies (e.g. Zeus, Luna, Halcyon, Solis)...',
     solarFlareAlert: '⚡ SOLAR FLARE DETECTED — MAGNITUDE X2.4 // RADIAL PROTON WAVE',
     scaleTitle: 'CELESTIAL SCALE SILHOUETTE COMPARISON',
-    scaleSubtitle: 'True-to-Scale Silhouettes normalized vs Earth Reference (40px base)'
+    scaleSubtitle: 'True-to-Scale Silhouettes normalized vs Earth Reference (40px base)',
+    timeline: 'Timeline',
+    playEpochs: '▶ Play Epochs',
+    pauseEpochs: '⏸ Pause Epochs'
   },
   bn: {
     title: 'সোলিস-৯ · সেলেস্টিয়াল ব্লুপ্রিন্ট',
@@ -3235,9 +3446,163 @@ const STRINGS = {
     searchPlaceholder: 'গ্রহ, চাঁদ বা ধূমকেতু খুঁজুন (যেমন: Zeus, Luna, Halcyon)...',
     solarFlareAlert: '⚡ তীব্র সৌরশিখা সনাক্ত — মাত্রা X2.4 // উচ্চগতির প্রোটন তরঙ্গ বিচ্ছুরিত',
     scaleTitle: 'মহাজাগতিক ব্যাস ও আকৃতির আপেক্ষিক তুলনা',
-    scaleSubtitle: 'পৃথিবীর মাপকে আদর্শ (৪০ পিক্সেল) ধরে সঠিক জ্যামিতিক স্কেলিং'
+    scaleSubtitle: 'পৃথিবীর মাপকে আদর্শ (৪০ পিক্সেল) ধরে সঠিক জ্যামিতিক স্কেলিং',
+    timeline: 'টাইমলাইন',
+    playEpochs: '▶ যুগ ভ্রমণ',
+    pauseEpochs: '⏸ থামুন'
   }
 };
+
+/**
+ * 6 DEEP COSMIC TIMELINE EPOCHS (PAST, PRESENT, DEEP FUTURE)
+ * Defines historical transformations, planetary evolutions, solar states, and lore.
+ */
+const TIMELINE_EPOCHS = [
+  {
+    id: "primordial",
+    timeLabel: "T -4.5 Gyr",
+    yearNumber: -4500000000,
+    name: "আদিম প্রোটো-স্টেলার সৃষ্টি যুগ (Primordial Accretion)",
+    nameEn: "Primordial Accretion Era",
+    badge: "T -4.5 BILLION YEARS // PRIMORDIAL COLLAPSE",
+    cosmicAge: "৪.৫ বিলিয়ন বছর আগে (4.5 Billion Years Ago)",
+    summary: "সৌরজগতের জন্মলগ্নে সৌরনীহারিকা ঘনীভূত হয়ে প্রোটো-সূর্যের সৃষ্টি হয়েছে। নবজাত গ্রহগুলো প্রচণ্ড মহাজাগতিক সংঘর্ষ ও লাভা সমুদ্রে নিমজ্জিত। টেরা নোভা এবং এরেসে তরল পানি নেই—কেবল তপ্ত ব্যাসাল্ট শিলা ও বিষাক্ত গ্যাসীয় মেঘ।",
+    summaryEn: "The dawn of Solis-IX as the protoplanetary nebula collapses into a violent proto-star. Newly formed planets endure extreme bombardment, glowing with global magma oceans under toxic silicate clouds.",
+    sunState: {
+      scale: 1.35,
+      color: "#ff5500",
+      coronaColor: "#ff3300",
+      lightColor: 0xff6622,
+      lightIntensity: 4.5,
+      flareMultiplier: 3.0
+    },
+    planetChanges: [
+      { id: "terra_nova", state: "molten", descBn: "লাভা সমুদ্র ও ফুটন্ত শিলা", descEn: "Global magma ocean, zero liquid water" },
+      { id: "ares_crimson", state: "molten", descBn: "তপ্ত ব্যাসাল্ট ও উল্কা খাদ", descEn: "Violent basalt bombardment" },
+      { id: "chronos_magister", state: "dense_dust", descBn: "অতি-ঘন ধ্বংসাবশেষের ঘূর্ণায়মান রিং", descEn: "Chaotic primordial debris disc" }
+    ]
+  },
+  {
+    id: "ancient",
+    timeLabel: "T -500 Myr",
+    yearNumber: -500000000,
+    name: "প্রাচীন জলমগ্ন ও প্রথম প্রাণ যুগ (Ancient Hydrosphere)",
+    nameEn: "Ancient Hydrosphere Era",
+    badge: "T -500 MILLION YEARS // ANCIENT RIVERS & OCEANS",
+    cosmicAge: "৫০ কোটি বছর আগে (500 Million Years Ago)",
+    summary: "সৌরজগতে প্রশান্তি ফিরে এসেছে। প্রাচীন এরেস (মঙ্গল) গ্রহে তখন ছিল গভীর নীল সাগর, নদী উপত্যকা ও ঘন জলীয় মেঘ! টেরা নোভায় আদিম মহাসাগরে প্রথম এককোষী প্রাণের বিকাশ শুরু হয়েছে। ক্রোনসের বলয় সদ্য জন্ম নেওয়া বরফের মতো স্ফটিক দ্যুতি ছড়াচ্ছে।",
+    summaryEn: "Golden ancient era. Ancient Ares possessed rolling blue oceans, river valleys, and a thick nitrogen atmosphere. Terra Nova harbors primordial microbial ocean life, and Chronos's rings shine like pristine mirror ice.",
+    sunState: {
+      scale: 1.0,
+      color: "#ffaa33",
+      coronaColor: "#ff9900",
+      lightColor: 0xffeedd,
+      lightIntensity: 3.5,
+      flareMultiplier: 1.0
+    },
+    planetChanges: [
+      { id: "terra_nova", state: "ancient_ocean", descBn: "৮৫% গভীর নীল মহাসাগর ও আদিম শৈবাল", descEn: "Deep global blue ocean, single-cell life" },
+      { id: "ares_crimson", state: "oceanic_mars", descBn: "বহমান নীল নদী ও মহাসাগরীয় অববাহিকা", descEn: "Blue Mars: liquid lakes and active clouds" },
+      { id: "chronos_magister", state: "pristine_rings", descBn: "স্ফটিকের মতো অতি-উজ্জ্বল রিং", descEn: "Newly formed razor-sharp ice rings" }
+    ]
+  },
+  {
+    id: "current",
+    timeLabel: "CE 2349",
+    yearNumber: 2349,
+    name: "বর্তমান আধুনিক মহাকাশ যুগ (Current Astrometric Era)",
+    nameEn: "Current Astrometric Era",
+    badge: "CE 2349 // PRESENT HUMAN EPOCH",
+    cosmicAge: "বর্তমান কাল (Present Human Epoch)",
+    summary: "আমাদের বর্তমান আধুনিক সভ্যতা। সিগনাস বীকন-৯ আন্তঃনক্ষত্র নেভিগেশন স্টেশন সক্রিয়, টেরা নোভা মহাসাগরীয় বাসযোগ্য বিশ্ব, এবং সৌরজগতের গভীর মহাকাশ কাইপার বেল্ট পর্যন্ত ছড়িয়ে পড়েছে গবেষণা ও টেলিমেট্রি নজরদারি।",
+    summaryEn: "The present human exploration era. Solis-IX is balanced; Cygnus Beacon-9 serves as an interstellar waypoint, Terra Nova thrives as a technological cradle, and mining outposts dot the gas giant moons.",
+    sunState: {
+      scale: 1.0,
+      color: "#ffaa33",
+      coronaColor: "#ffaa33",
+      lightColor: 0xfff5e6,
+      lightIntensity: 3.6,
+      flareMultiplier: 1.0
+    },
+    planetChanges: [
+      { id: "terra_nova", state: "current", descBn: "আধুনিক মহাসাগরীয় মহাজাগতিক বিশ্ব", descEn: "Oceanic cradle of civilization" },
+      { id: "ares_crimson", state: "current", descBn: "শুষ্ক লাল মরুভূমি ও গ্র্যান্ড ক্যানিয়ন", descEn: "Ferric red deserts and deep canyons" },
+      { id: "chronos_magister", state: "current", descBn: "ক্লাসিক্যাল বলয় ও গ্যাসীয় মেঘমালা", descEn: "Banded gas storm giant with rings" }
+    ]
+  },
+  {
+    id: "terraformed",
+    timeLabel: "CE +10,000 yr",
+    yearNumber: 12349,
+    name: "উন্নত টেরাফর্মিং ও মেগাস্ট্রাকচার যুগ (Cybernetic Expansion)",
+    nameEn: "Cybernetic Terraforming Era",
+    badge: "CE +10,000 YEARS // TERRAFORMED SOLAR HORIZON",
+    cosmicAge: "১০,০০০ বছর পরে (10,000 Years in the Future)",
+    summary: "মানবজাতির টাইপ-২ সভ্যতায় রূপান্তর। এরেস গ্রহের জলবায়ু প্রকৌশল সম্পন্ন হয়েছে—সবুজ অরণ্য, কৃত্রিম লেক ও শ্বাসযোগ্য বায়ুমণ্ডল গড়ে উঠেছে। সূর্যের চারপাশে তৈরি হয়েছে আংশিক ডাইসন সোয়ার্ম এনার্জি রিং এবং সিগনাস বীকনে আলোকোজ্জ্বল মহাকাশ শহর।",
+    summaryEn: "Post-planetary expansion. Ares Crimson is fully terraformed with lush boreal forests and artificial seas. A partial Dyson energy swarm orbits Solis, while Cygnus Beacon expands into a massive orbital city.",
+    sunState: {
+      scale: 1.0,
+      color: "#ffbb44",
+      coronaColor: "#00f0ff",
+      lightColor: 0xfffaea,
+      lightIntensity: 3.8,
+      flareMultiplier: 0.6
+    },
+    planetChanges: [
+      { id: "terra_nova", state: "megacity", descBn: "অরবিটাল এলিভেটর ও মেগাসিটি গ্রিড", descEn: "Orbital rings, hyper-connected ecumenopolis" },
+      { id: "ares_crimson", state: "terraformed_green", descBn: "টেরাফর্মড সবুজ অরণ্য ও নীল সাগর", descEn: "Terraformed: green biomes and fresh seas" },
+      { id: "cygnus_beacon", state: "megastructure", descBn: "উন্নত অরবিটাল হাব ও ডাইসন নোড", descEn: "Holographic mega-station and Dyson node" }
+    ]
+  },
+  {
+    id: "red_giant",
+    timeLabel: "T +3.0 Gyr",
+    yearNumber: 3000000000,
+    name: "সৌর লোহিত দানব ও বরফ চাঁদ জাগরণ (Solar Red Giant Era)",
+    nameEn: "Stellar Red Giant & Ice Thaw Era",
+    badge: "T +3.0 BILLION YEARS // RED GIANT EXPANSION",
+    cosmicAge: "৩০০ কোটি বছর পরে (3.0 Billion Years in the Future)",
+    summary: "সোলিস-৯ তার হাইড্রোজেন শেষ করে বিশাল লোহিত দানব নক্ষত্রে ফুলে উঠেছে! এর তীব্র তাপে ভলকানাস ভস্মীভূত এবং টেরা নোভার সমস্ত মহাসাগর বাষ্পীভূত হয়ে শুকিয়ে পাথুরে মরুভূমিতে রূপ নিয়েছে। আশ্চর্যজনকভাবে, জিউসের বরফ চাঁদ ইউরোপা এবং ক্রোনসের টাইটান বরফ গলে নতুন উষ্ণ গ্রীষ্মমণ্ডলীয় সাগরে পরিণত হয়েছে!",
+    summaryEn: "Solis exhausts core hydrogen and swells into an enormous Red Giant star. Mercury-Vulcanus is incinerated; Terra Nova's oceans boil away into space. Yet Jupiter-Zeus's Europa and Saturn's Titan thaw into warm, thriving tropical ocean worlds!",
+    sunState: {
+      scale: 2.3,
+      color: "#ff2200",
+      coronaColor: "#ff1100",
+      lightColor: 0xff4422,
+      lightIntensity: 5.2,
+      flareMultiplier: 2.2
+    },
+    planetChanges: [
+      { id: "terra_nova", state: "scorched_dry", descBn: "বাষ্পীভূত শুকনো সমুদ্রতল ও উত্তপ্ত মরুভূমি", descEn: "Oceans boiled away; scorched arid wasteland" },
+      { id: "ares_crimson", state: "baked", descBn: "চরম উত্তপ্ত শিলাভূমি ও পাতলা ধোঁয়াশা", descEn: "Sun-baked crust stripped of atmosphere" },
+      { id: "zeus_europa", state: "tropical_ocean", descBn: "বরফ গলে সৃষ্টি হওয়া উষ্ণ গ্রীষ্মমণ্ডলীয় সাগর", descEn: "Europa thawed: tropical planetary ocean world" }
+    ]
+  },
+  {
+    id: "white_dwarf",
+    timeLabel: "T +6.0 Gyr",
+    yearNumber: 6000000000,
+    name: "শ্বেত বামন ও মহাজাগতিক গোধূলি (Cosmic Twilight & White Dwarf)",
+    nameEn: "White Dwarf & Cosmic Twilight",
+    badge: "T +6.0 BILLION YEARS // WHITE DWARF & NEBULA",
+    cosmicAge: "৬০০ কোটি বছর পরে (6.0 Billion Years in the Future)",
+    summary: "সোলিস-৯ তার গ্যাসীয় খোলস মহাকাশে উড়িয়ে দিয়ে একটি নীলাভ-সাদা ক্ষুদ্র ও অতি-ঘন শ্বেত বামন নক্ষত্রে সংকুচিত হয়েছে। পুরো সিস্টেমে বিস্তৃত হয়েছে একটি মনোমুগ্ধকর প্ল্যানেটারি নেবুলা বলয়। সমস্ত বহিঃস্থ গ্রহ চরম শৈত্যে বরফে জমে শান্ত মহাজাগতিক সমাধিতে রূপ নিয়েছে।",
+    summaryEn: "The final cosmic chapter. Solis sheds its outer envelopes, forming an iridescent planetary nebula, leaving behind a cold, ultra-dense White Dwarf. Endless cosmic freeze blankets the silent frozen planets under perpetual starlight.",
+    sunState: {
+      scale: 0.38,
+      color: "#e0f2fe",
+      coronaColor: "#38bdf8",
+      lightColor: 0x93c5fd,
+      lightIntensity: 2.4,
+      flareMultiplier: 0.2
+    },
+    planetChanges: [
+      { id: "terra_nova", state: "frozen_grave", descBn: "হিমায়িত মিথেন বরফ ও নিথর আঁধার", descEn: "Frozen atmospheric frost and utter silence" },
+      { id: "ares_crimson", state: "deep_freeze", descBn: "চরম শীতল জমাটবাঁধা তুষারভূমি", descEn: "Deep cosmic freeze; glacial methane dunes" },
+      { id: "chronos_magister", state: "dissipated_rings", descBn: "বলয় ক্ষয়ে যাওয়া শান্ত বরফ দানব", descEn: "Dissipated faint rings under faint starlight" }
+    ]
+  }
+];
 
   </script>
   <script>
@@ -4039,6 +4404,188 @@ const TextureGenerator = {
     }
     ctx.putImageData(imgData, 0, 0);
     return new THREE.CanvasTexture(canvas);
+  },
+
+  // 19. Ancient Mars with Liquid Blue Oceans & River Canals (T -500 Myr)
+  createAncientMarsTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const elevation = this.fbm(u * 6, v * 6, 5); // 0 to 1
+        const river = Math.abs(this.fbm(u * 14 + 1.2, v * 14, 3) - 0.5) < 0.035;
+
+        let r = 0, g = 0, b = 0;
+        if (elevation < 0.44 || river) {
+          // Liquid blue ancient ocean & bays
+          const depth = elevation / 0.44;
+          r = Math.floor(10 + depth * 25);
+          g = Math.floor(55 + depth * 65);
+          b = Math.floor(140 + depth * 80);
+        } else {
+          // Ancient ferric continents with greenish shores
+          const highland = (elevation - 0.44) / 0.56;
+          r = Math.floor(140 + highland * 85);
+          g = Math.floor(80 + (1 - highland) * 35);
+          b = Math.floor(50 + (1 - highland) * 20);
+        }
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.min(255, r);
+        d[idx + 1] = Math.min(255, g);
+        d[idx + 2] = Math.min(255, b);
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 20. Terraformed Green Mars with Emerald Forests & Oceans (CE +10,000 yr)
+  createTerraformedMarsTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const elevation = this.fbm(u * 6.5, v * 6.5, 5);
+        const cloud = this.fbm(u * 10 + 2.5, v * 10, 3);
+
+        let r = 0, g = 0, b = 0;
+        if (elevation < 0.46) {
+          // Fresh engineered seas
+          r = 15; g = 85; b = 180;
+        } else if (elevation < 0.72) {
+          // Lush boreal green biosphere
+          r = 30; g = 145; b = 55;
+        } else {
+          // Highland red mountains with snow tips
+          r = 160; g = 90; b = 65;
+        }
+
+        // Add soft white cloud swirls
+        if (cloud > 0.6) {
+          const cAlpha = (cloud - 0.6) / 0.4;
+          r = Math.floor(r * (1 - cAlpha) + 245 * cAlpha);
+          g = Math.floor(g * (1 - cAlpha) + 250 * cAlpha);
+          b = Math.floor(b * (1 - cAlpha) + 255 * cAlpha);
+        }
+
+        const idx = (y * width + x) * 4;
+        d[idx] = r;
+        d[idx + 1] = g;
+        d[idx + 2] = b;
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 21. Scorched Arid Earth with Boiled Ocean Basins (T +3.0 Gyr Red Giant)
+  createScorchedEarthTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const n = this.fbm(u * 8, v * 8, 4);
+
+        // Scorched cracked salt pans and roasted basalt
+        const r = Math.floor(180 + n * 65);
+        const g = Math.floor(110 + n * 40);
+        const b = Math.floor(60 + n * 25);
+
+        const idx = (y * width + x) * 4;
+        d[idx] = r;
+        d[idx + 1] = g;
+        d[idx + 2] = b;
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 22. Deep Cosmic Frozen Earth (T +6.0 Gyr White Dwarf)
+  createFrozenEarthTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const n = this.fbm(u * 7, v * 7, 4);
+        const crack = Math.abs(Math.sin(n * 16)) < 0.1 ? 40 : 0;
+
+        // Frozen icy methane blue-white crust
+        const r = Math.floor(140 + n * 45 + crack);
+        const g = Math.floor(190 + n * 50 + crack);
+        const b = Math.floor(235 + n * 20);
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.min(255, r);
+        d[idx + 1] = Math.min(255, g);
+        d[idx + 2] = Math.min(255, b);
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 23. Tropical Ocean Moon (Thawed Europa/Titan in Red Giant Era)
+  createTropicalOceanTexture(width = 512, height = 256) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const n = this.fbm(u * 5, v * 5, 4);
+        let r = 20, g = 140, b = 200;
+        if (n > 0.6) {
+          // Tropical island archipelago
+          r = 45; g = 175; b = 80;
+        }
+        const idx = (y * width + x) * 4;
+        d[idx] = r;
+        d[idx + 1] = g;
+        d[idx + 2] = b;
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
   }
 };
 
@@ -4288,6 +4835,39 @@ class CosmicAudio {
     noise.start(t);
   }
 
+  playTemporalWarp() {
+    if (!this.ctx || this.isMuted) return;
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+
+    const t = this.ctx.currentTime;
+
+    // Pitch-shifting cosmic glide
+    const osc = this.ctx.createOscillator();
+    const filter = this.ctx.createBiquadFilter();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(140, t);
+    osc.frequency.exponentialRampToValueAtTime(520, t + 0.35);
+    osc.frequency.exponentialRampToValueAtTime(110, t + 0.9);
+
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(400, t);
+    filter.frequency.exponentialRampToValueAtTime(1600, t + 0.35);
+    filter.frequency.exponentialRampToValueAtTime(200, t + 0.9);
+
+    gain.gain.setValueAtTime(0.01, t);
+    gain.gain.linearRampToValueAtTime(0.12, t + 0.25);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.95);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(t);
+    osc.stop(t + 0.95);
+  }
+
   toggle() {
     this.init();
     this.isMuted = !this.isMuted;
@@ -4396,6 +4976,14 @@ class CelestialSimulation {
     this.solarFlareTimer = 45 + Math.random() * 30;
     this.flareDuration = 0;
 
+    // Cosmic Timeline Evolution State
+    this.currentEpochIndex = parseInt(localStorage.getItem('solisix.epoch')) || 2;
+    this.isTimelineOpen = false;
+    this.isTimelineAutoPlaying = false;
+    this.timelineAutoPlayTimer = 0;
+    this.planetaryNebulaRing = null;
+    this.chronosRingMesh = null;
+
     // Performance monitor
     this.perfVisible = false;
     this.fps = 60;
@@ -4423,6 +5011,7 @@ class CelestialSimulation {
     this.setupCoordinateGrid();
     this.setupGravitationalWaveTrack();
     this.setupGravitationalWaveRings();
+    this.setupPlanetaryNebulaRing();
     this.buildSolarSystem();
     this.buildAsteroidBelt();
     this.setupOrbitalTrails();
@@ -4430,6 +5019,8 @@ class CelestialSimulation {
     this.setupEvents();
     this.setupKeyboardShortcuts();
     this.setupHudUi();
+    this.setupTimeline();
+    this.applyEpoch(this.currentEpochIndex, false);
     this.restoreStateFromHash();
 
     // Start render loop
@@ -4785,6 +5376,22 @@ class CelestialSimulation {
     });
   }
 
+  setupPlanetaryNebulaRing() {
+    const geo = new THREE.RingGeometry(25, 82, 64);
+    const tex = TextureGenerator.createNebulaTexture('#38bdf8', 512);
+    const mat = new THREE.MeshBasicMaterial({
+      map: tex,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.55,
+      blending: THREE.AdditiveBlending
+    });
+    this.planetaryNebulaRing = new THREE.Mesh(geo, mat);
+    this.planetaryNebulaRing.rotation.x = Math.PI / 2;
+    this.planetaryNebulaRing.visible = false;
+    this.scene.add(this.planetaryNebulaRing);
+  }
+
   setupOrbitalTrails() {
     this.orbitalTrails = [];
     this.planets.forEach(p => {
@@ -5131,6 +5738,7 @@ class CelestialSimulation {
           const ringMesh = new THREE.Mesh(ringGeo, ringMat);
           ringMesh.rotation.x = Math.PI / 2 + (data.ringTilt || 0.45);
           group.add(ringMesh);
+          this.chronosRingMesh = ringMesh;
         }
 
         // Vertical Dust Rings for Aether Cyan
@@ -6109,6 +6717,11 @@ class CelestialSimulation {
         case '_':
           this.controls.dollyOut(1.15);
           break;
+        case 'y':
+        case 'Y':
+          const tlBtn = document.getElementById('btn-timeline');
+          if (tlBtn) tlBtn.click();
+          break;
         case '1': this.selectCelestialBody('sun'); break;
         case '2': this.selectCelestialBody('cygnus_beacon'); break;
         case '3': this.selectCelestialBody('vulcanus'); break;
@@ -6334,6 +6947,240 @@ class CelestialSimulation {
     this.updateLanguageTexts();
   }
 
+  setupTimeline() {
+    const timelineBtn = document.getElementById('btn-timeline');
+    const timelineDrawer = document.getElementById('timeline-drawer');
+    const closeBtn = document.getElementById('tl-close-btn');
+    const playPauseBtn = document.getElementById('tl-play-pause-btn');
+    const sliderInput = document.getElementById('tl-slider-input');
+    const nodes = document.querySelectorAll('.timeline-node');
+
+    if (timelineBtn && timelineDrawer) {
+      timelineBtn.addEventListener('click', () => {
+        this.isTimelineOpen = !this.isTimelineOpen;
+        timelineDrawer.classList.toggle('visible', this.isTimelineOpen);
+        timelineBtn.classList.toggle('active', this.isTimelineOpen);
+        if (window.cosmicAudio && this.isTimelineOpen) {
+          window.cosmicAudio.playSelect();
+        }
+      });
+    }
+
+    if (closeBtn && timelineDrawer && timelineBtn) {
+      closeBtn.addEventListener('click', () => {
+        this.isTimelineOpen = false;
+        timelineDrawer.classList.remove('visible');
+        timelineBtn.classList.remove('active');
+        if (this.isTimelineAutoPlaying) {
+          this.toggleTimelineAutoPlay();
+        }
+      });
+    }
+
+    if (playPauseBtn) {
+      playPauseBtn.addEventListener('click', () => {
+        this.toggleTimelineAutoPlay();
+      });
+    }
+
+    if (sliderInput) {
+      sliderInput.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value, 10);
+        if (!isNaN(val)) {
+          this.applyEpoch(val, true);
+        }
+      });
+    }
+
+    nodes.forEach(node => {
+      node.addEventListener('click', () => {
+        const epochIdx = parseInt(node.dataset.epoch, 10);
+        if (!isNaN(epochIdx)) {
+          this.applyEpoch(epochIdx, true);
+        }
+      });
+    });
+  }
+
+  toggleTimelineAutoPlay() {
+    this.isTimelineAutoPlaying = !this.isTimelineAutoPlaying;
+    const playPauseBtn = document.getElementById('tl-play-pause-btn');
+    const isBn = this.currentLanguage === 'bn';
+
+    if (playPauseBtn) {
+      playPauseBtn.textContent = this.isTimelineAutoPlaying
+        ? (isBn ? '⏸ থামান' : '⏸ Pause Epochs')
+        : (isBn ? '▶ চালান' : '▶ Play Epochs');
+      playPauseBtn.classList.toggle('active', this.isTimelineAutoPlaying);
+    }
+    this.timelineAutoPlayTimer = 0;
+    if (window.cosmicAudio) {
+      window.cosmicAudio.playSelect();
+    }
+  }
+
+  applyEpoch(index, playSound = true) {
+    if (typeof TIMELINE_EPOCHS === 'undefined' || !TIMELINE_EPOCHS.length) return;
+    index = Math.max(0, Math.min(index, TIMELINE_EPOCHS.length - 1));
+    this.currentEpochIndex = index;
+    localStorage.setItem('solisix.epoch', index);
+
+    if (playSound && window.cosmicAudio) {
+      window.cosmicAudio.playTemporalWarp();
+    }
+
+    const epoch = TIMELINE_EPOCHS[index];
+    const isBn = this.currentLanguage === 'bn';
+
+    // Update Scrubber Range & Progress
+    const sliderInput = document.getElementById('tl-slider-input');
+    if (sliderInput) sliderInput.value = index;
+
+    const progressFill = document.getElementById('tl-progress-fill');
+    if (progressFill) {
+      progressFill.style.width = ((index / (TIMELINE_EPOCHS.length - 1)) * 100) + '%';
+    }
+
+    document.querySelectorAll('.timeline-node').forEach(node => {
+      const nIdx = parseInt(node.dataset.epoch, 10);
+      node.classList.toggle('active', nIdx === index);
+    });
+
+    // Update Title, Badge, and Summary Lore
+    const titleEl = document.getElementById('tl-epoch-title');
+    if (titleEl) titleEl.textContent = isBn ? epoch.name : epoch.nameEn;
+
+    const badgeEl = document.getElementById('tl-epoch-badge');
+    if (badgeEl) badgeEl.textContent = epoch.badge;
+
+    const descEl = document.getElementById('tl-lore-desc');
+    if (descEl) descEl.textContent = isBn ? epoch.summary : epoch.summaryEn;
+
+    const changesGrid = document.getElementById('tl-changes-grid');
+    if (changesGrid && epoch.planetChanges) {
+      changesGrid.innerHTML = epoch.planetChanges.map(c => `
+        <div class="change-chip">
+          <span class="chip-planet">${c.id.replace('_', ' ').toUpperCase()}:</span>
+          <span>${isBn ? c.descBn : c.descEn}</span>
+        </div>
+      `).join('');
+    }
+
+    // Cached Textures Helper
+    if (!this.cachedTextures) this.cachedTextures = {};
+    const getTex = (key, fn) => {
+      if (!this.cachedTextures[key]) {
+        this.cachedTextures[key] = fn();
+      }
+      return this.cachedTextures[key];
+    };
+
+    // Update Sun
+    const sunPlanet = this.planets.find(p => p.data.id === 'sun');
+    if (sunPlanet && epoch.sunState) {
+      const s = epoch.sunState.scale || 1.0;
+      sunPlanet.mesh.scale.set(s, s, s);
+      if (this.sunCorona) {
+        this.sunCorona.scale.set(sunPlanet.data.size * 5.4 * s, sunPlanet.data.size * 5.4 * s, 1);
+      }
+      if (this.sunLight) {
+        this.sunLight.color.setHex(epoch.sunState.lightColor);
+        this.sunLight.intensity = epoch.sunState.lightIntensity;
+      }
+    }
+
+    // Planetary Nebula Ring
+    if (this.planetaryNebulaRing) {
+      this.planetaryNebulaRing.visible = (epoch.id === 'white_dwarf');
+    }
+
+    // Chronos Rings Opacity
+    if (this.chronosRingMesh) {
+      if (epoch.id === 'white_dwarf') {
+        this.chronosRingMesh.material.opacity = 0.22;
+      } else if (epoch.id === 'primordial') {
+        this.chronosRingMesh.material.opacity = 0.45;
+      } else {
+        this.chronosRingMesh.material.opacity = 0.94;
+      }
+    }
+
+    // Update Terra Nova
+    const terra = this.planets.find(p => p.data.id === 'terra_nova');
+    if (terra && terra.mesh) {
+      let tTex;
+      if (epoch.id === 'primordial') {
+        tTex = getTex('molten_earth', () => TextureGenerator.createIoTexture());
+      } else if (epoch.id === 'red_giant') {
+        tTex = getTex('scorched_earth', () => TextureGenerator.createScorchedEarthTexture());
+      } else if (epoch.id === 'white_dwarf') {
+        tTex = getTex('frozen_earth', () => TextureGenerator.createFrozenEarthTexture());
+      } else {
+        tTex = getTex('normal_earth', () => TextureGenerator.createEarthTexture());
+      }
+      if (!this.isThermalMode) {
+        terra.mesh.material.map = tTex;
+        terra.mesh.material.needsUpdate = true;
+      }
+      if (terra.originalMaterial) {
+        terra.originalMaterial.map = tTex;
+        terra.originalMaterial.needsUpdate = true;
+      }
+    }
+
+    // Update Ares Crimson
+    const ares = this.planets.find(p => p.data.id === 'ares_crimson');
+    if (ares && ares.mesh) {
+      let aTex;
+      if (epoch.id === 'primordial') {
+        aTex = getTex('molten_ares', () => TextureGenerator.createRockyTexture(512, 256, 0.08));
+      } else if (epoch.id === 'ancient') {
+        aTex = getTex('ancient_ares', () => TextureGenerator.createAncientMarsTexture());
+      } else if (epoch.id === 'terraformed') {
+        aTex = getTex('terraformed_ares', () => TextureGenerator.createTerraformedMarsTexture());
+      } else if (epoch.id === 'white_dwarf') {
+        aTex = getTex('frozen_earth', () => TextureGenerator.createFrozenEarthTexture());
+      } else {
+        aTex = getTex('normal_ares', () => TextureGenerator.createMarsTexture());
+      }
+      if (!this.isThermalMode) {
+        ares.mesh.material.map = aTex;
+        ares.mesh.material.needsUpdate = true;
+      }
+      if (ares.originalMaterial) {
+        ares.originalMaterial.map = aTex;
+        ares.originalMaterial.needsUpdate = true;
+      }
+    }
+
+    // Update Moons: Europa & Titan
+    const europa = this.moons.find(m => m.data.id === 'zeus_europa');
+    if (europa && europa.mesh) {
+      let eTex;
+      if (epoch.id === 'red_giant') {
+        eTex = getTex('tropical_moon', () => TextureGenerator.createTropicalOceanTexture());
+      } else {
+        eTex = getTex('normal_europa', () => TextureGenerator.createEuropaTexture());
+      }
+      europa.mesh.material.map = eTex;
+      europa.mesh.material.needsUpdate = true;
+    }
+
+    const titan = this.moons.find(m => m.data.id === 'chronos_titan');
+    if (titan && titan.mesh) {
+      let tiTex;
+      if (epoch.id === 'red_giant') {
+        tiTex = getTex('tropical_moon', () => TextureGenerator.createTropicalOceanTexture());
+      } else if (epoch.id === 'white_dwarf') {
+        tiTex = getTex('frozen_earth', () => TextureGenerator.createFrozenEarthTexture());
+      } else {
+        tiTex = getTex('normal_titan', () => TextureGenerator.createTitanTexture());
+      }
+      titan.mesh.material.map = tiTex;
+      titan.mesh.material.needsUpdate = true;
+    }
+  }
+
   updateLanguageTexts() {
     const isBn = this.currentLanguage === 'bn';
     const dict = STRINGS[this.currentLanguage] || STRINGS.en;
@@ -6385,6 +7232,36 @@ class CelestialSimulation {
       } else {
         this.updateTelemetryCard(this.selectedBody.data);
       }
+    }
+
+    // Update Timeline labels & lore texts
+    const tlEpoch = (typeof TIMELINE_EPOCHS !== 'undefined') ? TIMELINE_EPOCHS[this.currentEpochIndex] : null;
+    if (tlEpoch) {
+      const tlTitle = document.getElementById('tl-epoch-title');
+      if (tlTitle) tlTitle.textContent = isBn ? tlEpoch.name : tlEpoch.nameEn;
+      const tlDesc = document.getElementById('tl-lore-desc');
+      if (tlDesc) tlDesc.textContent = isBn ? tlEpoch.summary : tlEpoch.summaryEn;
+      const tlBadge = document.getElementById('tl-epoch-badge');
+      if (tlBadge) tlBadge.textContent = tlEpoch.badge;
+      const changesGrid = document.getElementById('tl-changes-grid');
+      if (changesGrid && tlEpoch.planetChanges) {
+        changesGrid.innerHTML = tlEpoch.planetChanges.map(c => `
+          <div class="change-chip">
+            <span class="chip-planet">${c.id.replace('_', ' ').toUpperCase()}:</span>
+            <span>${isBn ? c.descBn : c.descEn}</span>
+          </div>
+        `).join('');
+      }
+    }
+    const tlPlayBtn = document.getElementById('tl-play-pause-btn');
+    if (tlPlayBtn) {
+      tlPlayBtn.textContent = this.isTimelineAutoPlaying
+        ? (isBn ? '⏸ থামান' : '⏸ Pause Epochs')
+        : (isBn ? '▶ চালান' : '▶ Play Epochs');
+    }
+    const tlLbl = document.getElementById('timeline-lbl');
+    if (tlLbl) {
+      tlLbl.textContent = dict.timeline || (isBn ? '⏳ টাইমলাইন' : '⏳ Timeline');
     }
   }
 
@@ -6550,6 +7427,21 @@ class CelestialSimulation {
           this.selectCelestialBody(this.planets[this.tourIndex].data.id);
         }
       }
+
+      // Cosmic Timeline Auto-Play Evolution Scrubber
+      if (this.isTimelineAutoPlaying && typeof TIMELINE_EPOCHS !== 'undefined') {
+        this.timelineAutoPlayTimer += delta;
+        if (this.timelineAutoPlayTimer >= 6.5) {
+          this.timelineAutoPlayTimer = 0;
+          const nextEpoch = (this.currentEpochIndex + 1) % TIMELINE_EPOCHS.length;
+          this.applyEpoch(nextEpoch, true);
+        }
+      }
+
+      // Rotate Planetary Nebula Ring in White Dwarf epoch
+      if (this.planetaryNebulaRing && this.planetaryNebulaRing.visible) {
+        this.planetaryNebulaRing.rotation.z += 0.0012 * this.timeScale;
+      }
     }
 
     /**
@@ -6614,6 +7506,5 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
   </script>
-
 </body>
 </html>

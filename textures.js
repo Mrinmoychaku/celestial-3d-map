@@ -796,5 +796,187 @@ const TextureGenerator = {
     }
     ctx.putImageData(imgData, 0, 0);
     return new THREE.CanvasTexture(canvas);
+  },
+
+  // 19. Ancient Mars with Liquid Blue Oceans & River Canals (T -500 Myr)
+  createAncientMarsTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const elevation = this.fbm(u * 6, v * 6, 5); // 0 to 1
+        const river = Math.abs(this.fbm(u * 14 + 1.2, v * 14, 3) - 0.5) < 0.035;
+
+        let r = 0, g = 0, b = 0;
+        if (elevation < 0.44 || river) {
+          // Liquid blue ancient ocean & bays
+          const depth = elevation / 0.44;
+          r = Math.floor(10 + depth * 25);
+          g = Math.floor(55 + depth * 65);
+          b = Math.floor(140 + depth * 80);
+        } else {
+          // Ancient ferric continents with greenish shores
+          const highland = (elevation - 0.44) / 0.56;
+          r = Math.floor(140 + highland * 85);
+          g = Math.floor(80 + (1 - highland) * 35);
+          b = Math.floor(50 + (1 - highland) * 20);
+        }
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.min(255, r);
+        d[idx + 1] = Math.min(255, g);
+        d[idx + 2] = Math.min(255, b);
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 20. Terraformed Green Mars with Emerald Forests & Oceans (CE +10,000 yr)
+  createTerraformedMarsTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const elevation = this.fbm(u * 6.5, v * 6.5, 5);
+        const cloud = this.fbm(u * 10 + 2.5, v * 10, 3);
+
+        let r = 0, g = 0, b = 0;
+        if (elevation < 0.46) {
+          // Fresh engineered seas
+          r = 15; g = 85; b = 180;
+        } else if (elevation < 0.72) {
+          // Lush boreal green biosphere
+          r = 30; g = 145; b = 55;
+        } else {
+          // Highland red mountains with snow tips
+          r = 160; g = 90; b = 65;
+        }
+
+        // Add soft white cloud swirls
+        if (cloud > 0.6) {
+          const cAlpha = (cloud - 0.6) / 0.4;
+          r = Math.floor(r * (1 - cAlpha) + 245 * cAlpha);
+          g = Math.floor(g * (1 - cAlpha) + 250 * cAlpha);
+          b = Math.floor(b * (1 - cAlpha) + 255 * cAlpha);
+        }
+
+        const idx = (y * width + x) * 4;
+        d[idx] = r;
+        d[idx + 1] = g;
+        d[idx + 2] = b;
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 21. Scorched Arid Earth with Boiled Ocean Basins (T +3.0 Gyr Red Giant)
+  createScorchedEarthTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const n = this.fbm(u * 8, v * 8, 4);
+
+        // Scorched cracked salt pans and roasted basalt
+        const r = Math.floor(180 + n * 65);
+        const g = Math.floor(110 + n * 40);
+        const b = Math.floor(60 + n * 25);
+
+        const idx = (y * width + x) * 4;
+        d[idx] = r;
+        d[idx + 1] = g;
+        d[idx + 2] = b;
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 22. Deep Cosmic Frozen Earth (T +6.0 Gyr White Dwarf)
+  createFrozenEarthTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const n = this.fbm(u * 7, v * 7, 4);
+        const crack = Math.abs(Math.sin(n * 16)) < 0.1 ? 40 : 0;
+
+        // Frozen icy methane blue-white crust
+        const r = Math.floor(140 + n * 45 + crack);
+        const g = Math.floor(190 + n * 50 + crack);
+        const b = Math.floor(235 + n * 20);
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.min(255, r);
+        d[idx + 1] = Math.min(255, g);
+        d[idx + 2] = Math.min(255, b);
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 23. Tropical Ocean Moon (Thawed Europa/Titan in Red Giant Era)
+  createTropicalOceanTexture(width = 512, height = 256) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const n = this.fbm(u * 5, v * 5, 4);
+        let r = 20, g = 140, b = 200;
+        if (n > 0.6) {
+          // Tropical island archipelago
+          r = 45; g = 175; b = 80;
+        }
+        const idx = (y * width + x) * 4;
+        d[idx] = r;
+        d[idx + 1] = g;
+        d[idx + 2] = b;
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
   }
 };
