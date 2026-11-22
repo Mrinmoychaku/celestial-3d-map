@@ -495,9 +495,12 @@
       <span class="jump-chip" onclick="simulation.selectCelestialBody('cygnus_beacon')">⚡ Beacon</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('vulcanus')">🌋 Vulcan</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('terra_nova')">🌍 Terra</span>
+      <span class="jump-chip" onclick="simulation.selectMoonById('terra_luna')">🌕 Luna</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('ares_crimson')">🔴 Ares</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('zeus_major')">🪐 Zeus</span>
+      <span class="jump-chip" onclick="simulation.selectMoonById('zeus_europa')">🌊 Europa</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('chronos_magister')">🪐 Chronos</span>
+      <span class="jump-chip" onclick="simulation.selectMoonById('chronos_titan')">🟠 Titan</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('aether_cyan')">💎 Aether</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('hades_outpost')">❄️ Hades</span>
     </div>
@@ -520,6 +523,7 @@
 
   <!-- Telemetry Detail Slideout Card -->
   <aside class="telemetry-card" id="telemetry-card">
+    <div id="tel-color-accent" style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--cyan-glow); border-radius: 4px 4px 0 0;"></div>
     <div class="tel-header">
       <div class="tel-title-wrap">
         <div class="status-dot" id="tel-status-light"></div>
@@ -561,6 +565,9 @@
     <div class="tel-desc" id="tel-desc">
       মূল রেফারেন্স ছবির সবচেয়ে আকর্ষণীয় রিংযুক্ত গ্রহ। এর মহিমান্বিত বরফ ও পাথুরে বলয় সিস্টেম এবং সুস্পষ্ট ক্যাবিনী ফাঁক রয়েছে।
     </div>
+
+    <!-- Moons / Sub-satellites List -->
+    <div id="tel-moons-list" style="margin-top: 10px;"></div>
   </aside>
 
   <!-- Three.js & OrbitControls Local/CDN Scripts -->

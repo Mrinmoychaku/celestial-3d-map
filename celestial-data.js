@@ -1,6 +1,7 @@
 /**
  * CELESTIAL DATA & TELEMETRY
- * Detailed planetary parameters, orbital elements, and bilingual (Bengali & English) lore.
+ * Detailed parameters for stars, planets, and comprehensive moon systems (উপগ্রহ মণ্ডল)
+ * with bilingual Bengali & English support.
  */
 
 const CELESTIAL_DATA = [
@@ -39,7 +40,7 @@ const CELESTIAL_DATA = [
     velocity: "38.6 km/s",
     distanceAu: "0.38 AU",
     period: "74 দিন",
-    description: "চিত্রের উজ্জ্বল দ্বৈত শক্তি নোড যা অভ্যন্তরীণ কক্ষপথে ডেটা ও প্লাজমা শক্তি সরবরাহকারী কৃত্রিম বীকন হিসেবে কাজ করে।",
+    description: "রেফারেন্স ছবির দ্বিতীয় উজ্জ্বল আলোকবিন্দু। এটি অভ্যন্তরীণ কক্ষপথে শক্তি ও যোগাযোগ সিগন্যাল রিলে করে।",
     descriptionEn: "The prominent secondary luminous node seen in the blueprint, functioning as an orbital energy relay and navigation beacon.",
     color: "#ff7722",
     emissive: true,
@@ -70,7 +71,24 @@ const CELESTIAL_DATA = [
     orbitSpeed: 0.018,
     rotationSpeed: 0.008,
     inclination: 0.12,
-    eccentricity: 0.08
+    eccentricity: 0.08,
+    moons: [
+      {
+        id: "vulcan_pyros",
+        name: "পাইরস (Pyros-I)",
+        nameEn: "Pyros-I",
+        type: "দগ্ধ গ্রহাণু উপগ্রহ (Scorched Asteroid Moon)",
+        radiusKm: "420 km",
+        distance: 2.2,
+        size: 0.28,
+        speed: 0.06,
+        color: "#8a4f32",
+        orbitTilt: 0.15,
+        textureType: "rocky",
+        description: "ভলকানাসের মহাকর্ষে আটকে পড়া লাভা-গলিত ধূসর গ্রহাণু খণ্ড।",
+        descriptionEn: "Captured molten asteroid fragment orbiting close to Vulcanus."
+      }
+    ]
   },
   {
     id: "terra_nova",
@@ -93,10 +111,26 @@ const CELESTIAL_DATA = [
     rotationSpeed: 0.014,
     inclination: 0.035,
     eccentricity: 0.03,
-    hasMoon: true,
-    moonColor: "#cccccc",
-    moonSize: 0.55,
-    moonDistance: 3.8
+    hasAtmosphereGlow: true,
+    atmosphereColor: 0x00b4d8,
+    hasClouds: true,
+    moons: [
+      {
+        id: "terra_luna",
+        name: "লুনা প্রাইমা (Luna Prima)",
+        nameEn: "Luna Prima",
+        type: "প্রাকৃতিক উপগ্রহ (Natural Satellite)",
+        radiusKm: "1,737 km",
+        distance: 4.5,
+        size: 0.58,
+        speed: 0.032,
+        color: "#e2e8f0",
+        orbitTilt: 0.09,
+        textureType: "rocky",
+        description: "টেরা নোভার প্রাচীন শিলা ও ক্র্যাটারে আবৃত রূপালী উপগ্রহ।",
+        descriptionEn: "Ancient cratered natural satellite maintaining tidal equilibrium."
+      }
+    ]
   },
   {
     id: "ares_crimson",
@@ -118,7 +152,41 @@ const CELESTIAL_DATA = [
     orbitSpeed: 0.009,
     rotationSpeed: 0.012,
     inclination: 0.05,
-    eccentricity: 0.07
+    eccentricity: 0.07,
+    hasAtmosphereGlow: true,
+    atmosphereColor: 0xe07a5f,
+    moons: [
+      {
+        id: "ares_phobos",
+        name: "ফোবস (Phobos-V)",
+        nameEn: "Phobos-V",
+        type: "অভ্যন্তরীণ উপগ্রহ (Inner Moonlet)",
+        radiusKm: "11.2 km",
+        distance: 2.8,
+        size: 0.32,
+        speed: 0.052,
+        color: "#9c7c68",
+        orbitTilt: 0.04,
+        textureType: "rocky",
+        description: "অ্যারিসের অতি নিকটবর্তী দ্রুতগামী বিষমাকৃতির পাথুরে উপগ্রহ।",
+        descriptionEn: "Oblong, heavily cratered inner moon with high orbital frequency."
+      },
+      {
+        id: "ares_deimos",
+        name: "ডিমোস (Deimos-V)",
+        nameEn: "Deimos-V",
+        type: "বহিঃস্থ উপগ্রহ (Outer Moonlet)",
+        radiusKm: "6.2 km",
+        distance: 4.8,
+        size: 0.22,
+        speed: 0.028,
+        color: "#857367",
+        orbitTilt: 0.07,
+        textureType: "rocky",
+        description: "রেগোলিথ ধূলিকণায় মসৃণ বহিঃস্থ ছোট উপগ্রহ।",
+        descriptionEn: "Outer dusty moonlet with thick regolith mantle."
+      }
+    ]
   },
   {
     id: "zeus_major",
@@ -140,7 +208,71 @@ const CELESTIAL_DATA = [
     orbitSpeed: 0.006,
     rotationSpeed: 0.02,
     inclination: 0.065,
-    eccentricity: 0.04
+    eccentricity: 0.04,
+    hasAtmosphereGlow: true,
+    atmosphereColor: 0xf4a261,
+    moons: [
+      {
+        id: "zeus_io",
+        name: "আইও (Io-Volcanica)",
+        nameEn: "Io-Volcanica",
+        type: "আগ্নেয়গিরি উপগ্রহ (Volcanic Moon)",
+        radiusKm: "1,821 km",
+        distance: 6.8,
+        size: 0.65,
+        speed: 0.048,
+        color: "#ffcc22",
+        orbitTilt: 0.02,
+        textureType: "io",
+        description: "সৌরজগতের সর্বাধিক সক্রিয় আগ্নেয়গিরি সম্পন্ন সালফার ও লাভাময় উজ্জ্বল হলুদ উপগ্রহ।",
+        descriptionEn: "Most volcanically active body with vivid yellow-orange sulfur frost."
+      },
+      {
+        id: "zeus_europa",
+        name: "ইউরোপা (Europa-Oceanus)",
+        nameEn: "Europa-Oceanus",
+        type: "বরফ সাগর উপগ্রহ (Oceanic Ice World)",
+        radiusKm: "1,560 km",
+        distance: 9.6,
+        size: 0.55,
+        speed: 0.036,
+        color: "#b8e2f2",
+        orbitTilt: 0.03,
+        textureType: "europa",
+        description: "মসৃণ ফাটলযুক্ত বরফের নিচে তরল মহাসাগর সমৃদ্ধ রহস্যময় উপগ্রহ।",
+        descriptionEn: "Pristine ice-shell moon concealing a global subsurface liquid water ocean."
+      },
+      {
+        id: "zeus_ganymede",
+        name: "গ্যানিমিড (Ganymede-Titan)",
+        nameEn: "Ganymede-Titan",
+        type: "দানবীয় উপগ্রহ (Giant Silicate Moon)",
+        radiusKm: "2,634 km",
+        distance: 13.5,
+        size: 0.85,
+        speed: 0.024,
+        color: "#9ca3af",
+        orbitTilt: 0.015,
+        textureType: "rocky",
+        description: "বুধ গ্রহের চেয়েও বড় সৌরজগতের বৃহত্তম উপগ্রহ, যার নিজস্ব চৌম্বকক্ষেত্র রয়েছে।",
+        descriptionEn: "Largest moon in the system, even larger than Mercury with grooved terrain."
+      },
+      {
+        id: "zeus_callisto",
+        name: "ক্যালিস্টো (Callisto-Ancient)",
+        nameEn: "Callisto-Ancient",
+        type: "প্রাচীন ক্র্যাটার উপগ্রহ (Ancient Cratered Moon)",
+        radiusKm: "2,410 km",
+        distance: 17.8,
+        size: 0.75,
+        speed: 0.016,
+        color: "#6b7280",
+        orbitTilt: 0.025,
+        textureType: "rocky",
+        description: "শতকোটি বছরের অসংখ্য উল্কাপাতের দাগযুক্ত চরম প্রাচীন শিলা উপগ্রহ।",
+        descriptionEn: "Heavily cratered primordial ice-rock world preserved across billions of years."
+      }
+    ]
   },
   {
     id: "chronos_magister",
@@ -165,12 +297,72 @@ const CELESTIAL_DATA = [
     eccentricity: 0.05,
     hasRings: true,
     ringInner: 4.8,
-    ringOuter: 9.6,
-    ringTilt: 0.45,
-    hasMoon: true,
-    moonColor: "#99bbee",
-    moonSize: 0.65,
-    moonDistance: 11.2
+    ringOuter: 10.2,
+    ringTilt: 0.46,
+    hasAtmosphereGlow: true,
+    atmosphereColor: 0xe9c46a,
+    moons: [
+      {
+        id: "chronos_mimas",
+        name: "মিমাস (Mimas-Crater)",
+        nameEn: "Mimas-Crater",
+        type: "বিশাল ক্র্যাটার উপগ্রহ (Herschel Basin Moon)",
+        radiusKm: "198 km",
+        distance: 11.2,
+        size: 0.38,
+        speed: 0.055,
+        color: "#cbd5e1",
+        orbitTilt: 0.25,
+        textureType: "rocky",
+        description: "রিংয়ের ঠিক বাইরে অবস্থিত বিশালাকার হার্শেল ক্র্যাটার বিশিষ্ট বরফ উপগ্রহ।",
+        descriptionEn: "Inner moon bearing the immense Herschel impact crater."
+      },
+      {
+        id: "chronos_enceladus",
+        name: "এনসেলাডাস (Enceladus-Geyser)",
+        nameEn: "Enceladus-Geyser",
+        type: "ক্রায়ো-গিজার উপগ্রহ (Cryovolcanic Ice Moon)",
+        radiusKm: "252 km",
+        distance: 13.5,
+        size: 0.46,
+        speed: 0.042,
+        color: "#f8fafc",
+        orbitTilt: 0.22,
+        textureType: "europa",
+        description: "সৌরজগতের সবচেয়ে শুভ্র ও প্রতিফলক বরফ পৃষ্ঠ, যার দক্ষিণ মেরু থেকে বরফের ফোয়ারা নির্গত হয়।",
+        descriptionEn: "Dazzling white world with south-polar cryovolcanic geysers feeding Saturn's rings."
+      },
+      {
+        id: "chronos_titan",
+        name: "টাইটান (Titan-Gold)",
+        nameEn: "Titan-Gold",
+        type: "ঘন বায়ুমণ্ডলীয় উপগ্রহ (Atmospheric Mega-Moon)",
+        radiusKm: "2,574 km",
+        distance: 17.5,
+        size: 0.96,
+        speed: 0.024,
+        color: "#f59e0b",
+        orbitTilt: 0.18,
+        textureType: "titan",
+        description: "ঘন নাইট্রোজেন ও মিথেন গ্যাসের সোনালী কুয়াশাময় বায়ুমণ্ডল এবং তরল মিথেনের হ্রদ বিশিষ্ট মহিমান্বিত উপগ্রহ।",
+        descriptionEn: "Magnificent moon cloaked in dense golden smog with liquid hydrocarbon seas."
+      },
+      {
+        id: "chronos_rhea",
+        name: "রিয়া (Rhea-Silicate)",
+        nameEn: "Rhea-Silicate",
+        type: "বরফ ও সিলিকেট উপগ্রহ (Ice-Silicate World)",
+        radiusKm: "763 km",
+        distance: 21.5,
+        size: 0.58,
+        speed: 0.016,
+        color: "#94a3b8",
+        orbitTilt: 0.15,
+        textureType: "rocky",
+        description: "ঘন বরফের ভূত্বক ও সূক্ষ্ম উল্কাপাত রেখাবিশিষ্ট প্রাচীন চাঁদ।",
+        descriptionEn: "Heavily cratered dirty-ice moon in distant stable resonance."
+      }
+    ]
   },
   {
     id: "aether_cyan",
@@ -192,7 +384,45 @@ const CELESTIAL_DATA = [
     orbitSpeed: 0.0028,
     rotationSpeed: 0.011,
     inclination: 0.14,
-    eccentricity: 0.04
+    eccentricity: 0.04,
+    hasRings: true,
+    ringInner: 3.4,
+    ringOuter: 4.8,
+    ringTilt: 1.52, // Near vertical 87 degree tilt (like Uranus!)
+    hasAtmosphereGlow: true,
+    atmosphereColor: 0x48cae4,
+    moons: [
+      {
+        id: "aether_miranda",
+        name: "মিরান্ডা (Miranda-Fractured)",
+        nameEn: "Miranda-Fractured",
+        type: "টেকটনিক গিরিখাত উপগ্রহ (Tectonic Canyon World)",
+        radiusKm: "235 km",
+        distance: 5.5,
+        size: 0.36,
+        speed: 0.044,
+        color: "#93c5fd",
+        orbitTilt: 0.85,
+        textureType: "rocky",
+        description: "সৌরজগতের গভীরতম গিরিখাত (Verona Rupes) ও অদ্ভুত জ্যামিতিক শেভরন বিশিষ্ট বিশৃঙ্খল ভূত্বকের চাঁদ।",
+        descriptionEn: "Chaotic tectonic terrain harboring the sheerest cliff cliffs in the solar system."
+      },
+      {
+        id: "aether_titania",
+        name: "টাইটানিয়া (Titania-Crown)",
+        nameEn: "Titania-Crown",
+        type: "প্রধান বরফ উপগ্রহ (Primary Ice Moon)",
+        radiusKm: "788 km",
+        distance: 8.8,
+        size: 0.62,
+        speed: 0.026,
+        color: "#bfdbfe",
+        orbitTilt: 0.85,
+        textureType: "rocky",
+        description: "ইথারের বৃহত্তম উপগ্রহ। বিশাল ফল্ট উপত্যকা এবং টেকটোনিক ফল্টলাইন দ্বারা আবৃত।",
+        descriptionEn: "Largest satellite of Aether, scarred by massive extensional fault trenches."
+      }
+    ]
   },
   {
     id: "hades_outpost",
@@ -214,6 +444,23 @@ const CELESTIAL_DATA = [
     orbitSpeed: 0.0018,
     rotationSpeed: 0.005,
     inclination: 0.19,
-    eccentricity: 0.12
+    eccentricity: 0.12,
+    moons: [
+      {
+        id: "hades_charon",
+        name: "শ্যারন (Charon-Binary)",
+        nameEn: "Charon-Binary",
+        type: "বাইনারি জোড় উপগ্রহ (Tidally Locked Companion)",
+        radiusKm: "606 km",
+        distance: 3.4,
+        size: 0.44,
+        speed: 0.032,
+        color: "#78716c",
+        orbitTilt: 0.28,
+        textureType: "rocky",
+        description: "হেডিসের সাথে মিউচুয়ালি টাইডাল-লকড লালচে থোলিন টুপিযুক্ত দানবীয় সহযোগী চাঁদ।",
+        descriptionEn: "Mutually locked binary companion capped with reddish hydrocarbon tholins."
+      }
+    ]
   }
 ];
