@@ -778,5 +778,307 @@ const CELESTIAL_DATA = [
         descriptionEn: "Mutually locked binary companion capped with reddish hydrocarbon tholins."
       }
     ]
+  },
+  {
+    id: "halcyon_c",
+    name: "হ্যালসিয়ন-সি ধূমকেতু (Halcyon-C)",
+    nameEn: "Halcyon-C Comet",
+    type: "ধূমকেতু (Eccentric Comet)",
+    spectral: "Volatile Ice C/2349-H1",
+    radiusKm: "12 km",
+    mass: "2.2 × 10¹⁴ kg",
+    temp: "-220°C (Aphelion) / 120°C (Perihelion)",
+    velocity: "18.4 - 84.6 km/s",
+    distanceAu: "0.80 - 45.0 AU",
+    period: "76.4 বছর",
+    description: "অতি-উপবৃত্তাকার কক্ষপথে ঘূর্ণায়মান সুপ্রাচীন বরফ ও মিথেন ধূমকেতু। সূর্যের কাছাকাছি এলে এর দৃষ্টিনন্দন দ্বৈত আয়ন ও ধূলিকণার লেজ প্রস্ফুটিত হয়।",
+    descriptionEn: "A pristine hyper-eccentric comet composed of frozen volatiles, displaying a luminous dual ion-dust tail as it sweeps past Solis-IX.",
+    color: "#7dfcff",
+    size: 0.42,
+    orbitRadius: 65,
+    orbitSpeed: 0.0035,
+    rotationSpeed: 0.02,
+    inclination: 0.56,
+    eccentricity: 0.76,
+    isComet: true,
+    perihelion: 20,
+    aphelion: 125,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "সৌর তাপে উদ্বায়ী বরফের বাষ্পীভবন ও আয়নিত পুচ্ছ",
+      weatherStatusEn: "Sublimation Geysers & Dual Ion-Dust Cometary Jet Streams",
+      windSpeed: "১২০ - ৫৫০ km/h (আউটগ্যাসিং জেট)",
+      windSpeedEn: "120 - 550 km/h (Outgassing Volatiles)",
+      avgWindKmh: 310,
+      windDirection: "সৌর বিকিরণ চাপের বিপরীতে বহির্মুখী পুচ্ছ",
+      windDirectionEn: "Anti-Solar Ion Stream Driven by Solar Wind",
+      surfacePressure: "10⁻⁸ bar (ভ্যাকুয়াম সদৃশ)",
+      stormActivity: "উদ্বায়ী মিথেন ও সায়ানাইড বাষ্পের ক্রায়ো-জেট",
+      stormActivityEn: "Subsurface Volatile Explosions & Micro-meteor Dust",
+      precipitation: "সৌর বিকিরণে অবমুক্ত বরফকুচি ও সিলিকেট কণা",
+      precipitationEn: "Silicate Dust Grains & Ionized Hydrocarbon Ice",
+      cloudCoverage: "কোমা ক্লাউড (Coma): ৫০,০০০ কিমি ব্যাস",
+      gases: [
+        { name: "জলীয় বাষ্প (H₂O)", nameEn: "Water Vapor", percent: 80.0, color: "#38bdf8" },
+        { name: "কার্বন ডাইঅক্সাইড (CO₂)", nameEn: "Carbon Dioxide", percent: 10.0, color: "#a855f7" },
+        { name: "কার্বন মনোক্সাইড (CO)", nameEn: "Carbon Monoxide", percent: 6.0, color: "#f59e0b" },
+        { name: "জৈব মিথেন ও সায়ানাইড (CH₄/CN)", nameEn: "Organics & Cyanogen", percent: 4.0, color: "#ec4899" }
+      ],
+      layers: [
+        { name: "নিউক্লিয়াস ক্রাস্ট (Icy Nucleus)", alt: "0 - 12 km", desc: "ছিদ্রযুক্ত অন্ধকার জৈব পদার্থের স্তর", descEn: "Dark porous silicate-organic crust" },
+        { name: "অভ্যন্তরীণ কোমা (Inner Coma)", alt: "12 - 5,000 km", desc: "ঘন গ্যাসীয় বাষ্পীভবন মণ্ডল", descEn: "Dense sublimation cloud surrounding nucleus" },
+        { name: "দ্বৈত পুচ্ছ মণ্ডল (Ion & Dust Tails)", alt: "5,000 - 10,000,000 km", desc: "লক্ষ লক্ষ কিলোমিটার দীর্ঘ আলোকোজ্জ্বল লেজ", descEn: "Dual magnetic ion and curved dust trails extending into deep space" }
+      ],
+      internalStructure: [
+        { layer: "ধূলিযুক্ত কার্বন ও বরফের ফ্র্যাজাইল ক্রাস্ট", depth: "0 - 1 km", temp: "-80°C" },
+        { layer: "অ্যামোর্ফাস পানি-বরফ ও শুষ্ক বরফের ম্যাট্রিক্স", depth: "1 - 12 km", temp: "-220°C" }
+      ]
+    },
+    moons: []
   }
 ];
+
+/**
+ * 12 FICTIONAL SCI-FI CONSTELLATIONS ASTRONOMICAL CATALOG
+ * Mapped across celestial sphere radius 780
+ */
+const CONSTELLATIONS_DATA = [
+  {
+    id: "cygnus_major",
+    name: "সিগনাস মেজর (হাঁস)",
+    nameEn: "Cygnus Major",
+    stars: [
+      { ra: 0.2, dec: 0.45, mag: 1.2, name: "Deneb-IX" },
+      { ra: 0.28, dec: 0.38, mag: 2.1, name: "Sadr-Beta" },
+      { ra: 0.35, dec: 0.32, mag: 1.8, name: "Gienah-Sol" },
+      { ra: 0.18, dec: 0.34, mag: 2.3, name: "Rukh" },
+      { ra: 0.39, dec: 0.25, mag: 2.5, name: "Albireo-V" }
+    ],
+    lines: [[0, 1], [1, 2], [1, 3], [1, 4]]
+  },
+  {
+    id: "orion_nexus",
+    name: "অরিয়ন নেক্সাস (শিকারী)",
+    nameEn: "Orion Nexus",
+    stars: [
+      { ra: 1.4, dec: 0.15, mag: 1.1, name: "Betel-Nexus" },
+      { ra: 1.35, dec: -0.15, mag: 1.0, name: "Rigel-Prime" },
+      { ra: 1.5, dec: 0.12, mag: 2.0, name: "Bellatrix-9" },
+      { ra: 1.48, dec: -0.16, mag: 2.2, name: "Saiph-IV" },
+      { ra: 1.42, dec: -0.02, mag: 2.4, name: "Alnitak" },
+      { ra: 1.44, dec: -0.01, mag: 2.3, name: "Alnilam" },
+      { ra: 1.46, dec: 0.00, mag: 2.4, name: "Mintaka" }
+    ],
+    lines: [[0, 2], [2, 6], [6, 5], [5, 4], [4, 1], [0, 4], [1, 3]]
+  },
+  {
+    id: "vela_prime",
+    name: "ভেলা প্রাইম (পালতোলা তরী)",
+    nameEn: "Vela Prime",
+    stars: [
+      { ra: 2.2, dec: -0.55, mag: 1.4, name: "Suhail-A" },
+      { ra: 2.35, dec: -0.48, mag: 2.1, name: "Kala" },
+      { ra: 2.45, dec: -0.62, mag: 1.9, name: "Regor" },
+      { ra: 2.15, dec: -0.68, mag: 2.4, name: "Markeb" }
+    ],
+    lines: [[0, 1], [1, 2], [2, 3], [3, 0], [0, 2]]
+  },
+  {
+    id: "aegis_shield",
+    name: "ইজিস শিল্ড (সুরক্ষা ঢাল)",
+    nameEn: "Aegis Shield",
+    stars: [
+      { ra: 3.1, dec: 0.28, mag: 1.5, name: "Apex-Shield" },
+      { ra: 3.25, dec: 0.35, mag: 2.2, name: "Crest-A" },
+      { ra: 3.35, dec: 0.22, mag: 2.0, name: "Base-Right" },
+      { ra: 3.22, dec: 0.12, mag: 1.8, name: "Bottom-Rim" },
+      { ra: 3.02, dec: 0.18, mag: 2.3, name: "Base-Left" }
+    ],
+    lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0], [0, 3]]
+  },
+  {
+    id: "phoenix_corridor",
+    name: "ফিনিক্স করিডোর (অগ্নিপাখি)",
+    nameEn: "Phoenix Corridor",
+    stars: [
+      { ra: 4.1, dec: -0.42, mag: 1.3, name: "Ankaa" },
+      { ra: 4.25, dec: -0.32, mag: 2.0, name: "Wurren" },
+      { ra: 4.38, dec: -0.46, mag: 2.3, name: "Boral" },
+      { ra: 3.95, dec: -0.50, mag: 2.2, name: "Zenith-Wing" }
+    ],
+    lines: [[0, 1], [0, 2], [0, 3], [1, 2]]
+  },
+  {
+    id: "centaurus_gate",
+    name: "সেন্টরাস গেটওয়ে",
+    nameEn: "Centaurus Gateway",
+    stars: [
+      { ra: 5.0, dec: -0.38, mag: 1.0, name: "Rigil-Kent" },
+      { ra: 5.15, dec: -0.42, mag: 1.5, name: "Hadar" },
+      { ra: 5.25, dec: -0.25, mag: 2.1, name: "Menkent" },
+      { ra: 4.90, dec: -0.22, mag: 2.4, name: "Muhlifain" }
+    ],
+    lines: [[0, 1], [1, 2], [2, 3], [3, 0]]
+  },
+  {
+    id: "draco_spiral",
+    name: "ড্রাকো স্পাইরাল (ড্রাগন)",
+    nameEn: "Draco Spiral",
+    stars: [
+      { ra: -0.5, dec: 0.65, mag: 1.6, name: "Thuban-IX" },
+      { ra: -0.3, dec: 0.72, mag: 2.0, name: "Rastaban" },
+      { ra: -0.1, dec: 0.68, mag: 1.8, name: "Eltanin" },
+      { ra: -0.2, dec: 0.58, mag: 2.3, name: "Grumium" },
+      { ra: -0.4, dec: 0.52, mag: 2.5, name: "Nod-Dragon" }
+    ],
+    lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0]]
+  },
+  {
+    id: "aquila_nav",
+    name: "অ্যাকুইলা নেভিগেটর (ঈগল)",
+    nameEn: "Aquila Navigator",
+    stars: [
+      { ra: -1.2, dec: 0.12, mag: 1.0, name: "Altair-Nav" },
+      { ra: -1.15, dec: 0.18, mag: 2.3, name: "Tarazed" },
+      { ra: -1.25, dec: 0.05, mag: 2.2, name: "Alshain" },
+      { ra: -1.35, dec: -0.05, mag: 2.5, name: "Deneb-Okab" }
+    ],
+    lines: [[1, 0], [0, 2], [2, 3]]
+  },
+  {
+    id: "hydra_void",
+    name: "হাইড্রা ভয়েড",
+    nameEn: "Hydra Void",
+    stars: [
+      { ra: -2.0, dec: -0.15, mag: 1.5, name: "Alphard-Sol" },
+      { ra: -1.8, dec: -0.08, mag: 2.2, name: "Minchir" },
+      { ra: -2.2, dec: -0.22, mag: 2.4, name: "Ashlesha" },
+      { ra: -2.4, dec: -0.30, mag: 2.1, name: "Ukdah" }
+    ],
+    lines: [[1, 0], [0, 2], [2, 3]]
+  },
+  {
+    id: "lyra_resonator",
+    name: "লাইরা রেজোনেটর",
+    nameEn: "Lyra Resonator",
+    stars: [
+      { ra: -2.8, dec: 0.42, mag: 0.8, name: "Vega-Prime" },
+      { ra: -2.72, dec: 0.36, mag: 2.4, name: "Sheliak" },
+      { ra: -2.76, dec: 0.32, mag: 2.3, name: "Sulafat" },
+      { ra: -2.88, dec: 0.38, mag: 2.6, name: "Epsilon-Lyr" }
+    ],
+    lines: [[0, 1], [1, 2], [2, 3], [3, 0], [0, 2]]
+  },
+  {
+    id: "corvus_beacon",
+    name: "করভাস বীকন (কাক)",
+    nameEn: "Corvus Beacon",
+    stars: [
+      { ra: -3.4, dec: -0.28, mag: 1.8, name: "Gienah-Corv" },
+      { ra: -3.55, dec: -0.35, mag: 2.1, name: "Kraz" },
+      { ra: -3.65, dec: -0.24, mag: 2.0, name: "Algorab" },
+      { ra: -3.48, dec: -0.18, mag: 2.5, name: "Minkar" }
+    ],
+    lines: [[0, 1], [1, 2], [2, 3], [3, 0]]
+  },
+  {
+    id: "pegasus_matrix",
+    name: "পেগাসাস মেট্রিক্স",
+    nameEn: "Pegasus Matrix",
+    stars: [
+      { ra: -4.2, dec: 0.25, mag: 1.4, name: "Markab" },
+      { ra: -4.0, dec: 0.28, mag: 1.7, name: "Scheat" },
+      { ra: -3.95, dec: 0.12, mag: 1.8, name: "Alpheratz" },
+      { ra: -4.18, dec: 0.08, mag: 2.2, name: "Algenib" }
+    ],
+    lines: [[0, 1], [1, 2], [2, 3], [3, 0]]
+  }
+];
+
+/**
+ * COMPREHENSIVE BILINGUAL UI DICTIONARY
+ */
+const STRINGS = {
+  en: {
+    title: 'SOLIS-IX · CELESTIAL BLUEPRINT',
+    subtitle: 'SYS.ID: SOLIS-IX // 3D ORBITAL MECHANICS SIMULATION // E-328',
+    audio: 'Audio',
+    tour: 'Tour',
+    info: 'Info',
+    capture: 'Capture',
+    thermal: 'Thermal',
+    search: 'Search (⌘K)',
+    scale: 'Scale',
+    reset: 'Reset',
+    pause: 'Pause',
+    play: 'Play',
+    speed: 'Speed',
+    mode: 'Mode',
+    modeFree: 'Free',
+    modeOrbit: 'Orbit-Lock',
+    modeOrrery: 'Orrery',
+    modeFly: 'Fly-by',
+    orbits: 'Orbits',
+    hud: 'Labels',
+    grid: 'Grid',
+    trails: 'Trails',
+    events: 'Events',
+    constellations: 'Constellations',
+    nebula: 'Nebula',
+    cardClose: 'Close',
+    exportJson: 'Export JSON',
+    scaleCompare: 'Scale Compare',
+    radius: 'Radius',
+    distance: 'Distance',
+    period: 'Orbital Period',
+    velocity: 'Velocity',
+    temp: 'Temp',
+    spectral: 'Spectral Class',
+    moons: 'Moons / Satellites',
+    searchPlaceholder: 'Search bodies (e.g. Zeus, Luna, Halcyon, Solis)...',
+    solarFlareAlert: '⚡ SOLAR FLARE DETECTED — MAGNITUDE X2.4 // RADIAL PROTON WAVE',
+    scaleTitle: 'CELESTIAL SCALE SILHOUETTE COMPARISON',
+    scaleSubtitle: 'True-to-Scale Silhouettes normalized vs Earth Reference (40px base)'
+  },
+  bn: {
+    title: 'সোলিস-৯ · সেলেস্টিয়াল ব্লুপ্রিন্ট',
+    subtitle: 'SYS.ID: SOLIS-IX // ৩ডি কক্ষপথ মেকানিক্স সিমুলেশন // E-328',
+    audio: 'সাউন্ড',
+    tour: 'ট্যুর',
+    info: 'তথ্য',
+    capture: 'ক্যাপচার',
+    thermal: 'থার্মাল',
+    search: 'খুঁজুন (⌘K)',
+    scale: 'স্কেল',
+    reset: 'রিসেট',
+    pause: 'বিরতি',
+    play: 'প্লে',
+    speed: 'গতি',
+    mode: 'মোড',
+    modeFree: 'ফ্রি ভিউ',
+    modeOrbit: 'অরবিট-লক',
+    modeOrrery: 'টপ-ডাউন অরেই',
+    modeFly: 'ফ্লাই-বাই',
+    orbits: 'কক্ষপথ',
+    hud: 'লেবেল',
+    grid: 'গ্রিড',
+    trails: 'ট্রেইল',
+    events: 'ঘটনা',
+    constellations: 'নক্ষত্রমণ্ডল',
+    nebula: 'নেবুলা',
+    cardClose: 'বন্ধ করুন',
+    exportJson: 'JSON এক্সপোর্ট',
+    scaleCompare: 'আকার তুলনা',
+    radius: 'ব্যাস (Radius)',
+    distance: 'দূরত্ব (Distance)',
+    period: 'আবর্তন কাল (Period)',
+    velocity: 'কক্ষপথ গতি (Velocity)',
+    temp: 'তাপমাত্রা (Temp)',
+    spectral: 'স্পেকট্রাল ক্লাস (Spectral)',
+    moons: 'উপগ্রহ মণ্ডল (Moons)',
+    searchPlaceholder: 'গ্রহ, চাঁদ বা ধূমকেতু খুঁজুন (যেমন: Zeus, Luna, Halcyon)...',
+    solarFlareAlert: '⚡ তীব্র সৌরশিখা সনাক্ত — মাত্রা X2.4 // উচ্চগতির প্রোটন তরঙ্গ বিচ্ছুরিত',
+    scaleTitle: 'মহাজাগতিক ব্যাস ও আকৃতির আপেক্ষিক তুলনা',
+    scaleSubtitle: 'পৃথিবীর মাপকে আদর্শ (৪০ পিক্সেল) ধরে সঠিক জ্যামিতিক স্কেলিং'
+  }
+};

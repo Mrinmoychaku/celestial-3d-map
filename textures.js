@@ -671,5 +671,130 @@ const TextureGenerator = {
     }
     ctx.putImageData(imgData, 0, 0);
     return new THREE.CanvasTexture(canvas);
+  },
+
+  // 16. Icy Volatile Comet Nucleus Texture
+  createCometTexture(width = 512, height = 256) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const n1 = this.fbm(u * 12, v * 12, 4);
+        const n2 = this.fbm(u * 32, v * 32, 2);
+        const crack = Math.abs(Math.sin(n1 * 14)) < 0.15 ? 1.0 : 0.0;
+
+        // Dark silicate crust with icy cyan-white vents
+        let r = 25 + n1 * 50;
+        let g = 35 + n1 * 70;
+        let b = 50 + n1 * 95;
+
+        if (crack > 0.5) {
+          r += 120 * n2;
+          g += 200 * n2;
+          b += 255 * n2;
+        }
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.min(255, r);
+        d[idx + 1] = Math.min(255, g);
+        d[idx + 2] = Math.min(255, b);
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 17. Scientific False-Color Thermal Infrared Heatmap Texture
+  createThermalTexture(width = 512, height = 256, seedOffset = 0) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const tempVal = this.fbm(u * 8 + seedOffset, v * 8, 4);
+
+        let r = 0, g = 0, b = 0;
+        // False color thermal gradient: Purple -> Blue -> Green -> Yellow -> Red -> White
+        if (tempVal < 0.2) {
+          const t = tempVal / 0.2;
+          r = Math.floor(20 * (1 - t) + 10 * t);
+          g = Math.floor(5 * (1 - t) + 40 * t);
+          b = Math.floor(70 * (1 - t) + 160 * t);
+        } else if (tempVal < 0.45) {
+          const t = (tempVal - 0.2) / 0.25;
+          r = Math.floor(10 * (1 - t) + 30 * t);
+          g = Math.floor(40 * (1 - t) + 190 * t);
+          b = Math.floor(160 * (1 - t) + 180 * t);
+        } else if (tempVal < 0.7) {
+          const t = (tempVal - 0.45) / 0.25;
+          r = Math.floor(30 * (1 - t) + 245 * t);
+          g = Math.floor(190 * (1 - t) + 190 * t);
+          b = Math.floor(180 * (1 - t) + 20 * t);
+        } else if (tempVal < 0.88) {
+          const t = (tempVal - 0.7) / 0.18;
+          r = Math.floor(245 * (1 - t) + 255 * t);
+          g = Math.floor(190 * (1 - t) + 40 * t);
+          b = Math.floor(20 * (1 - t) + 20 * t);
+        } else {
+          const t = (tempVal - 0.88) / 0.12;
+          r = 255;
+          g = Math.floor(40 * (1 - t) + 255 * t);
+          b = Math.floor(20 * (1 - t) + 255 * t);
+        }
+
+        const idx = (y * width + x) * 4;
+        d[idx] = r;
+        d[idx + 1] = g;
+        d[idx + 2] = b;
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 18. Procedural Vast Celestial Nebula Skybox
+  createNebulaSkyboxTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    
+    // Base cosmic deep void
+    ctx.fillStyle = '#02060f';
+    ctx.fillRect(0, 0, width, height);
+
+    const imgData = ctx.getImageData(0, 0, width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const nCyan = this.fbm(u * 4 + 1.2, v * 4, 3);
+        const nMagenta = this.fbm(u * 5 - 2.1, v * 5 + 0.8, 3);
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.min(255, d[idx] + Math.floor(nMagenta * 35));
+        d[idx + 1] = Math.min(255, d[idx + 1] + Math.floor(nCyan * 25));
+        d[idx + 2] = Math.min(255, d[idx + 2] + Math.floor((nCyan + nMagenta) * 48));
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
   }
 };

@@ -542,6 +542,216 @@
       margin-top: 3px;
     }
 
+    /* Solis-IX v2.0 Extensions */
+    .sim-clock-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--cyan-glow);
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      padding: 4px 10px;
+      border-radius: 3px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      margin-top: 4px;
+      display: inline-block;
+    }
+
+    .mode-select-group {
+      display: flex;
+      background: rgba(2, 10, 22, 0.85);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .mode-btn {
+      background: transparent;
+      border: none;
+      color: rgba(200, 235, 255, 0.7);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 5px 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-btn:hover {
+      color: #fff;
+      background: rgba(0, 240, 255, 0.15);
+    }
+    .mode-btn.active {
+      background: rgba(0, 240, 255, 0.25);
+      color: var(--cyan-glow);
+      font-weight: bold;
+      box-shadow: inset 0 0 6px rgba(0, 240, 255, 0.4);
+    }
+
+    .cmd-palette-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 15, 0.8);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 12vh;
+    }
+    .cmd-palette-backdrop.visible {
+      display: flex;
+    }
+    .cmd-palette-box {
+      width: 520px;
+      max-width: calc(100vw - 32px);
+      background: rgba(4, 14, 30, 0.95);
+      border: 1px solid var(--cyan-glow);
+      box-shadow: 0 0 35px rgba(0, 240, 255, 0.25), 0 10px 40px rgba(0, 0, 0, 0.8);
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: var(--font-mono);
+    }
+    .cmd-palette-input-wrap {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      gap: 10px;
+    }
+    .cmd-palette-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 14px;
+    }
+    .cmd-palette-list {
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+    .cmd-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 16px;
+      cursor: pointer;
+      font-size: 12px;
+      color: rgba(220, 240, 255, 0.85);
+      transition: background 0.15s;
+    }
+    .cmd-item:hover, .cmd-item.selected {
+      background: rgba(0, 240, 255, 0.2);
+      color: #fff;
+    }
+    .cmd-item-class {
+      font-size: 10px;
+      color: var(--cyan-glow);
+    }
+    .cmd-footer {
+      padding: 6px 16px;
+      background: rgba(2, 8, 18, 0.8);
+      font-size: 10px;
+      color: rgba(180, 215, 240, 0.6);
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid rgba(0, 240, 255, 0.1);
+    }
+
+    .scale-compare-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 42vh;
+      background: rgba(3, 10, 22, 0.96);
+      border-top: 2px solid var(--cyan-glow);
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+      z-index: 90;
+      backdrop-filter: blur(10px);
+      display: none;
+      flex-direction: column;
+      padding: 14px 20px;
+    }
+    .scale-compare-panel.visible {
+      display: flex;
+    }
+    .scale-compare-items {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      gap: 28px;
+      overflow-x: auto;
+      padding: 20px 10px;
+    }
+    .scale-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .scale-circle {
+      border-radius: 50%;
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      background: radial-gradient(circle, var(--circle-color, #00f0ff) 0%, rgba(10, 25, 45, 0.9) 100%);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+    }
+    .scale-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: #e2f1ff;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .solar-flare-alert {
+      position: fixed;
+      top: 75px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: rgba(245, 158, 11, 0.92);
+      border: 1px solid #ffd166;
+      color: #02060f;
+      font-family: var(--font-mono);
+      font-weight: bold;
+      font-size: 12px;
+      padding: 8px 18px;
+      border-radius: 4px;
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.6);
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .solar-flare-alert.visible {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .perf-monitor {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      background: rgba(2, 8, 18, 0.85);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 4px 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: #22c55e;
+      border-radius: 3px;
+      z-index: 95;
+      display: none;
+      pointer-events: none;
+    }
+    .perf-monitor.visible {
+      display: block;
+    }
+
     /* Mobile adjustments */
     @media (max-width: 640px) {
       .top-title-group p { display: none; }
@@ -576,12 +786,25 @@
     <div class="top-title-group">
       <h1>
         <span class="live-pulse"></span>
-        CELESTIAL BLUEPRINT // মহাজাগতিক থ্রিডি মডেল
+        <span id="header-title">SOLIS-IX · CELESTIAL BLUEPRINT</span>
       </h1>
-      <p>SYS.ID: SOLIS-IX // 3D ORBITAL MECHANICS SIMULATION // E-328</p>
+      <p id="header-subtitle">SYS.ID: SOLIS-IX // 3D ORBITAL MECHANICS SIMULATION // E-328</p>
+      <div class="sim-clock-badge" id="sim-clock-display">T+ 0000.000 d | EPOCH 2349.117 CE | 1.00× RT</div>
     </div>
 
     <div class="top-actions">
+      <button class="hud-btn" id="btn-search" title="কমান্ড প্যালেট / অনুসন্ধান (⌘K)">
+        <span id="search-lbl">Search (⌘K)</span>
+      </button>
+
+      <button class="hud-btn" id="btn-thermal" title="থার্মাল ইনফ্রারেড মোড (T)">
+        <span id="thermal-lbl">Thermal</span>
+      </button>
+
+      <button class="hud-btn" id="btn-capture" title="স্ক্রিনশট ক্যাপচার (PNG)">
+        <span id="capture-lbl">Capture</span>
+      </button>
+
       <button class="hud-btn" id="btn-audio" title="সাউন্ড টগল (Audio FX)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
@@ -595,7 +818,7 @@
           <circle cx="12" cy="12" r="10"/>
           <polygon points="10 8 16 12 10 16 10 8"/>
         </svg>
-        <span>Tour</span>
+        <span id="tour-lbl">Tour</span>
       </button>
 
       <button class="hud-btn" id="btn-toggle-info" title="তথ্য কার্ড দেখান / লুকান (Toggle Info Card)">
@@ -630,6 +853,13 @@
         <option value="2.0">2.0x (Fast)</option>
         <option value="4.0">4.0x (Warp)</option>
       </select>
+
+      <div class="mode-select-group" id="cam-mode-group" title="ক্যামেরা মোড">
+        <button class="mode-btn active" data-mode="free">FREE</button>
+        <button class="mode-btn" data-mode="orbit">ORBIT</button>
+        <button class="mode-btn" data-mode="orrery">ORRERY</button>
+        <button class="mode-btn" data-mode="fly">FLY</button>
+      </div>
     </div>
 
     <!-- Quick Jump Planet Selector -->
@@ -646,6 +876,7 @@
       <span class="jump-chip" onclick="simulation.selectMoonById('chronos_titan')">🟠 Titan</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('aether_cyan')">💎 Aether</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('hades_outpost')">❄️ Hades</span>
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('halcyon_c')">☄️ Halcyon-C</span>
     </div>
 
     <div class="toggle-group">
@@ -655,15 +886,31 @@
       </label>
       <label class="toggle-item">
         <input type="checkbox" id="toggle-orbits" checked>
-        <span>Orbits</span>
+        <span id="toggle-orbits-lbl">Orbits</span>
       </label>
       <label class="toggle-item">
         <input type="checkbox" id="toggle-hud">
-        <span>Labels</span>
+        <span id="toggle-hud-lbl">Labels</span>
       </label>
       <label class="toggle-item">
         <input type="checkbox" id="toggle-grid" checked>
-        <span>Grid</span>
+        <span id="toggle-grid-lbl">Grid</span>
+      </label>
+      <label class="toggle-item">
+        <input type="checkbox" id="toggle-trails">
+        <span id="toggle-trails-lbl">Trails</span>
+      </label>
+      <label class="toggle-item">
+        <input type="checkbox" id="toggle-events" checked>
+        <span id="toggle-events-lbl">Events</span>
+      </label>
+      <label class="toggle-item">
+        <input type="checkbox" id="toggle-constellations">
+        <span id="toggle-const-lbl">Constellations</span>
+      </label>
+      <label class="toggle-item">
+        <input type="checkbox" id="toggle-nebula" checked>
+        <span id="toggle-nebula-lbl">Nebula</span>
       </label>
     </div>
   </footer>
@@ -718,7 +965,48 @@
 
     <!-- Atmosphere & Weather Scanner Action Button -->
     <div id="tel-atmo-btn-container"></div>
+
+    <div class="tel-footer-actions" style="display: flex; gap: 8px; margin-top: 14px; border-top: 1px solid rgba(0, 240, 255, 0.2); padding-top: 10px;">
+      <button class="hud-btn" id="btn-scale-compare" style="flex: 1; font-size: 10px; justify-content: center;">◐ SCALE</button>
+      <button class="hud-btn" id="btn-export-json" style="flex: 1; font-size: 10px; justify-content: center;">⤓ JSON</button>
+    </div>
   </aside>
+
+  <!-- Space Weather Solar Flare Alert Banner -->
+  <div class="solar-flare-alert" id="solar-flare-alert">
+    <span style="font-size: 16px;">⚡</span>
+    <span id="solar-flare-alert-text">SOLAR FLARE DETECTED — MAGNITUDE X2.4 // RADIAL PROTON WAVE</span>
+  </div>
+
+  <!-- Performance Monitor Overlay (Ctrl+Shift+P) -->
+  <div class="perf-monitor" id="perf-monitor">FPS: 60 | DC: 42 | Tris: 128k</div>
+
+  <!-- Planet Size Comparison Bottom Panel -->
+  <div class="scale-compare-panel" id="scale-compare-modal">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(0, 240, 255, 0.25); padding-bottom: 8px;">
+      <div>
+        <div style="font-size: 14px; font-weight: bold; color: #fff;" id="scale-title-text">CELESTIAL SCALE SILHOUETTE COMPARISON</div>
+        <div style="font-size: 10px; color: var(--cyan-glow);" id="scale-sub-text">True-to-Scale Silhouettes normalized vs Earth Reference (40px base)</div>
+      </div>
+      <button class="hud-btn" id="scale-close-btn" style="padding: 3px 8px; font-size: 11px;">✕</button>
+    </div>
+    <div class="scale-compare-items" id="scale-items-container"></div>
+  </div>
+
+  <!-- Command Palette Fuzzy Search Modal (⌘K / Ctrl+K) -->
+  <div class="cmd-palette-backdrop" id="cmd-palette-modal">
+    <div class="cmd-palette-box">
+      <div class="cmd-palette-input-wrap">
+        <span style="color: var(--cyan-glow); font-size: 16px;">⌘</span>
+        <input type="text" class="cmd-palette-input" id="cmd-palette-input" placeholder="Search bodies (e.g. Zeus, Luna, Halcyon, Solis)..." autocomplete="off" />
+      </div>
+      <div class="cmd-palette-list" id="cmd-palette-list"></div>
+      <div class="cmd-footer">
+        <span>↑↓ Navigate · ↵ Select · Esc Close</span>
+        <span>SOLIS-IX NAV-SYSTEM</span>
+      </div>
+    </div>
+  </div>
 
   <!-- Deep Planetary Atmosphere & Weather Inspector Interface -->
   <aside class="atmo-inspector-panel" id="atmo-inspector-panel">
