@@ -47,10 +47,12 @@ class CelestialSimulation {
     this.defaultCameraPos = new THREE.Vector3(0, 85, 135);
     this.defaultTarget = new THREE.Vector3(0, 0, 0);
 
-    // Layer visibility (Labels OFF by default as requested!)
+    // Layer visibility (Labels & Info Card OFF by default to keep planet view clean!)
     this.showOrbits = true;
     const savedHud = localStorage.getItem('showHudLabels');
     this.showHudLabels = savedHud === 'true'; // false by default
+    const savedInfo = localStorage.getItem('showInfoCard');
+    this.showInfoCard = savedInfo === 'true'; // false by default as requested!
     this.showGrid = true;
     this.showAsteroids = true;
 
@@ -866,7 +868,6 @@ class CelestialSimulation {
 
   updateTelemetryCard(data) {
     const card = document.getElementById('telemetry-card');
-    card.classList.add('visible');
 
     const isBn = this.currentLanguage === 'bn';
 
@@ -906,11 +907,16 @@ class CelestialSimulation {
         moonsContainer.innerHTML = '';
       }
     }
+
+    if (this.showInfoCard) {
+      card.classList.add('visible');
+    } else {
+      card.classList.remove('visible');
+    }
   }
 
   updateMoonTelemetryCard(moonData, parentPlanet) {
     const card = document.getElementById('telemetry-card');
-    card.classList.add('visible');
 
     const isBn = this.currentLanguage === 'bn';
 
@@ -936,6 +942,47 @@ class CelestialSimulation {
           ⬅️ ${isBn ? 'মাতৃগ্রহে ফিরে যান' : 'Back to Parent Planet'}
         </span>
       `;
+    }
+
+    if (this.showInfoCard) {
+      card.classList.add('visible');
+    } else {
+      card.classList.remove('visible');
+    }
+  }
+
+  setInfoCardVisibility(visible) {
+    this.showInfoCard = !!visible;
+    localStorage.setItem('showInfoCard', this.showInfoCard ? 'true' : 'false');
+
+    const infoToggle = document.getElementById('toggle-info');
+    if (infoToggle) {
+      infoToggle.checked = this.showInfoCard;
+    }
+
+    const infoBtn = document.getElementById('btn-toggle-info');
+    if (infoBtn) {
+      infoBtn.classList.toggle('active', this.showInfoCard);
+    }
+
+    const card = document.getElementById('telemetry-card');
+    if (!card) return;
+
+    if (this.showInfoCard) {
+      if (this.selectedBody) {
+        if (this.selectedBody.isMoon) {
+          const moonObj = this.moons.find(m => m.data.id === this.selectedBody.data.id);
+          if (moonObj) this.updateMoonTelemetryCard(moonObj.data, moonObj.parentPlanet);
+        } else {
+          this.updateTelemetryCard(this.selectedBody.data);
+        }
+        card.classList.add('visible');
+      } else {
+        // If nothing is selected, focus on Terra Nova so user sees info immediately
+        this.selectCelestialBody('terra_nova');
+      }
+    } else {
+      card.classList.remove('visible');
     }
   }
 
@@ -1037,6 +1084,23 @@ class CelestialSimulation {
       });
     }
 
+    // INFO CARD TOGGLE (OFF by default to keep planet view clean)
+    const infoToggle = document.getElementById('toggle-info');
+    if (infoToggle) {
+      infoToggle.checked = this.showInfoCard;
+      infoToggle.addEventListener('change', (e) => {
+        this.setInfoCardVisibility(e.target.checked);
+      });
+    }
+
+    const infoBtn = document.getElementById('btn-toggle-info');
+    if (infoBtn) {
+      infoBtn.classList.toggle('active', this.showInfoCard);
+      infoBtn.addEventListener('click', () => {
+        this.setInfoCardVisibility(!this.showInfoCard);
+      });
+    }
+
     const gridToggle = document.getElementById('toggle-grid');
     if (gridToggle) {
       gridToggle.addEventListener('change', (e) => {
@@ -1083,16 +1147,20 @@ class CelestialSimulation {
     const closeTel = document.getElementById('tel-close');
     if (closeTel) {
       closeTel.addEventListener('click', () => {
-        document.getElementById('telemetry-card').classList.remove('visible');
-        this.clearHighlight();
-        this.isTracking = false;
-        this.selectedBody = null;
+        // Closing info card dismisses popup without unselecting or breaking 3D focus
+        this.setInfoCardVisibility(false);
       });
     }
   }
 
   updateLanguageTexts() {
     const isBn = this.currentLanguage === 'bn';
+
+    const infoLbl = document.getElementById('info-lbl');
+    if (infoLbl) infoLbl.textContent = isBn ? 'তথ্য' : 'Info';
+    const toggleInfoLbl = document.getElementById('toggle-info-lbl');
+    if (toggleInfoLbl) toggleInfoLbl.textContent = isBn ? 'তথ্য' : 'Info';
+
     this.planets.forEach(p => {
       const hudItem = this.hudElements.get(p.data.id);
       if (hudItem) {

@@ -598,6 +598,15 @@
         <span>Tour</span>
       </button>
 
+      <button class="hud-btn" id="btn-toggle-info" title="তথ্য কার্ড দেখান / লুকান (Toggle Info Card)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span id="info-lbl">Info</span>
+      </button>
+
       <button class="hud-btn" id="btn-lang" title="ভাষা পরিবর্তন">English</button>
 
       <button class="hud-btn" id="btn-reset" title="ভিউ রিসেট">Reset</button>
@@ -640,6 +649,10 @@
     </div>
 
     <div class="toggle-group">
+      <label class="toggle-item">
+        <input type="checkbox" id="toggle-info">
+        <span id="toggle-info-lbl">Info</span>
+      </label>
       <label class="toggle-item">
         <input type="checkbox" id="toggle-orbits" checked>
         <span>Orbits</span>
