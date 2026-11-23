@@ -119,6 +119,7 @@ class CelestialSimulation {
     this.setupStarfield();
     this.setupNebulae();
     this.setupNebulaSkybox();
+    this.setupSpiralGalaxies();
     this.setupConstellations();
     this.setupSolarWind();
     this.setupCoordinateGrid();
@@ -281,6 +282,37 @@ class CelestialSimulation {
     this.nebulaSkybox = new THREE.Mesh(geo, mat);
     this.nebulaSkybox.visible = this.showNebula;
     this.scene.add(this.nebulaSkybox);
+  }
+
+  setupSpiralGalaxies() {
+    this.distantGalaxiesGroup = new THREE.Group();
+    const galaxyConfigs = [
+      { name: "Andromeda M31", dist: 720, phi: 0.42, theta: 0.85, size: 280, armColor: "#7dd3fc", coreColor: "#ffffff", rot: 0.35, opacity: 0.65 },
+      { name: "Whirlpool M51", dist: 750, phi: -0.55, theta: 2.45, size: 220, armColor: "#c084fc", coreColor: "#fef08a", rot: -0.65, opacity: 0.60 },
+      { name: "Triangulum M33", dist: 700, phi: 0.32, theta: 4.10, size: 190, armColor: "#38bdf8", coreColor: "#fed7aa", rot: 0.82, opacity: 0.55 },
+      { name: "Sombrero Galaxy", dist: 760, phi: -0.28, theta: 5.30, size: 240, armColor: "#fde047", coreColor: "#ffffff", rot: -0.22, opacity: 0.58 }
+    ];
+
+    galaxyConfigs.forEach(cfg => {
+      const tex = TextureGenerator.createSpiralGalaxyTexture(512, cfg.armColor, cfg.coreColor);
+      const mat = new THREE.SpriteMaterial({
+        map: tex,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        opacity: cfg.opacity,
+        depthWrite: false,
+        rotation: cfg.rot
+      });
+      const sprite = new THREE.Sprite(mat);
+      const x = cfg.dist * Math.cos(cfg.phi) * Math.sin(cfg.theta);
+      const y = cfg.dist * Math.sin(cfg.phi);
+      const z = cfg.dist * Math.cos(cfg.phi) * Math.cos(cfg.theta);
+      sprite.position.set(x, y, z);
+      sprite.scale.set(cfg.size, cfg.size, 1);
+      this.distantGalaxiesGroup.add(sprite);
+    });
+
+    this.scene.add(this.distantGalaxiesGroup);
   }
 
   setupConstellations() {
@@ -814,6 +846,8 @@ class CelestialSimulation {
 
         if (data.id === 'terra_nova') {
           tex = TextureGenerator.createEarthTexture();
+        } else if (data.id === 'venusia_aurora') {
+          tex = TextureGenerator.createVenusTexture();
         } else if (data.id === 'chronos_magister') {
           tex = TextureGenerator.createSaturnTexture();
         } else if (data.id === 'zeus_major') {
@@ -822,6 +856,8 @@ class CelestialSimulation {
           tex = TextureGenerator.createMarsTexture();
         } else if (data.id === 'aether_cyan') {
           tex = TextureGenerator.createIceGiantTexture();
+        } else if (data.id === 'thalassa_azure') {
+          tex = TextureGenerator.createNeptuneTexture();
         } else {
           tex = TextureGenerator.createRockyTexture(512, 256, data.color === '#b56238' ? 0.75 : 0.5);
         }
@@ -877,6 +913,21 @@ class CelestialSimulation {
           group.add(ringMesh);
         }
 
+        // Azure Rings for Thalassa Azure (Neptune)
+        if (data.hasRings && data.id === 'thalassa_azure') {
+          const ringGeo = new THREE.RingGeometry(data.ringInner, data.ringOuter, 96);
+          const ringMat = new THREE.MeshBasicMaterial({
+            color: 0x60a5fa,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.40,
+            blending: THREE.AdditiveBlending
+          });
+          const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+          ringMesh.rotation.x = Math.PI / 2 + (data.ringTilt || 0.49);
+          group.add(ringMesh);
+        }
+
         // Moons
         if (data.moons && data.moons.length > 0) {
           data.moons.forEach(m => {
@@ -906,6 +957,12 @@ class CelestialSimulation {
               moonTex = TextureGenerator.createEuropaTexture();
             } else if (m.textureType === 'titan') {
               moonTex = TextureGenerator.createTitanTexture();
+            } else if (m.textureType === 'triton') {
+              moonTex = TextureGenerator.createTritonTexture();
+            } else if (m.textureType === 'iapetus') {
+              moonTex = TextureGenerator.createIapetusTexture();
+            } else if (m.textureType === 'charon') {
+              moonTex = TextureGenerator.createCharonTexture();
             } else {
               moonTex = TextureGenerator.createRockyTexture(256, 128, 0.5);
             }
@@ -1007,9 +1064,9 @@ class CelestialSimulation {
   }
 
   buildAsteroidBelt() {
-    const asteroidCount = 450;
-    const innerRadius = 49;
-    const outerRadius = 57;
+    const asteroidCount = 600;
+    const innerRadius = 36;
+    const outerRadius = 45;
 
     const baseGeometry = new THREE.DodecahedronGeometry(0.24, 1);
     const material = new THREE.MeshStandardMaterial({
@@ -1893,12 +1950,14 @@ class CelestialSimulation {
         case '1': this.selectCelestialBody('sun'); break;
         case '2': this.selectCelestialBody('cygnus_beacon'); break;
         case '3': this.selectCelestialBody('vulcanus'); break;
-        case '4': this.selectCelestialBody('terra_nova'); break;
-        case '5': this.selectCelestialBody('ares_crimson'); break;
-        case '6': this.selectCelestialBody('zeus_major'); break;
-        case '7': this.selectCelestialBody('chronos_magister'); break;
-        case '8': this.selectCelestialBody('aether_cyan'); break;
-        case '9': this.selectCelestialBody('hades_outpost'); break;
+        case '4': this.selectCelestialBody('venusia_aurora'); break;
+        case '5': this.selectCelestialBody('terra_nova'); break;
+        case '6': this.selectCelestialBody('ares_crimson'); break;
+        case '7': this.selectCelestialBody('zeus_major'); break;
+        case '8': this.selectCelestialBody('chronos_magister'); break;
+        case '9': this.selectCelestialBody('aether_cyan'); break;
+        case '0': this.selectCelestialBody('thalassa_azure'); break;
+        case '`': this.selectCelestialBody('hades_outpost'); break;
       }
     });
   }
@@ -2656,6 +2715,10 @@ class CelestialSimulation {
 
       if (this.nebulaSkybox) {
         this.nebulaSkybox.rotation.y += 0.0001;
+      }
+
+      if (this.distantGalaxiesGroup) {
+        this.distantGalaxiesGroup.rotation.y += 0.00003;
       }
 
       this.updateWaveRings(delta * this.timeScale);

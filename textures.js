@@ -978,5 +978,252 @@ const TextureGenerator = {
     }
     ctx.putImageData(imgData, 0, 0);
     return new THREE.CanvasTexture(canvas);
+  },
+
+  // 24. Venusia Sulfuric Golden Atmosphere (Venus)
+  createVenusTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        // High zonal super-rotation horizontal shearing
+        const stream = this.fbm(u * 16 + Math.sin(v * Math.PI * 4) * 0.4, v * 5, 4);
+        const fineStreak = this.fbm(u * 32, v * 20, 2);
+
+        // Sulfuric golden cream and amber hues
+        const r = Math.floor(215 + stream * 35 + fineStreak * 5);
+        const g = Math.floor(175 + stream * 45);
+        const b = Math.floor(70 + stream * 50 + fineStreak * 20);
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.min(255, r);
+        d[idx + 1] = Math.min(255, g);
+        d[idx + 2] = Math.min(255, b);
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 25. Thalassa Azure Supersonic Ice Giant (Neptune)
+  createNeptuneTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const band = Math.sin(v * Math.PI * 9 + this.fbm(u * 8, v * 8, 3) * 1.5);
+        const nCirrus = this.fbm(u * 28, v * 14, 3);
+
+        // Great Dark Spot vortex at u: ~0.45, v: ~0.62
+        const dx = (u - 0.45) * 4.0;
+        const dy = (v - 0.62) * 6.0;
+        const isDarkSpot = Math.sqrt(dx * dx + dy * dy) < 0.22;
+
+        let r = 24 + Math.floor(band * 12);
+        let g = 80 + Math.floor(band * 25);
+        let b = 210 + Math.floor(band * 45);
+
+        if (isDarkSpot) {
+          r = Math.floor(r * 0.45);
+          g = Math.floor(g * 0.45);
+          b = Math.floor(b * 0.65);
+        }
+
+        // Brilliant white methane cirrus cloud wisps
+        if (nCirrus > 0.68) {
+          const w = (nCirrus - 0.68) / 0.32;
+          r = Math.floor(r * (1 - w) + 240 * w);
+          g = Math.floor(g * (1 - w) + 245 * w);
+          b = Math.floor(b * (1 - w) + 255 * w);
+        }
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.max(0, Math.min(255, r));
+        d[idx + 1] = Math.max(0, Math.min(255, g));
+        d[idx + 2] = Math.max(0, Math.min(255, b));
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 26. Triton Cantaloupe & Cryogeyser Ice Moon (Neptune)
+  createTritonTexture(width = 512, height = 256) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        // Cantaloupe skin dimples & nitrogen frost
+        const dimple = Math.abs(Math.sin(this.fbm(u * 14, v * 14, 4) * Math.PI * 6));
+        const plume = (v > 0.7 && Math.abs(this.fbm(u * 20, v * 20, 2) - 0.5) < 0.08) ? 35 : 0;
+
+        const r = Math.floor(190 + dimple * 35 - plume);
+        const g = Math.floor(170 + dimple * 40 - plume);
+        const b = Math.floor(215 + dimple * 35);
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.min(255, r);
+        d[idx + 1] = Math.min(255, g);
+        d[idx + 2] = Math.min(255, b);
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 27. Iapetus Yin-Yang Two-Tone Moon (Saturn)
+  createIapetusTexture(width = 512, height = 256) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const n = this.fbm(u * 8, v * 8, 4);
+
+        // Leading hemisphere (dark Cassini Regio) vs trailing hemisphere (pure white ice)
+        const transition = Math.sin(u * Math.PI * 2) + n * 0.45;
+
+        let r, g, b;
+        if (transition < -0.1) {
+          // Dark carbonaceous asphalt
+          r = Math.floor(22 + n * 18);
+          g = Math.floor(18 + n * 14);
+          b = Math.floor(14 + n * 10);
+        } else if (transition > 0.2) {
+          // Bright icy white snow
+          r = Math.floor(220 + n * 30);
+          g = Math.floor(225 + n * 28);
+          b = Math.floor(235 + n * 20);
+        } else {
+          // Blend zone
+          const t = (transition + 0.1) / 0.3;
+          r = Math.floor(30 * (1 - t) + 220 * t);
+          g = Math.floor(25 * (1 - t) + 225 * t);
+          b = Math.floor(20 * (1 - t) + 235 * t);
+        }
+
+        const idx = (y * width + x) * 4;
+        d[idx] = r;
+        d[idx + 1] = g;
+        d[idx + 2] = b;
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 28. Charon Red-Capped Mordor Macula Moon (Pluto)
+  createCharonTexture(width = 512, height = 256) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const n = this.fbm(u * 10, v * 10, 4);
+
+        // North pole dark red tholin deposit (Mordor Macula)
+        const isNorthPole = (v < 0.22);
+        const canyon = Math.abs(v - 0.5) < 0.04 ? 35 : 0;
+
+        let r = 160 + Math.floor(n * 40) - canyon;
+        let g = 165 + Math.floor(n * 40) - canyon;
+        let b = 175 + Math.floor(n * 40) - canyon;
+
+        if (isNorthPole) {
+          const t = (0.22 - v) / 0.22;
+          r = Math.floor(r * (1 - t) + 165 * t);
+          g = Math.floor(g * (1 - t) + 65 * t);
+          b = Math.floor(b * (1 - t) + 45 * t);
+        }
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.min(255, Math.max(0, r));
+        d[idx + 1] = Math.min(255, Math.max(0, g));
+        d[idx + 2] = Math.min(255, Math.max(0, b));
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 29. Majestic Spiral Galaxy Billboard (Deep Background)
+  createSpiralGalaxyTexture(size = 512, colorHex = '#60a5fa') {
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const half = size / 2;
+
+    const imgData = ctx.createImageData(size, size);
+    const d = imgData.data;
+
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const dx = (x - half) / half;
+        const dy = (y - half) / half;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 1.0) continue;
+
+        const theta = Math.atan2(dy, dx);
+        // Two logarithmic spiral arms
+        const arm1 = Math.cos(theta * 2 - Math.log(dist + 0.01) * 3.5);
+        const armIntensity = Math.pow(Math.max(0, (arm1 + 1) / 2), 2.5);
+
+        // Radiant galactic core
+        const core = Math.exp(-dist * 4.5);
+        const total = Math.min(1.0, core * 1.5 + armIntensity * (1 - dist) * 0.85);
+
+        const r = Math.floor(255 * core + 96 * armIntensity);
+        const g = Math.floor(225 * core + 165 * armIntensity);
+        const b = Math.floor(190 * core + 250 * armIntensity);
+        const a = Math.floor(total * 255);
+
+        const idx = (y * size + x) * 4;
+        d[idx] = r;
+        d[idx + 1] = g;
+        d[idx + 2] = b;
+        d[idx + 3] = a;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
   }
 };

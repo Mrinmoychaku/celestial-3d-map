@@ -131,7 +131,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "The innermost rocky planet, scorched by solar radiation with active basaltic fissures and high orbital velocity.",
     color: "#b56238",
     size: 1.1,
-    orbitRadius: 15,
+    orbitRadius: 13,
     orbitSpeed: 0.018,
     rotationSpeed: 0.008,
     inclination: 0.12,
@@ -185,6 +185,64 @@ const CELESTIAL_DATA = [
     ]
   },
   {
+    id: "venusia_aurora",
+    name: "ভেনাসিয়া অরোরা (Venusia Aurora-II)",
+    nameEn: "Venusia Aurora-II",
+    type: "সুপার-হট গ্রিনহাউস গ্রহ (Hyper-Greenhouse Terran)",
+    spectral: "Carbon Dioxide / Sulfuric Atmosphere",
+    radiusKm: "6,051 km",
+    mass: "4.87 × 10²⁴ kg",
+    temp: "464°C (পৃষ্ঠভাগ) / ৯২ গুণ বায়ুমণ্ডলীয় চাপ",
+    velocity: "35.0 km/s",
+    distanceAu: "0.72 AU",
+    period: "225 দিন",
+    description: "ঘন সোনালী সালফিউরিক অ্যাসিডের মেঘে মোড়া সৌরজগতের সবচেয়ে উত্তপ্ত গ্রহ। এর চরম গ্রিনহাউস প্রভাব ও বিপরীতমুখী ঘূর্ণন গতি মহাজাগতিক বিস্ময়।",
+    descriptionEn: "The second planet shrouded in dense golden sulfuric acid clouds. Enduring a runaway greenhouse furnace with 92x Earth's surface pressure and retrograde rotation.",
+    color: "#eab308",
+    size: 2.05,
+    orbitRadius: 18,
+    orbitSpeed: 0.015,
+    rotationSpeed: -0.003,
+    inclination: 0.059,
+    eccentricity: 0.007,
+    hasAtmosphereGlow: true,
+    atmosphereColor: 0xfacc15,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "অতি-ঘন সালফিউরিক অ্যাসিড মেঘ ও সুপার-ঘূর্ণন ঝড়",
+      weatherStatusEn: "Super-rotating Sulfuric Acid Tempest & Global Lightning",
+      windSpeed: "৩৬০ - ৪০০ km/h (উচ্চ বায়ুমণ্ডলীয় ঝড়)",
+      windSpeedEn: "360 - 400 km/h (Upper Super-rotation)",
+      avgWindKmh: 360,
+      windDirection: "পূর্ব থেকে পশ্চিমমুখী প্রবল সুপার-রোটেশন",
+      windDirectionEn: "Retrograde Zonal Super-rotation",
+      surfacePressure: "92.0 bar (পৃথিবীর সমুদ্রের ১ কিমি গভীরে সমতুল্য)",
+      stormActivity: "ধাতব মেঘের বজ্রপাত ও লাভা ক্যালডেরা ধোঁয়াশা",
+      stormActivityEn: "Violent Sulfuric Lightning & Volcanic Flumes",
+      precipitation: "সালফিউরিক অ্যাসিডের বৃষ্টি (যা মাটিতে পৌঁছানোর আগেই বাষ্পীভূত হয় - Virga)",
+      precipitationEn: "Sulfuric Acid Virga (evaporates before ground)",
+      cloudCoverage: "১০০% অপেক সোনালী মেঘের চাদর",
+      gases: [
+        { name: "কার্বন ডাই অক্সাইড (CO₂)", nameEn: "Carbon Dioxide (CO₂)", percent: 96.5, color: "#f59e0b" },
+        { name: "নাইট্রোজেন গ্যাস (N₂)", nameEn: "Nitrogen (N₂)", percent: 3.5, color: "#38bdf8" },
+        { name: "সালফার ডাই অক্সাইড (SO₂)", nameEn: "Sulfur Dioxide (SO₂)", percent: 0.015, color: "#eab308" },
+        { name: "জলীয় বাষ্প ও আর্গন (H₂O/Ar)", nameEn: "Water/Argon Trace", percent: 0.005, color: "#a855f7" }
+      ],
+      layers: [
+        { name: "আপার ক্লাউড ডেক", nameEn: "Upper Cloud Deck", alt: "58 - 70 km", desc: "সালফিউরিক অ্যাসিড ফোঁটা ও অতিবেগুনি ব্যান্ড", descEn: "H₂SO₄ aerosols and UV-absorbing wind streaks" },
+        { name: "মিডল ক্লাউড লেয়ার", nameEn: "Middle Cloud Layer", alt: "50 - 58 km", desc: "ঘন সালফার কণা ও শক্তিশালী বৈদ্যুতিক ক্ষেত্র", descEn: "Dense particulate sulfur and electrostatic charge" },
+        { name: "লোয়ার ক্লাউড ও হ্যাজ", nameEn: "Lower Haze", alt: "32 - 50 km", desc: "চরম উত্তপ্ত ধোঁয়াশা ও স্বচ্ছ সুপারক্রিটিক্যাল ফ্লুইড স্তর", descEn: "Supercritical CO₂ transition zone" },
+        { name: "ট্রপোস্ফিয়ার ক্রাস্ট বাউন্ডারি", nameEn: "Tropospheric Surface", alt: "0 - 32 km", desc: "৪৬৫°C উত্তপ্ত ঘন গ্যাস সমুদ্র, বাতাস ঘন তেলের মতো প্রবাহিত হয়", descEn: "Dense fluid-like CO₂ ocean under 92 bar pressure" }
+      ],
+      internalStructure: [
+        { layer: "সিলিকন বেসাল্টিক ক্রাস্ট", depth: "0 - 50 km", temp: "470°C" },
+        { layer: "সিলিকন-ম্যাগনেসিয়াম পাথুরে ম্যান্টল", depth: "50 - 3,000 km", temp: "1,500°C" },
+        { layer: "আংশিক কঠিন লোহা-নিকেল কোর", depth: "3,000 - 6,051 km", temp: "3,200°C" }
+      ]
+    },
+    moons: []
+  },
+  {
     id: "terra_nova",
     name: "টেরা নোভা (Terra Nova-III)",
     nameEn: "Terra Nova-III",
@@ -200,7 +258,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "The sapphire jewel of the system with vast oceans, continental landmasses, swirling atmosphere, and an orbiting natural satellite.",
     color: "#2a82d2",
     size: 2.2,
-    orbitRadius: 23,
+    orbitRadius: 24,
     orbitSpeed: 0.012,
     rotationSpeed: 0.014,
     inclination: 0.035,
@@ -278,7 +336,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "Rusty ochre desert world marked by deep rift valleys, iron-rich sandstorms, and polar dry-ice caps.",
     color: "#df5a2c",
     size: 1.5,
-    orbitRadius: 32,
+    orbitRadius: 31,
     orbitSpeed: 0.009,
     rotationSpeed: 0.012,
     inclination: 0.05,
@@ -366,7 +424,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "The largest gas giant in the sector, characterized by dynamic atmospheric cloud bands and an ancient anticyclonic vortex storm.",
     color: "#d9a16a",
     size: 4.2,
-    orbitRadius: 44,
+    orbitRadius: 52,
     orbitSpeed: 0.006,
     rotationSpeed: 0.02,
     inclination: 0.065,
@@ -486,7 +544,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "The centerpiece ringed colossus featured prominently in the reference blueprint, flanked by luminous concentric rings and orbital markers.",
     color: "#e8c99b",
     size: 3.8,
-    orbitRadius: 58,
+    orbitRadius: 68,
     orbitSpeed: 0.0042,
     rotationSpeed: 0.018,
     inclination: 0.09,
@@ -553,9 +611,9 @@ const CELESTIAL_DATA = [
         nameEn: "Enceladus-Geyser",
         type: "ক্রায়ো-গিজার উপগ্রহ (Cryovolcanic Ice Moon)",
         radiusKm: "252 km",
-        distance: 13.5,
-        size: 0.46,
-        speed: 0.042,
+        distance: 13.0,
+        size: 0.44,
+        speed: 0.045,
         color: "#f8fafc",
         orbitTilt: 0.22,
         textureType: "europa",
@@ -563,14 +621,59 @@ const CELESTIAL_DATA = [
         descriptionEn: "Dazzling white world with south-polar cryovolcanic geysers feeding Saturn's rings."
       },
       {
+        id: "chronos_tethys",
+        name: "টেথিস (Tethys-Chasma)",
+        nameEn: "Tethys-Chasma",
+        type: "বরফ ফাটল উপগ্রহ (Icy Rift Moon)",
+        radiusKm: "531 km",
+        distance: 14.8,
+        size: 0.46,
+        speed: 0.038,
+        color: "#e2e8f0",
+        orbitTilt: 0.20,
+        textureType: "rocky",
+        description: "বিশাল ইথাকা গিরিখাত ও ওডিসিউস ক্র্যাটার যুক্ত শুভ্র বরফ উপগ্রহ।",
+        descriptionEn: "Pristine ice-shell moon gouged by the Ithaca Chasma trench spanning three quarters of its circumference."
+      },
+      {
+        id: "chronos_dione",
+        name: "ডায়োনি (Dione-Wisps)",
+        nameEn: "Dione-Wisps",
+        type: "ফাটল বরফ প্রাচীর উপগ্রহ (Chasmata Ice Moon)",
+        radiusKm: "561 km",
+        distance: 16.8,
+        size: 0.48,
+        speed: 0.032,
+        color: "#cbd5e1",
+        orbitTilt: 0.19,
+        textureType: "rocky",
+        description: "উজ্জ্বল বরফের উল্লম্ব প্রাচীর রেখা এবং প্রাচীন ক্র্যাটারে আবৃত চাঁদ।",
+        descriptionEn: "Fractured ice-cliff world interlaced with radiant chasms and cratered highlands."
+      },
+      {
+        id: "chronos_rhea",
+        name: "রিয়া (Rhea-Silicate)",
+        nameEn: "Rhea-Silicate",
+        type: "বরফ ও সিলিকেট উপগ্রহ (Ice-Silicate World)",
+        radiusKm: "763 km",
+        distance: 19.2,
+        size: 0.58,
+        speed: 0.026,
+        color: "#94a3b8",
+        orbitTilt: 0.16,
+        textureType: "rocky",
+        description: "ঘন বরফের ভূত্বক ও সূক্ষ্ম উল্কাপাত রেখাবিশিষ্ট প্রাচীন চাঁদ।",
+        descriptionEn: "Heavily cratered dirty-ice moon in distant stable resonance."
+      },
+      {
         id: "chronos_titan",
         name: "টাইটান (Titan-Gold)",
         nameEn: "Titan-Gold",
         type: "ঘন বায়ুমণ্ডলীয় উপগ্রহ (Atmospheric Mega-Moon)",
         radiusKm: "2,574 km",
-        distance: 17.5,
+        distance: 23.5,
         size: 0.96,
-        speed: 0.024,
+        speed: 0.018,
         color: "#f59e0b",
         orbitTilt: 0.18,
         textureType: "titan",
@@ -603,19 +706,19 @@ const CELESTIAL_DATA = [
         }
       },
       {
-        id: "chronos_rhea",
-        name: "রিয়া (Rhea-Silicate)",
-        nameEn: "Rhea-Silicate",
-        type: "বরফ ও সিলিকেট উপগ্রহ (Ice-Silicate World)",
-        radiusKm: "763 km",
-        distance: 21.5,
-        size: 0.58,
-        speed: 0.016,
-        color: "#94a3b8",
-        orbitTilt: 0.15,
-        textureType: "rocky",
-        description: "ঘন বরফের ভূত্বক ও সূক্ষ্ম উল্কাপাত রেখাবিশিষ্ট প্রাচীন চাঁদ।",
-        descriptionEn: "Heavily cratered dirty-ice moon in distant stable resonance."
+        id: "chronos_iapetus",
+        name: "ইয়াপেটাস (Iapetus-YinYang)",
+        nameEn: "Iapetus-YinYang",
+        type: "দ্বি-বর্ণ রহস্যময় উপগ্রহ (Two-Tone Yin-Yang World)",
+        radiusKm: "734 km",
+        distance: 28.5,
+        size: 0.52,
+        speed: 0.012,
+        color: "#475569",
+        orbitTilt: 0.32,
+        textureType: "iapetus",
+        description: "বিচিত্র দ্বি-বর্ণ উপগ্রহ: একপাশ কয়লার মতো ঘোর কালো (ক্যাসিনি রেজিও) এবং অপরপাশ শুভ্র বরফের তুষারাবৃত চূড়া।",
+        descriptionEn: "Mysterious yin-yang moon with an obsidian-dark leading hemisphere and brilliant white icy trailing face, bordered by an equatorial mountain ridge."
       }
     ]
   },
@@ -635,7 +738,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "A pristine aquamarine ice giant draped in high-altitude methane haze with delicate perpendicular ring arcs.",
     color: "#4ad6d8",
     size: 2.8,
-    orbitRadius: 72,
+    orbitRadius: 84,
     orbitSpeed: 0.0028,
     rotationSpeed: 0.011,
     inclination: 0.14,
@@ -687,7 +790,7 @@ const CELESTIAL_DATA = [
         radiusKm: "235 km",
         distance: 5.5,
         size: 0.36,
-        speed: 0.044,
+        speed: 0.048,
         color: "#93c5fd",
         orbitTilt: 0.85,
         textureType: "rocky",
@@ -695,26 +798,163 @@ const CELESTIAL_DATA = [
         descriptionEn: "Chaotic tectonic terrain harboring the sheerest cliff cliffs in the solar system."
       },
       {
+        id: "aether_ariel",
+        name: "এরিয়েল (Ariel-Rifts)",
+        nameEn: "Ariel-Rifts",
+        type: "উজ্জ্বল গ্রাবেন গিরিখাত উপগ্রহ (Bright Rifted Moon)",
+        radiusKm: "579 km",
+        distance: 7.2,
+        size: 0.44,
+        speed: 0.038,
+        color: "#c7d2fe",
+        orbitTilt: 0.85,
+        textureType: "rocky",
+        description: "ইথারের সবচেয়ে উজ্জ্বল এবং গভীর টেকটোনিক ফল্ট গিরিখাতে আবৃত বরফ উপগ্রহ।",
+        descriptionEn: "Brightest Uranian moon interlaced with interconnected fault scarps and icy smooth canyon floors."
+      },
+      {
+        id: "aether_umbriel",
+        name: "আমব্রিয়েল (Umbriel-Dark)",
+        nameEn: "Umbriel-Dark",
+        type: "অন্ধকার প্রাচীন উপগ্রহ (Dark Primordial Moon)",
+        radiusKm: "585 km",
+        distance: 9.0,
+        size: 0.42,
+        speed: 0.030,
+        color: "#64748b",
+        orbitTilt: 0.85,
+        textureType: "rocky",
+        description: "অন্ধকারাচ্ছন্ন প্রাচীন পৃষ্ঠ এবং ওন্ডা ক্র্যাটারের রহস্যময় উজ্জ্বল শুভ্র রিং।",
+        descriptionEn: "Darkest Uranian satellite with primordial cratered crust and the enigmatic bright ring of Wunda crater."
+      },
+      {
         id: "aether_titania",
         name: "টাইটানিয়া (Titania-Crown)",
         nameEn: "Titania-Crown",
         type: "প্রধান বরফ উপগ্রহ (Primary Ice Moon)",
         radiusKm: "788 km",
-        distance: 8.8,
+        distance: 11.2,
         size: 0.62,
-        speed: 0.026,
+        speed: 0.024,
         color: "#bfdbfe",
         orbitTilt: 0.85,
         textureType: "rocky",
         description: "ইথারের বৃহত্তম উপগ্রহ। বিশাল ফল্ট উপত্যকা এবং টেকটোনিক ফল্টলাইন দ্বারা আবৃত।",
         descriptionEn: "Largest satellite of Aether, scarred by massive extensional fault trenches."
+      },
+      {
+        id: "aether_oberon",
+        name: "ওবেরন (Oberon-Frontier)",
+        nameEn: "Oberon-Frontier",
+        type: "বহিঃস্থ প্রাচীন উপগ্রহ (Outer Cratered Giant Moon)",
+        radiusKm: "761 km",
+        distance: 13.5,
+        size: 0.58,
+        speed: 0.018,
+        color: "#94a3b8",
+        orbitTilt: 0.85,
+        textureType: "rocky",
+        description: "দূরতম প্রাচীন চাঁদ, কার্বন-সমৃদ্ধ অন্ধকার লাভা উপত্যকা ও সুবিশাল হ্যামলেট ক্র্যাটার বিশিষ্ট।",
+        descriptionEn: "Outermost major Uranian moon, heavily cratered with high fault scarps and dark hydrocarbon-floored basins."
+      }
+    ]
+  },
+  {
+    id: "thalassa_azure",
+    name: "থালাসা আজুর (Thalassa Azure-VIII)",
+    nameEn: "Thalassa Azure-VIII",
+    type: "মহাসমুদ্র বরফ দানব (Azure Ice Giant)",
+    spectral: "Super-Deep Methane & Hydrogen Complex",
+    radiusKm: "24,622 km",
+    mass: "1.024 × 10²⁶ kg",
+    temp: "-201°C (ক্লাউড ডেক) / ৭,০০০°C (কোর)",
+    velocity: "5.4 km/s",
+    distanceAu: "7.80 AU",
+    period: "164.8 বছর",
+    description: "মহাজাগতিক সীমানার গভীর গাঢ় নীল বরফ দানব। এর বায়ুমণ্ডলে প্রতি ঘণ্টায় ২,১০০ কিলোমিটার বেগে তাণ্ডব চালায় সৌরজগতের তীব্রতম সুপারসনিক সাইক্লোন ও গ্রেট ডার্ক স্পট।",
+    descriptionEn: "The deep cobalt blue ice giant, home to supersonic jet streams surpassing 2,100 km/h and massive transient dark anticyclonic vortices.",
+    color: "#2563eb",
+    size: 2.7,
+    orbitRadius: 98,
+    orbitSpeed: 0.0022,
+    rotationSpeed: 0.013,
+    inclination: 0.075,
+    eccentricity: 0.011,
+    hasRings: true,
+    ringInner: 3.3,
+    ringOuter: 4.5,
+    ringTilt: 0.49,
+    hasAtmosphereGlow: true,
+    atmosphereColor: 0x3b82f6,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "সৌরজগতের তীব্রতম সুপারসনিক সাইক্লোন ও গ্রেট ডার্ক স্পট",
+      weatherStatusEn: "Supersonic High-Mach Gales & The Great Dark Spot Anticyclone",
+      windSpeed: "১,৫০০ - ২,২০০ km/h (শব্দের চেয়ে দ্রুততম ঝড়)",
+      windSpeedEn: "1,500 - 2,200 km/h (Fastest winds recorded in the system)",
+      avgWindKmh: 1750,
+      windDirection: "নিরক্ষরেখায় প্রবল পশ্চিমমুখী সুপারসনিক কারেন্ট",
+      windDirectionEn: "Retrograde Supersonic Equatorial Jet",
+      surfacePressure: "1.5 bar (Cloud Deck) থেকে লক্ষ লক্ষ bar",
+      stormActivity: "পৃথিবী সমান আকারের ঘূর্ণায়মান অন্ধকার অ্যান্টি-সাইক্লোন ও সাদা মিথেন মেঘমালা",
+      stormActivityEn: "Earth-sized Great Dark Vortex & High-altitude Cirrus Feathers",
+      precipitation: "তরল মিথেন শিশির ও অভ্যন্তরে উত্তপ্ত তরল হীরা মহাসাগর",
+      precipitationEn: "Methane Ice Snowflakes & Superdense Liquid Diamond Ocean",
+      cloudCoverage: "১০০% (গভীর গাঢ় নীলাভ মিথেন কুয়াশা ও সাদা পালক মেঘ)",
+      gases: [
+        { name: "আণবিক হাইড্রোজেন (H₂)", nameEn: "Hydrogen (H₂)", percent: 80.0, color: "#f59e0b" },
+        { name: "হিলিয়াম গ্যাস (He)", nameEn: "Helium (He)", percent: 19.0, color: "#fbbf24" },
+        { name: "মিথেন গ্যাস (CH₄)", nameEn: "Methane (CH₄)", percent: 1.5, color: "#2563eb" },
+        { name: "হাইড্রোজেন ডিউটেরাইড (HD)", nameEn: "Hydrogen Deuteride", percent: 0.019, color: "#a855f7" }
+      ],
+      layers: [
+        { name: "উচ্চ মিথেন সাইরাস বরফ পালক", nameEn: "Methane Cirrus Feathers", alt: "0 - 50 km", desc: "বায়ুমণ্ডলের ৫০ কিমি উঁচুতে ভাসমান শুভ্র মিথেন বরফের পালক", descEn: "High-altitude bright white methane ice clouds casting shadows" },
+        { name: "গ্রেট ডার্ক স্পট ট্রপোস্ফিয়ার", nameEn: "Great Dark Spot Deck", alt: "50 - 150 km", desc: "পৃথিবী সমান দানবীয় অন্ধকার অ্যান্টি-সাইক্লোন ঘূর্ণি", descEn: "Gigantic high-pressure vortex dynamically drifting across latitudes" },
+        { name: "সুপার-আয়নিক ফুটন্ত বরফ মহাসাগর", nameEn: "Super-ionic Slush Mantle", alt: "150 - 18,000 km", desc: "চরম তাপে সংকুচিত বিদ্যুৎ পরিবাহী পানি-অ্যামোনিয়া মহাসাগর", descEn: "Superdense hot fluid water-methane-ammonia ocean with diamond rains" }
+      ],
+      internalStructure: [
+        { layer: "বহিস্থ গাঢ় নীল মিথেন বায়ুমণ্ডল", depth: "0 - 4,000 km", temp: "-201°C - 500°C" },
+        { layer: "সুপার-আয়নিত ফুটন্ত বরফ মহাসাগর", depth: "4,000 - 20,000 km", temp: "2,000°C - 5,000°C" },
+        { layer: "কঠিন লোহা-নিকেল ও সিলিকেট পাথুরে কোর", depth: "20,000 - 24,622 km", temp: "7,000°C" }
+      ]
+    },
+    moons: [
+      {
+        id: "thalassa_triton",
+        name: "ট্রাইটন (Triton-Geyser)",
+        nameEn: "Triton-Geyser",
+        type: "বিপরীতমুখী ক্রায়ো-উপগ্রহ (Retrograde Cryo World)",
+        radiusKm: "1,353 km",
+        distance: 5.8,
+        size: 0.58,
+        speed: -0.032,
+        color: "#bfdbfe",
+        orbitTilt: 0.55,
+        textureType: "triton",
+        description: "বিপরীতমুখী কক্ষপথে ঘূর্ণায়মান কাইপার বেল্ট থেকে আটকানো উপগ্রহ। তরমুজের খোসার মতো ক্যানটালুপ ভূত্বক এবং নাইট্রোজেন বরফের ৮ কিমি উঁচু গিজার ফোয়ারা বিশিষ্ট।",
+        descriptionEn: "Captured retrograde Kuiper Belt world featuring cantaloupe terrain and towering nitrogen cryogeysers."
+      },
+      {
+        id: "thalassa_nereid",
+        name: "নিরিড (Nereid-Eccentric)",
+        nameEn: "Nereid-Eccentric",
+        type: "অতি-উপবৃত্তাকার দূরবর্তী চাঁদ (High-Eccentricity Moon)",
+        radiusKm: "170 km",
+        distance: 9.6,
+        size: 0.28,
+        speed: 0.015,
+        color: "#94a3b8",
+        orbitTilt: 0.35,
+        textureType: "rocky",
+        description: "সৌরজগতের সর্বাধিক উপবৃত্তাকার কক্ষপথ সম্পন্ন দূরবর্তী বরফ-পাথুরে উপগ্রহ।",
+        descriptionEn: "Outermost irregular satellite possessing the highest orbital eccentricity of any moon."
       }
     ]
   },
   {
     id: "hades_outpost",
-    name: "হেডিস আউটপোস্ট (Hades Deep-VIII)",
-    nameEn: "Hades Deep-VIII",
+    name: "হেডিস আউটপোস্ট (Hades Deep-IX)",
+    nameEn: "Hades Deep-IX",
     type: "দূরবর্তী বামন গ্রহ (Trans-Neptunian Dwarf)",
     spectral: "Nitrogen Ice Crust",
     radiusKm: "1,188 km",
@@ -727,7 +967,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "The distant sentinel at the edge of deep space, drifting quietly among the outer cometary debris field.",
     color: "#b0b8c6",
     size: 0.9,
-    orbitRadius: 86,
+    orbitRadius: 112,
     orbitSpeed: 0.0018,
     rotationSpeed: 0.005,
     inclination: 0.19,
@@ -773,9 +1013,9 @@ const CELESTIAL_DATA = [
         speed: 0.032,
         color: "#78716c",
         orbitTilt: 0.28,
-        textureType: "rocky",
-        description: "হেডিসের সাথে মিউচুয়ালি টাইডাল-লকড লালচে থোলিন টুপিযুক্ত দানবীয় সহযোগী চাঁদ।",
-        descriptionEn: "Mutually locked binary companion capped with reddish hydrocarbon tholins."
+        textureType: "charon",
+        description: "হেডিসের সাথে মিউচুয়ালি টাইডাল-লকড লালচে থোলিন টুপিযুক্ত (মর্ডর ম্যাকুলা) সহযোগী চাঁদ।",
+        descriptionEn: "Mutually locked binary companion capped with reddish hydrocarbon tholins (Mordor Macula) and deep equatorial chasmata."
       }
     ]
   },
@@ -1123,9 +1363,11 @@ const TIMELINE_EPOCHS = [
       flareMultiplier: 3.0
     },
     planetChanges: [
+      { id: "venusia_aurora", state: "proto_furnace", descBn: "আদিম উত্তপ্ত লাভা ক্রাস্ট ও বাষ্পীয় খোলস", descEn: "Primordial steam furnace & basalt magma crust" },
       { id: "terra_nova", state: "molten", descBn: "লাভা সমুদ্র ও ফুটন্ত শিলা", descEn: "Global magma ocean, zero liquid water" },
       { id: "ares_crimson", state: "molten", descBn: "তপ্ত ব্যাসাল্ট ও উল্কা খাদ", descEn: "Violent basalt bombardment" },
-      { id: "chronos_magister", state: "dense_dust", descBn: "অতি-ঘন ধ্বংসাবশেষের ঘূর্ণায়মান রিং", descEn: "Chaotic primordial debris disc" }
+      { id: "chronos_magister", state: "dense_dust", descBn: "অতি-ঘন ধ্বংসাবশেষের ঘূর্ণায়মান রিং", descEn: "Chaotic primordial debris disc" },
+      { id: "thalassa_azure", state: "proto_giant", descBn: "উত্তপ্ত বরফ-গ্যাসীয় সংগ্রাহক ডিস্ক", descEn: "Accreting hot ice mantle" }
     ]
   },
   {
@@ -1147,6 +1389,7 @@ const TIMELINE_EPOCHS = [
       flareMultiplier: 1.0
     },
     planetChanges: [
+      { id: "venusia_aurora", state: "ancient_habitable", descBn: "প্রাচীন অগভীর সাগর ও নাতিশীতোষ্ণ মেঘ", descEn: "Ancient temperate oceans prior to runaway greenhouse" },
       { id: "terra_nova", state: "ancient_ocean", descBn: "৮৫% গভীর নীল মহাসাগর ও আদিম শৈবাল", descEn: "Deep global blue ocean, single-cell life" },
       { id: "ares_crimson", state: "oceanic_mars", descBn: "বহমান নীল নদী ও মহাসাগরীয় অববাহিকা", descEn: "Blue Mars: liquid lakes and active clouds" },
       { id: "chronos_magister", state: "pristine_rings", descBn: "স্ফটিকের মতো অতি-উজ্জ্বল রিং", descEn: "Newly formed razor-sharp ice rings" }
@@ -1171,9 +1414,11 @@ const TIMELINE_EPOCHS = [
       flareMultiplier: 1.0
     },
     planetChanges: [
+      { id: "venusia_aurora", state: "current", descBn: "ঘন সোনালী সালফিউরিক মেঘ ও সুপার-ঘূর্ণন", descEn: "Super-rotating sulfuric cloud canopy" },
       { id: "terra_nova", state: "current", descBn: "আধুনিক মহাসাগরীয় মহাজাগতিক বিশ্ব", descEn: "Oceanic cradle of civilization" },
       { id: "ares_crimson", state: "current", descBn: "শুষ্ক লাল মরুভূমি ও গ্র্যান্ড ক্যানিয়ন", descEn: "Ferric red deserts and deep canyons" },
-      { id: "chronos_magister", state: "current", descBn: "ক্লাসিক্যাল বলয় ও গ্যাসীয় মেঘমালা", descEn: "Banded gas storm giant with rings" }
+      { id: "chronos_magister", state: "current", descBn: "ক্লাসিক্যাল বলয় ও গ্যাসীয় মেঘমালা", descEn: "Banded gas storm giant with rings" },
+      { id: "thalassa_azure", state: "current", descBn: "গাঢ় নীল বরফ দানব ও সুপারসনিক ঝড়", descEn: "Supersonic cobalt ice giant" }
     ]
   },
   {
@@ -1195,6 +1440,7 @@ const TIMELINE_EPOCHS = [
       flareMultiplier: 0.6
     },
     planetChanges: [
+      { id: "venusia_aurora", state: "solar_shade", descBn: "সোলার সানশেড ও শীতল বায়ুমণ্ডলীয় নিষ্কাশন", descEn: "Lagrange orbital solar shade & atmospheric scrubbing" },
       { id: "terra_nova", state: "megacity", descBn: "অরবিটাল এলিভেটর ও মেগাসিটি গ্রিড", descEn: "Orbital rings, hyper-connected ecumenopolis" },
       { id: "ares_crimson", state: "terraformed_green", descBn: "টেরাফর্মড সবুজ অরণ্য ও নীল সাগর", descEn: "Terraformed: green biomes and fresh seas" },
       { id: "cygnus_beacon", state: "megastructure", descBn: "উন্নত অরবিটাল হাব ও ডাইসন নোড", descEn: "Holographic mega-station and Dyson node" }
@@ -1219,9 +1465,11 @@ const TIMELINE_EPOCHS = [
       flareMultiplier: 2.2
     },
     planetChanges: [
+      { id: "venusia_aurora", state: "vaporized", descBn: "সৌরশিখায় ভস্মীভূত গলিত সিলিকা গোলক", descEn: "Completely scorched by expanding solar photosphere" },
       { id: "terra_nova", state: "scorched_dry", descBn: "বাষ্পীভূত শুকনো সমুদ্রতল ও উত্তপ্ত মরুভূমি", descEn: "Oceans boiled away; scorched arid wasteland" },
       { id: "ares_crimson", state: "baked", descBn: "চরম উত্তপ্ত শিলাভূমি ও পাতলা ধোঁয়াশা", descEn: "Sun-baked crust stripped of atmosphere" },
-      { id: "zeus_europa", state: "tropical_ocean", descBn: "বরফ গলে সৃষ্টি হওয়া উষ্ণ গ্রীষ্মমণ্ডলীয় সাগর", descEn: "Europa thawed: tropical planetary ocean world" }
+      { id: "zeus_europa", state: "tropical_ocean", descBn: "বরফ গলে সৃষ্টি হওয়া উষ্ণ গ্রীষ্মমণ্ডলীয় সাগর", descEn: "Europa thawed: tropical planetary ocean world" },
+      { id: "thalassa_azure", state: "warm_slush", descBn: "উষ্ণতর গ্যাসীয় খোলস ও নীল কুয়াশা", descEn: "Warming methane envelope" }
     ]
   },
   {
@@ -1245,7 +1493,8 @@ const TIMELINE_EPOCHS = [
     planetChanges: [
       { id: "terra_nova", state: "frozen_grave", descBn: "হিমায়িত মিথেন বরফ ও নিথর আঁধার", descEn: "Frozen atmospheric frost and utter silence" },
       { id: "ares_crimson", state: "deep_freeze", descBn: "চরম শীতল জমাটবাঁধা তুষারভূমি", descEn: "Deep cosmic freeze; glacial methane dunes" },
-      { id: "chronos_magister", state: "dissipated_rings", descBn: "বলয় ক্ষয়ে যাওয়া শান্ত বরফ দানব", descEn: "Dissipated faint rings under faint starlight" }
+      { id: "chronos_magister", state: "dissipated_rings", descBn: "বলয় ক্ষয়ে যাওয়া শান্ত বরফ দানব", descEn: "Dissipated faint rings under faint starlight" },
+      { id: "thalassa_azure", state: "frozen_abyss", descBn: "নিথর অন্ধকার বরফে হিমায়িত দানব", descEn: "Deep blue frozen abyss under dead starlight" }
     ]
   }
 ];

@@ -1485,6 +1485,7 @@
       <span class="jump-chip" onclick="simulation.selectCelestialBody('sun')">☀️ Solis</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('cygnus_beacon')">⚡ Beacon</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('vulcanus')">🌋 Vulcan</span>
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('venusia_aurora')">🟡 Venusia</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('terra_nova')">🌍 Terra</span>
       <span class="jump-chip" onclick="simulation.selectMoonById('terra_luna')">🌕 Luna</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('ares_crimson')">🔴 Ares</span>
@@ -1493,7 +1494,9 @@
       <span class="jump-chip" onclick="simulation.selectCelestialBody('chronos_magister')">🪐 Chronos</span>
       <span class="jump-chip" onclick="simulation.selectMoonById('chronos_titan')">🟠 Titan</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('aether_cyan')">💎 Aether</span>
-      <span class="jump-chip" onclick="simulation.selectCelestialBody('hades_outpost')">❄️ Hades</span>
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('thalassa_azure')">🔷 Thalassa</span>
+      <span class="jump-chip" onclick="simulation.selectMoonById('thalassa_triton')">❄️ Triton</span>
+      <span class="jump-chip" onclick="simulation.selectCelestialBody('hades_outpost')">🪨 Hades</span>
       <span class="jump-chip" onclick="simulation.selectCelestialBody('halcyon_c')">☄️ Halcyon-C</span>
     </div>
 
@@ -3025,7 +3028,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "The innermost rocky planet, scorched by solar radiation with active basaltic fissures and high orbital velocity.",
     color: "#b56238",
     size: 1.1,
-    orbitRadius: 15,
+    orbitRadius: 13,
     orbitSpeed: 0.018,
     rotationSpeed: 0.008,
     inclination: 0.12,
@@ -3079,6 +3082,64 @@ const CELESTIAL_DATA = [
     ]
   },
   {
+    id: "venusia_aurora",
+    name: "ভেনাসিয়া অরোরা (Venusia Aurora-II)",
+    nameEn: "Venusia Aurora-II",
+    type: "সুপার-হট গ্রিনহাউস গ্রহ (Hyper-Greenhouse Terran)",
+    spectral: "Carbon Dioxide / Sulfuric Atmosphere",
+    radiusKm: "6,051 km",
+    mass: "4.87 × 10²⁴ kg",
+    temp: "464°C (পৃষ্ঠভাগ) / ৯২ গুণ বায়ুমণ্ডলীয় চাপ",
+    velocity: "35.0 km/s",
+    distanceAu: "0.72 AU",
+    period: "225 দিন",
+    description: "ঘন সোনালী সালফিউরিক অ্যাসিডের মেঘে মোড়া সৌরজগতের সবচেয়ে উত্তপ্ত গ্রহ। এর চরম গ্রিনহাউস প্রভাব ও বিপরীতমুখী ঘূর্ণন গতি মহাজাগতিক বিস্ময়।",
+    descriptionEn: "The second planet shrouded in dense golden sulfuric acid clouds. Enduring a runaway greenhouse furnace with 92x Earth's surface pressure and retrograde rotation.",
+    color: "#eab308",
+    size: 2.05,
+    orbitRadius: 18,
+    orbitSpeed: 0.015,
+    rotationSpeed: -0.003,
+    inclination: 0.059,
+    eccentricity: 0.007,
+    hasAtmosphereGlow: true,
+    atmosphereColor: 0xfacc15,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "অতি-ঘন সালফিউরিক অ্যাসিড মেঘ ও সুপার-ঘূর্ণন ঝড়",
+      weatherStatusEn: "Super-rotating Sulfuric Acid Tempest & Global Lightning",
+      windSpeed: "৩৬০ - ৪০০ km/h (উচ্চ বায়ুমণ্ডলীয় ঝড়)",
+      windSpeedEn: "360 - 400 km/h (Upper Super-rotation)",
+      avgWindKmh: 360,
+      windDirection: "পূর্ব থেকে পশ্চিমমুখী প্রবল সুপার-রোটেশন",
+      windDirectionEn: "Retrograde Zonal Super-rotation",
+      surfacePressure: "92.0 bar (পৃথিবীর সমুদ্রের ১ কিমি গভীরে সমতুল্য)",
+      stormActivity: "ধাতব মেঘের বজ্রপাত ও লাভা ক্যালডেরা ধোঁয়াশা",
+      stormActivityEn: "Violent Sulfuric Lightning & Volcanic Flumes",
+      precipitation: "সালফিউরিক অ্যাসিডের বৃষ্টি (যা মাটিতে পৌঁছানোর আগেই বাষ্পীভূত হয় - Virga)",
+      precipitationEn: "Sulfuric Acid Virga (evaporates before ground)",
+      cloudCoverage: "১০০% অপেক সোনালী মেঘের চাদর",
+      gases: [
+        { name: "কার্বন ডাই অক্সাইড (CO₂)", nameEn: "Carbon Dioxide (CO₂)", percent: 96.5, color: "#f59e0b" },
+        { name: "নাইট্রোজেন গ্যাস (N₂)", nameEn: "Nitrogen (N₂)", percent: 3.5, color: "#38bdf8" },
+        { name: "সালফার ডাই অক্সাইড (SO₂)", nameEn: "Sulfur Dioxide (SO₂)", percent: 0.015, color: "#eab308" },
+        { name: "জলীয় বাষ্প ও আর্গন (H₂O/Ar)", nameEn: "Water/Argon Trace", percent: 0.005, color: "#a855f7" }
+      ],
+      layers: [
+        { name: "আপার ক্লাউড ডেক", nameEn: "Upper Cloud Deck", alt: "58 - 70 km", desc: "সালফিউরিক অ্যাসিড ফোঁটা ও অতিবেগুনি ব্যান্ড", descEn: "H₂SO₄ aerosols and UV-absorbing wind streaks" },
+        { name: "মিডল ক্লাউড লেয়ার", nameEn: "Middle Cloud Layer", alt: "50 - 58 km", desc: "ঘন সালফার কণা ও শক্তিশালী বৈদ্যুতিক ক্ষেত্র", descEn: "Dense particulate sulfur and electrostatic charge" },
+        { name: "লোয়ার ক্লাউড ও হ্যাজ", nameEn: "Lower Haze", alt: "32 - 50 km", desc: "চরম উত্তপ্ত ধোঁয়াশা ও স্বচ্ছ সুপারক্রিটিক্যাল ফ্লুইড স্তর", descEn: "Supercritical CO₂ transition zone" },
+        { name: "ট্রপোস্ফিয়ার ক্রাস্ট বাউন্ডারি", nameEn: "Tropospheric Surface", alt: "0 - 32 km", desc: "৪৬৫°C উত্তপ্ত ঘন গ্যাস সমুদ্র, বাতাস ঘন তেলের মতো প্রবাহিত হয়", descEn: "Dense fluid-like CO₂ ocean under 92 bar pressure" }
+      ],
+      internalStructure: [
+        { layer: "সিলিকন বেসাল্টিক ক্রাস্ট", depth: "0 - 50 km", temp: "470°C" },
+        { layer: "সিলিকন-ম্যাগনেসিয়াম পাথুরে ম্যান্টল", depth: "50 - 3,000 km", temp: "1,500°C" },
+        { layer: "আংশিক কঠিন লোহা-নিকেল কোর", depth: "3,000 - 6,051 km", temp: "3,200°C" }
+      ]
+    },
+    moons: []
+  },
+  {
     id: "terra_nova",
     name: "টেরা নোভা (Terra Nova-III)",
     nameEn: "Terra Nova-III",
@@ -3094,7 +3155,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "The sapphire jewel of the system with vast oceans, continental landmasses, swirling atmosphere, and an orbiting natural satellite.",
     color: "#2a82d2",
     size: 2.2,
-    orbitRadius: 23,
+    orbitRadius: 24,
     orbitSpeed: 0.012,
     rotationSpeed: 0.014,
     inclination: 0.035,
@@ -3172,7 +3233,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "Rusty ochre desert world marked by deep rift valleys, iron-rich sandstorms, and polar dry-ice caps.",
     color: "#df5a2c",
     size: 1.5,
-    orbitRadius: 32,
+    orbitRadius: 31,
     orbitSpeed: 0.009,
     rotationSpeed: 0.012,
     inclination: 0.05,
@@ -3260,7 +3321,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "The largest gas giant in the sector, characterized by dynamic atmospheric cloud bands and an ancient anticyclonic vortex storm.",
     color: "#d9a16a",
     size: 4.2,
-    orbitRadius: 44,
+    orbitRadius: 52,
     orbitSpeed: 0.006,
     rotationSpeed: 0.02,
     inclination: 0.065,
@@ -3380,7 +3441,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "The centerpiece ringed colossus featured prominently in the reference blueprint, flanked by luminous concentric rings and orbital markers.",
     color: "#e8c99b",
     size: 3.8,
-    orbitRadius: 58,
+    orbitRadius: 68,
     orbitSpeed: 0.0042,
     rotationSpeed: 0.018,
     inclination: 0.09,
@@ -3447,9 +3508,9 @@ const CELESTIAL_DATA = [
         nameEn: "Enceladus-Geyser",
         type: "ক্রায়ো-গিজার উপগ্রহ (Cryovolcanic Ice Moon)",
         radiusKm: "252 km",
-        distance: 13.5,
-        size: 0.46,
-        speed: 0.042,
+        distance: 13.0,
+        size: 0.44,
+        speed: 0.045,
         color: "#f8fafc",
         orbitTilt: 0.22,
         textureType: "europa",
@@ -3457,14 +3518,59 @@ const CELESTIAL_DATA = [
         descriptionEn: "Dazzling white world with south-polar cryovolcanic geysers feeding Saturn's rings."
       },
       {
+        id: "chronos_tethys",
+        name: "টেথিস (Tethys-Chasma)",
+        nameEn: "Tethys-Chasma",
+        type: "বরফ ফাটল উপগ্রহ (Icy Rift Moon)",
+        radiusKm: "531 km",
+        distance: 14.8,
+        size: 0.46,
+        speed: 0.038,
+        color: "#e2e8f0",
+        orbitTilt: 0.20,
+        textureType: "rocky",
+        description: "বিশাল ইথাকা গিরিখাত ও ওডিসিউস ক্র্যাটার যুক্ত শুভ্র বরফ উপগ্রহ।",
+        descriptionEn: "Pristine ice-shell moon gouged by the Ithaca Chasma trench spanning three quarters of its circumference."
+      },
+      {
+        id: "chronos_dione",
+        name: "ডায়োনি (Dione-Wisps)",
+        nameEn: "Dione-Wisps",
+        type: "ফাটল বরফ প্রাচীর উপগ্রহ (Chasmata Ice Moon)",
+        radiusKm: "561 km",
+        distance: 16.8,
+        size: 0.48,
+        speed: 0.032,
+        color: "#cbd5e1",
+        orbitTilt: 0.19,
+        textureType: "rocky",
+        description: "উজ্জ্বল বরফের উল্লম্ব প্রাচীর রেখা এবং প্রাচীন ক্র্যাটারে আবৃত চাঁদ।",
+        descriptionEn: "Fractured ice-cliff world interlaced with radiant chasms and cratered highlands."
+      },
+      {
+        id: "chronos_rhea",
+        name: "রিয়া (Rhea-Silicate)",
+        nameEn: "Rhea-Silicate",
+        type: "বরফ ও সিলিকেট উপগ্রহ (Ice-Silicate World)",
+        radiusKm: "763 km",
+        distance: 19.2,
+        size: 0.58,
+        speed: 0.026,
+        color: "#94a3b8",
+        orbitTilt: 0.16,
+        textureType: "rocky",
+        description: "ঘন বরফের ভূত্বক ও সূক্ষ্ম উল্কাপাত রেখাবিশিষ্ট প্রাচীন চাঁদ।",
+        descriptionEn: "Heavily cratered dirty-ice moon in distant stable resonance."
+      },
+      {
         id: "chronos_titan",
         name: "টাইটান (Titan-Gold)",
         nameEn: "Titan-Gold",
         type: "ঘন বায়ুমণ্ডলীয় উপগ্রহ (Atmospheric Mega-Moon)",
         radiusKm: "2,574 km",
-        distance: 17.5,
+        distance: 23.5,
         size: 0.96,
-        speed: 0.024,
+        speed: 0.018,
         color: "#f59e0b",
         orbitTilt: 0.18,
         textureType: "titan",
@@ -3497,19 +3603,19 @@ const CELESTIAL_DATA = [
         }
       },
       {
-        id: "chronos_rhea",
-        name: "রিয়া (Rhea-Silicate)",
-        nameEn: "Rhea-Silicate",
-        type: "বরফ ও সিলিকেট উপগ্রহ (Ice-Silicate World)",
-        radiusKm: "763 km",
-        distance: 21.5,
-        size: 0.58,
-        speed: 0.016,
-        color: "#94a3b8",
-        orbitTilt: 0.15,
-        textureType: "rocky",
-        description: "ঘন বরফের ভূত্বক ও সূক্ষ্ম উল্কাপাত রেখাবিশিষ্ট প্রাচীন চাঁদ।",
-        descriptionEn: "Heavily cratered dirty-ice moon in distant stable resonance."
+        id: "chronos_iapetus",
+        name: "ইয়াপেটাস (Iapetus-YinYang)",
+        nameEn: "Iapetus-YinYang",
+        type: "দ্বি-বর্ণ রহস্যময় উপগ্রহ (Two-Tone Yin-Yang World)",
+        radiusKm: "734 km",
+        distance: 28.5,
+        size: 0.52,
+        speed: 0.012,
+        color: "#475569",
+        orbitTilt: 0.32,
+        textureType: "iapetus",
+        description: "বিচিত্র দ্বি-বর্ণ উপগ্রহ: একপাশ কয়লার মতো ঘোর কালো (ক্যাসিনি রেজিও) এবং অপরপাশ শুভ্র বরফের তুষারাবৃত চূড়া।",
+        descriptionEn: "Mysterious yin-yang moon with an obsidian-dark leading hemisphere and brilliant white icy trailing face, bordered by an equatorial mountain ridge."
       }
     ]
   },
@@ -3529,7 +3635,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "A pristine aquamarine ice giant draped in high-altitude methane haze with delicate perpendicular ring arcs.",
     color: "#4ad6d8",
     size: 2.8,
-    orbitRadius: 72,
+    orbitRadius: 84,
     orbitSpeed: 0.0028,
     rotationSpeed: 0.011,
     inclination: 0.14,
@@ -3581,7 +3687,7 @@ const CELESTIAL_DATA = [
         radiusKm: "235 km",
         distance: 5.5,
         size: 0.36,
-        speed: 0.044,
+        speed: 0.048,
         color: "#93c5fd",
         orbitTilt: 0.85,
         textureType: "rocky",
@@ -3589,26 +3695,163 @@ const CELESTIAL_DATA = [
         descriptionEn: "Chaotic tectonic terrain harboring the sheerest cliff cliffs in the solar system."
       },
       {
+        id: "aether_ariel",
+        name: "এরিয়েল (Ariel-Rifts)",
+        nameEn: "Ariel-Rifts",
+        type: "উজ্জ্বল গ্রাবেন গিরিখাত উপগ্রহ (Bright Rifted Moon)",
+        radiusKm: "579 km",
+        distance: 7.2,
+        size: 0.44,
+        speed: 0.038,
+        color: "#c7d2fe",
+        orbitTilt: 0.85,
+        textureType: "rocky",
+        description: "ইথারের সবচেয়ে উজ্জ্বল এবং গভীর টেকটোনিক ফল্ট গিরিখাতে আবৃত বরফ উপগ্রহ।",
+        descriptionEn: "Brightest Uranian moon interlaced with interconnected fault scarps and icy smooth canyon floors."
+      },
+      {
+        id: "aether_umbriel",
+        name: "আমব্রিয়েল (Umbriel-Dark)",
+        nameEn: "Umbriel-Dark",
+        type: "অন্ধকার প্রাচীন উপগ্রহ (Dark Primordial Moon)",
+        radiusKm: "585 km",
+        distance: 9.0,
+        size: 0.42,
+        speed: 0.030,
+        color: "#64748b",
+        orbitTilt: 0.85,
+        textureType: "rocky",
+        description: "অন্ধকারাচ্ছন্ন প্রাচীন পৃষ্ঠ এবং ওন্ডা ক্র্যাটারের রহস্যময় উজ্জ্বল শুভ্র রিং।",
+        descriptionEn: "Darkest Uranian satellite with primordial cratered crust and the enigmatic bright ring of Wunda crater."
+      },
+      {
         id: "aether_titania",
         name: "টাইটানিয়া (Titania-Crown)",
         nameEn: "Titania-Crown",
         type: "প্রধান বরফ উপগ্রহ (Primary Ice Moon)",
         radiusKm: "788 km",
-        distance: 8.8,
+        distance: 11.2,
         size: 0.62,
-        speed: 0.026,
+        speed: 0.024,
         color: "#bfdbfe",
         orbitTilt: 0.85,
         textureType: "rocky",
         description: "ইথারের বৃহত্তম উপগ্রহ। বিশাল ফল্ট উপত্যকা এবং টেকটোনিক ফল্টলাইন দ্বারা আবৃত।",
         descriptionEn: "Largest satellite of Aether, scarred by massive extensional fault trenches."
+      },
+      {
+        id: "aether_oberon",
+        name: "ওবেরন (Oberon-Frontier)",
+        nameEn: "Oberon-Frontier",
+        type: "বহিঃস্থ প্রাচীন উপগ্রহ (Outer Cratered Giant Moon)",
+        radiusKm: "761 km",
+        distance: 13.5,
+        size: 0.58,
+        speed: 0.018,
+        color: "#94a3b8",
+        orbitTilt: 0.85,
+        textureType: "rocky",
+        description: "দূরতম প্রাচীন চাঁদ, কার্বন-সমৃদ্ধ অন্ধকার লাভা উপত্যকা ও সুবিশাল হ্যামলেট ক্র্যাটার বিশিষ্ট।",
+        descriptionEn: "Outermost major Uranian moon, heavily cratered with high fault scarps and dark hydrocarbon-floored basins."
+      }
+    ]
+  },
+  {
+    id: "thalassa_azure",
+    name: "থালাসা আজুর (Thalassa Azure-VIII)",
+    nameEn: "Thalassa Azure-VIII",
+    type: "মহাসমুদ্র বরফ দানব (Azure Ice Giant)",
+    spectral: "Super-Deep Methane & Hydrogen Complex",
+    radiusKm: "24,622 km",
+    mass: "1.024 × 10²⁶ kg",
+    temp: "-201°C (ক্লাউড ডেক) / ৭,০০০°C (কোর)",
+    velocity: "5.4 km/s",
+    distanceAu: "7.80 AU",
+    period: "164.8 বছর",
+    description: "মহাজাগতিক সীমানার গভীর গাঢ় নীল বরফ দানব। এর বায়ুমণ্ডলে প্রতি ঘণ্টায় ২,১০০ কিলোমিটার বেগে তাণ্ডব চালায় সৌরজগতের তীব্রতম সুপারসনিক সাইক্লোন ও গ্রেট ডার্ক স্পট।",
+    descriptionEn: "The deep cobalt blue ice giant, home to supersonic jet streams surpassing 2,100 km/h and massive transient dark anticyclonic vortices.",
+    color: "#2563eb",
+    size: 2.7,
+    orbitRadius: 98,
+    orbitSpeed: 0.0022,
+    rotationSpeed: 0.013,
+    inclination: 0.075,
+    eccentricity: 0.011,
+    hasRings: true,
+    ringInner: 3.3,
+    ringOuter: 4.5,
+    ringTilt: 0.49,
+    hasAtmosphereGlow: true,
+    atmosphereColor: 0x3b82f6,
+    atmosphereData: {
+      hasAtmosphere: true,
+      weatherStatus: "সৌরজগতের তীব্রতম সুপারসনিক সাইক্লোন ও গ্রেট ডার্ক স্পট",
+      weatherStatusEn: "Supersonic High-Mach Gales & The Great Dark Spot Anticyclone",
+      windSpeed: "১,৫০০ - ২,২০০ km/h (শব্দের চেয়ে দ্রুততম ঝড়)",
+      windSpeedEn: "1,500 - 2,200 km/h (Fastest winds recorded in the system)",
+      avgWindKmh: 1750,
+      windDirection: "নিরক্ষরেখায় প্রবল পশ্চিমমুখী সুপারসনিক কারেন্ট",
+      windDirectionEn: "Retrograde Supersonic Equatorial Jet",
+      surfacePressure: "1.5 bar (Cloud Deck) থেকে লক্ষ লক্ষ bar",
+      stormActivity: "পৃথিবী সমান আকারের ঘূর্ণায়মান অন্ধকার অ্যান্টি-সাইক্লোন ও সাদা মিথেন মেঘমালা",
+      stormActivityEn: "Earth-sized Great Dark Vortex & High-altitude Cirrus Feathers",
+      precipitation: "তরল মিথেন শিশির ও অভ্যন্তরে উত্তপ্ত তরল হীরা মহাসাগর",
+      precipitationEn: "Methane Ice Snowflakes & Superdense Liquid Diamond Ocean",
+      cloudCoverage: "১০০% (গভীর গাঢ় নীলাভ মিথেন কুয়াশা ও সাদা পালক মেঘ)",
+      gases: [
+        { name: "আণবিক হাইড্রোজেন (H₂)", nameEn: "Hydrogen (H₂)", percent: 80.0, color: "#f59e0b" },
+        { name: "হিলিয়াম গ্যাস (He)", nameEn: "Helium (He)", percent: 19.0, color: "#fbbf24" },
+        { name: "মিথেন গ্যাস (CH₄)", nameEn: "Methane (CH₄)", percent: 1.5, color: "#2563eb" },
+        { name: "হাইড্রোজেন ডিউটেরাইড (HD)", nameEn: "Hydrogen Deuteride", percent: 0.019, color: "#a855f7" }
+      ],
+      layers: [
+        { name: "উচ্চ মিথেন সাইরাস বরফ পালক", nameEn: "Methane Cirrus Feathers", alt: "0 - 50 km", desc: "বায়ুমণ্ডলের ৫০ কিমি উঁচুতে ভাসমান শুভ্র মিথেন বরফের পালক", descEn: "High-altitude bright white methane ice clouds casting shadows" },
+        { name: "গ্রেট ডার্ক স্পট ট্রপোস্ফিয়ার", nameEn: "Great Dark Spot Deck", alt: "50 - 150 km", desc: "পৃথিবী সমান দানবীয় অন্ধকার অ্যান্টি-সাইক্লোন ঘূর্ণি", descEn: "Gigantic high-pressure vortex dynamically drifting across latitudes" },
+        { name: "সুপার-আয়নিক ফুটন্ত বরফ মহাসাগর", nameEn: "Super-ionic Slush Mantle", alt: "150 - 18,000 km", desc: "চরম তাপে সংকুচিত বিদ্যুৎ পরিবাহী পানি-অ্যামোনিয়া মহাসাগর", descEn: "Superdense hot fluid water-methane-ammonia ocean with diamond rains" }
+      ],
+      internalStructure: [
+        { layer: "বহিস্থ গাঢ় নীল মিথেন বায়ুমণ্ডল", depth: "0 - 4,000 km", temp: "-201°C - 500°C" },
+        { layer: "সুপার-আয়নিত ফুটন্ত বরফ মহাসাগর", depth: "4,000 - 20,000 km", temp: "2,000°C - 5,000°C" },
+        { layer: "কঠিন লোহা-নিকেল ও সিলিকেট পাথুরে কোর", depth: "20,000 - 24,622 km", temp: "7,000°C" }
+      ]
+    },
+    moons: [
+      {
+        id: "thalassa_triton",
+        name: "ট্রাইটন (Triton-Geyser)",
+        nameEn: "Triton-Geyser",
+        type: "বিপরীতমুখী ক্রায়ো-উপগ্রহ (Retrograde Cryo World)",
+        radiusKm: "1,353 km",
+        distance: 5.8,
+        size: 0.58,
+        speed: -0.032,
+        color: "#bfdbfe",
+        orbitTilt: 0.55,
+        textureType: "triton",
+        description: "বিপরীতমুখী কক্ষপথে ঘূর্ণায়মান কাইপার বেল্ট থেকে আটকানো উপগ্রহ। তরমুজের খোসার মতো ক্যানটালুপ ভূত্বক এবং নাইট্রোজেন বরফের ৮ কিমি উঁচু গিজার ফোয়ারা বিশিষ্ট।",
+        descriptionEn: "Captured retrograde Kuiper Belt world featuring cantaloupe terrain and towering nitrogen cryogeysers."
+      },
+      {
+        id: "thalassa_nereid",
+        name: "নিরিড (Nereid-Eccentric)",
+        nameEn: "Nereid-Eccentric",
+        type: "অতি-উপবৃত্তাকার দূরবর্তী চাঁদ (High-Eccentricity Moon)",
+        radiusKm: "170 km",
+        distance: 9.6,
+        size: 0.28,
+        speed: 0.015,
+        color: "#94a3b8",
+        orbitTilt: 0.35,
+        textureType: "rocky",
+        description: "সৌরজগতের সর্বাধিক উপবৃত্তাকার কক্ষপথ সম্পন্ন দূরবর্তী বরফ-পাথুরে উপগ্রহ।",
+        descriptionEn: "Outermost irregular satellite possessing the highest orbital eccentricity of any moon."
       }
     ]
   },
   {
     id: "hades_outpost",
-    name: "হেডিস আউটপোস্ট (Hades Deep-VIII)",
-    nameEn: "Hades Deep-VIII",
+    name: "হেডিস আউটপোস্ট (Hades Deep-IX)",
+    nameEn: "Hades Deep-IX",
     type: "দূরবর্তী বামন গ্রহ (Trans-Neptunian Dwarf)",
     spectral: "Nitrogen Ice Crust",
     radiusKm: "1,188 km",
@@ -3621,7 +3864,7 @@ const CELESTIAL_DATA = [
     descriptionEn: "The distant sentinel at the edge of deep space, drifting quietly among the outer cometary debris field.",
     color: "#b0b8c6",
     size: 0.9,
-    orbitRadius: 86,
+    orbitRadius: 112,
     orbitSpeed: 0.0018,
     rotationSpeed: 0.005,
     inclination: 0.19,
@@ -3667,9 +3910,9 @@ const CELESTIAL_DATA = [
         speed: 0.032,
         color: "#78716c",
         orbitTilt: 0.28,
-        textureType: "rocky",
-        description: "হেডিসের সাথে মিউচুয়ালি টাইডাল-লকড লালচে থোলিন টুপিযুক্ত দানবীয় সহযোগী চাঁদ।",
-        descriptionEn: "Mutually locked binary companion capped with reddish hydrocarbon tholins."
+        textureType: "charon",
+        description: "হেডিসের সাথে মিউচুয়ালি টাইডাল-লকড লালচে থোলিন টুপিযুক্ত (মর্ডর ম্যাকুলা) সহযোগী চাঁদ।",
+        descriptionEn: "Mutually locked binary companion capped with reddish hydrocarbon tholins (Mordor Macula) and deep equatorial chasmata."
       }
     ]
   },
@@ -4017,9 +4260,11 @@ const TIMELINE_EPOCHS = [
       flareMultiplier: 3.0
     },
     planetChanges: [
+      { id: "venusia_aurora", state: "proto_furnace", descBn: "আদিম উত্তপ্ত লাভা ক্রাস্ট ও বাষ্পীয় খোলস", descEn: "Primordial steam furnace & basalt magma crust" },
       { id: "terra_nova", state: "molten", descBn: "লাভা সমুদ্র ও ফুটন্ত শিলা", descEn: "Global magma ocean, zero liquid water" },
       { id: "ares_crimson", state: "molten", descBn: "তপ্ত ব্যাসাল্ট ও উল্কা খাদ", descEn: "Violent basalt bombardment" },
-      { id: "chronos_magister", state: "dense_dust", descBn: "অতি-ঘন ধ্বংসাবশেষের ঘূর্ণায়মান রিং", descEn: "Chaotic primordial debris disc" }
+      { id: "chronos_magister", state: "dense_dust", descBn: "অতি-ঘন ধ্বংসাবশেষের ঘূর্ণায়মান রিং", descEn: "Chaotic primordial debris disc" },
+      { id: "thalassa_azure", state: "proto_giant", descBn: "উত্তপ্ত বরফ-গ্যাসীয় সংগ্রাহক ডিস্ক", descEn: "Accreting hot ice mantle" }
     ]
   },
   {
@@ -4041,6 +4286,7 @@ const TIMELINE_EPOCHS = [
       flareMultiplier: 1.0
     },
     planetChanges: [
+      { id: "venusia_aurora", state: "ancient_habitable", descBn: "প্রাচীন অগভীর সাগর ও নাতিশীতোষ্ণ মেঘ", descEn: "Ancient temperate oceans prior to runaway greenhouse" },
       { id: "terra_nova", state: "ancient_ocean", descBn: "৮৫% গভীর নীল মহাসাগর ও আদিম শৈবাল", descEn: "Deep global blue ocean, single-cell life" },
       { id: "ares_crimson", state: "oceanic_mars", descBn: "বহমান নীল নদী ও মহাসাগরীয় অববাহিকা", descEn: "Blue Mars: liquid lakes and active clouds" },
       { id: "chronos_magister", state: "pristine_rings", descBn: "স্ফটিকের মতো অতি-উজ্জ্বল রিং", descEn: "Newly formed razor-sharp ice rings" }
@@ -4065,9 +4311,11 @@ const TIMELINE_EPOCHS = [
       flareMultiplier: 1.0
     },
     planetChanges: [
+      { id: "venusia_aurora", state: "current", descBn: "ঘন সোনালী সালফিউরিক মেঘ ও সুপার-ঘূর্ণন", descEn: "Super-rotating sulfuric cloud canopy" },
       { id: "terra_nova", state: "current", descBn: "আধুনিক মহাসাগরীয় মহাজাগতিক বিশ্ব", descEn: "Oceanic cradle of civilization" },
       { id: "ares_crimson", state: "current", descBn: "শুষ্ক লাল মরুভূমি ও গ্র্যান্ড ক্যানিয়ন", descEn: "Ferric red deserts and deep canyons" },
-      { id: "chronos_magister", state: "current", descBn: "ক্লাসিক্যাল বলয় ও গ্যাসীয় মেঘমালা", descEn: "Banded gas storm giant with rings" }
+      { id: "chronos_magister", state: "current", descBn: "ক্লাসিক্যাল বলয় ও গ্যাসীয় মেঘমালা", descEn: "Banded gas storm giant with rings" },
+      { id: "thalassa_azure", state: "current", descBn: "গাঢ় নীল বরফ দানব ও সুপারসনিক ঝড়", descEn: "Supersonic cobalt ice giant" }
     ]
   },
   {
@@ -4089,6 +4337,7 @@ const TIMELINE_EPOCHS = [
       flareMultiplier: 0.6
     },
     planetChanges: [
+      { id: "venusia_aurora", state: "solar_shade", descBn: "সোলার সানশেড ও শীতল বায়ুমণ্ডলীয় নিষ্কাশন", descEn: "Lagrange orbital solar shade & atmospheric scrubbing" },
       { id: "terra_nova", state: "megacity", descBn: "অরবিটাল এলিভেটর ও মেগাসিটি গ্রিড", descEn: "Orbital rings, hyper-connected ecumenopolis" },
       { id: "ares_crimson", state: "terraformed_green", descBn: "টেরাফর্মড সবুজ অরণ্য ও নীল সাগর", descEn: "Terraformed: green biomes and fresh seas" },
       { id: "cygnus_beacon", state: "megastructure", descBn: "উন্নত অরবিটাল হাব ও ডাইসন নোড", descEn: "Holographic mega-station and Dyson node" }
@@ -4113,9 +4362,11 @@ const TIMELINE_EPOCHS = [
       flareMultiplier: 2.2
     },
     planetChanges: [
+      { id: "venusia_aurora", state: "vaporized", descBn: "সৌরশিখায় ভস্মীভূত গলিত সিলিকা গোলক", descEn: "Completely scorched by expanding solar photosphere" },
       { id: "terra_nova", state: "scorched_dry", descBn: "বাষ্পীভূত শুকনো সমুদ্রতল ও উত্তপ্ত মরুভূমি", descEn: "Oceans boiled away; scorched arid wasteland" },
       { id: "ares_crimson", state: "baked", descBn: "চরম উত্তপ্ত শিলাভূমি ও পাতলা ধোঁয়াশা", descEn: "Sun-baked crust stripped of atmosphere" },
-      { id: "zeus_europa", state: "tropical_ocean", descBn: "বরফ গলে সৃষ্টি হওয়া উষ্ণ গ্রীষ্মমণ্ডলীয় সাগর", descEn: "Europa thawed: tropical planetary ocean world" }
+      { id: "zeus_europa", state: "tropical_ocean", descBn: "বরফ গলে সৃষ্টি হওয়া উষ্ণ গ্রীষ্মমণ্ডলীয় সাগর", descEn: "Europa thawed: tropical planetary ocean world" },
+      { id: "thalassa_azure", state: "warm_slush", descBn: "উষ্ণতর গ্যাসীয় খোলস ও নীল কুয়াশা", descEn: "Warming methane envelope" }
     ]
   },
   {
@@ -4139,7 +4390,8 @@ const TIMELINE_EPOCHS = [
     planetChanges: [
       { id: "terra_nova", state: "frozen_grave", descBn: "হিমায়িত মিথেন বরফ ও নিথর আঁধার", descEn: "Frozen atmospheric frost and utter silence" },
       { id: "ares_crimson", state: "deep_freeze", descBn: "চরম শীতল জমাটবাঁধা তুষারভূমি", descEn: "Deep cosmic freeze; glacial methane dunes" },
-      { id: "chronos_magister", state: "dissipated_rings", descBn: "বলয় ক্ষয়ে যাওয়া শান্ত বরফ দানব", descEn: "Dissipated faint rings under faint starlight" }
+      { id: "chronos_magister", state: "dissipated_rings", descBn: "বলয় ক্ষয়ে যাওয়া শান্ত বরফ দানব", descEn: "Dissipated faint rings under faint starlight" },
+      { id: "thalassa_azure", state: "frozen_abyss", descBn: "নিথর অন্ধকার বরফে হিমায়িত দানব", descEn: "Deep blue frozen abyss under dead starlight" }
     ]
   }
 ];
@@ -5126,6 +5378,253 @@ const TextureGenerator = {
     }
     ctx.putImageData(imgData, 0, 0);
     return new THREE.CanvasTexture(canvas);
+  },
+
+  // 24. Venusia Sulfuric Golden Atmosphere (Venus)
+  createVenusTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        // High zonal super-rotation horizontal shearing
+        const stream = this.fbm(u * 16 + Math.sin(v * Math.PI * 4) * 0.4, v * 5, 4);
+        const fineStreak = this.fbm(u * 32, v * 20, 2);
+
+        // Sulfuric golden cream and amber hues
+        const r = Math.floor(215 + stream * 35 + fineStreak * 5);
+        const g = Math.floor(175 + stream * 45);
+        const b = Math.floor(70 + stream * 50 + fineStreak * 20);
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.min(255, r);
+        d[idx + 1] = Math.min(255, g);
+        d[idx + 2] = Math.min(255, b);
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 25. Thalassa Azure Supersonic Ice Giant (Neptune)
+  createNeptuneTexture(width = 1024, height = 512) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const band = Math.sin(v * Math.PI * 9 + this.fbm(u * 8, v * 8, 3) * 1.5);
+        const nCirrus = this.fbm(u * 28, v * 14, 3);
+
+        // Great Dark Spot vortex at u: ~0.45, v: ~0.62
+        const dx = (u - 0.45) * 4.0;
+        const dy = (v - 0.62) * 6.0;
+        const isDarkSpot = Math.sqrt(dx * dx + dy * dy) < 0.22;
+
+        let r = 24 + Math.floor(band * 12);
+        let g = 80 + Math.floor(band * 25);
+        let b = 210 + Math.floor(band * 45);
+
+        if (isDarkSpot) {
+          r = Math.floor(r * 0.45);
+          g = Math.floor(g * 0.45);
+          b = Math.floor(b * 0.65);
+        }
+
+        // Brilliant white methane cirrus cloud wisps
+        if (nCirrus > 0.68) {
+          const w = (nCirrus - 0.68) / 0.32;
+          r = Math.floor(r * (1 - w) + 240 * w);
+          g = Math.floor(g * (1 - w) + 245 * w);
+          b = Math.floor(b * (1 - w) + 255 * w);
+        }
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.max(0, Math.min(255, r));
+        d[idx + 1] = Math.max(0, Math.min(255, g));
+        d[idx + 2] = Math.max(0, Math.min(255, b));
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 26. Triton Cantaloupe & Cryogeyser Ice Moon (Neptune)
+  createTritonTexture(width = 512, height = 256) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        // Cantaloupe skin dimples & nitrogen frost
+        const dimple = Math.abs(Math.sin(this.fbm(u * 14, v * 14, 4) * Math.PI * 6));
+        const plume = (v > 0.7 && Math.abs(this.fbm(u * 20, v * 20, 2) - 0.5) < 0.08) ? 35 : 0;
+
+        const r = Math.floor(190 + dimple * 35 - plume);
+        const g = Math.floor(170 + dimple * 40 - plume);
+        const b = Math.floor(215 + dimple * 35);
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.min(255, r);
+        d[idx + 1] = Math.min(255, g);
+        d[idx + 2] = Math.min(255, b);
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 27. Iapetus Yin-Yang Two-Tone Moon (Saturn)
+  createIapetusTexture(width = 512, height = 256) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const n = this.fbm(u * 8, v * 8, 4);
+
+        // Leading hemisphere (dark Cassini Regio) vs trailing hemisphere (pure white ice)
+        const transition = Math.sin(u * Math.PI * 2) + n * 0.45;
+
+        let r, g, b;
+        if (transition < -0.1) {
+          // Dark carbonaceous asphalt
+          r = Math.floor(22 + n * 18);
+          g = Math.floor(18 + n * 14);
+          b = Math.floor(14 + n * 10);
+        } else if (transition > 0.2) {
+          // Bright icy white snow
+          r = Math.floor(220 + n * 30);
+          g = Math.floor(225 + n * 28);
+          b = Math.floor(235 + n * 20);
+        } else {
+          // Blend zone
+          const t = (transition + 0.1) / 0.3;
+          r = Math.floor(30 * (1 - t) + 220 * t);
+          g = Math.floor(25 * (1 - t) + 225 * t);
+          b = Math.floor(20 * (1 - t) + 235 * t);
+        }
+
+        const idx = (y * width + x) * 4;
+        d[idx] = r;
+        d[idx + 1] = g;
+        d[idx + 2] = b;
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 28. Charon Red-Capped Mordor Macula Moon (Pluto)
+  createCharonTexture(width = 512, height = 256) {
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+    const d = imgData.data;
+
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const u = x / width;
+        const v = y / height;
+        const n = this.fbm(u * 10, v * 10, 4);
+
+        // North pole dark red tholin deposit (Mordor Macula)
+        const isNorthPole = (v < 0.22);
+        const canyon = Math.abs(v - 0.5) < 0.04 ? 35 : 0;
+
+        let r = 160 + Math.floor(n * 40) - canyon;
+        let g = 165 + Math.floor(n * 40) - canyon;
+        let b = 175 + Math.floor(n * 40) - canyon;
+
+        if (isNorthPole) {
+          const t = (0.22 - v) / 0.22;
+          r = Math.floor(r * (1 - t) + 165 * t);
+          g = Math.floor(g * (1 - t) + 65 * t);
+          b = Math.floor(b * (1 - t) + 45 * t);
+        }
+
+        const idx = (y * width + x) * 4;
+        d[idx] = Math.min(255, Math.max(0, r));
+        d[idx + 1] = Math.min(255, Math.max(0, g));
+        d[idx + 2] = Math.min(255, Math.max(0, b));
+        d[idx + 3] = 255;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
+  },
+
+  // 29. Majestic Spiral Galaxy Billboard (Deep Background)
+  createSpiralGalaxyTexture(size = 512, colorHex = '#60a5fa') {
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const half = size / 2;
+
+    const imgData = ctx.createImageData(size, size);
+    const d = imgData.data;
+
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const dx = (x - half) / half;
+        const dy = (y - half) / half;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 1.0) continue;
+
+        const theta = Math.atan2(dy, dx);
+        // Two logarithmic spiral arms
+        const arm1 = Math.cos(theta * 2 - Math.log(dist + 0.01) * 3.5);
+        const armIntensity = Math.pow(Math.max(0, (arm1 + 1) / 2), 2.5);
+
+        // Radiant galactic core
+        const core = Math.exp(-dist * 4.5);
+        const total = Math.min(1.0, core * 1.5 + armIntensity * (1 - dist) * 0.85);
+
+        const r = Math.floor(255 * core + 96 * armIntensity);
+        const g = Math.floor(225 * core + 165 * armIntensity);
+        const b = Math.floor(190 * core + 250 * armIntensity);
+        const a = Math.floor(total * 255);
+
+        const idx = (y * size + x) * 4;
+        d[idx] = r;
+        d[idx + 1] = g;
+        d[idx + 2] = b;
+        d[idx + 3] = a;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    return new THREE.CanvasTexture(canvas);
   }
 };
 
@@ -5546,6 +6045,7 @@ class CelestialSimulation {
     this.setupStarfield();
     this.setupNebulae();
     this.setupNebulaSkybox();
+    this.setupSpiralGalaxies();
     this.setupConstellations();
     this.setupSolarWind();
     this.setupCoordinateGrid();
@@ -5708,6 +6208,37 @@ class CelestialSimulation {
     this.nebulaSkybox = new THREE.Mesh(geo, mat);
     this.nebulaSkybox.visible = this.showNebula;
     this.scene.add(this.nebulaSkybox);
+  }
+
+  setupSpiralGalaxies() {
+    this.distantGalaxiesGroup = new THREE.Group();
+    const galaxyConfigs = [
+      { name: "Andromeda M31", dist: 720, phi: 0.42, theta: 0.85, size: 280, armColor: "#7dd3fc", coreColor: "#ffffff", rot: 0.35, opacity: 0.65 },
+      { name: "Whirlpool M51", dist: 750, phi: -0.55, theta: 2.45, size: 220, armColor: "#c084fc", coreColor: "#fef08a", rot: -0.65, opacity: 0.60 },
+      { name: "Triangulum M33", dist: 700, phi: 0.32, theta: 4.10, size: 190, armColor: "#38bdf8", coreColor: "#fed7aa", rot: 0.82, opacity: 0.55 },
+      { name: "Sombrero Galaxy", dist: 760, phi: -0.28, theta: 5.30, size: 240, armColor: "#fde047", coreColor: "#ffffff", rot: -0.22, opacity: 0.58 }
+    ];
+
+    galaxyConfigs.forEach(cfg => {
+      const tex = TextureGenerator.createSpiralGalaxyTexture(512, cfg.armColor, cfg.coreColor);
+      const mat = new THREE.SpriteMaterial({
+        map: tex,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        opacity: cfg.opacity,
+        depthWrite: false,
+        rotation: cfg.rot
+      });
+      const sprite = new THREE.Sprite(mat);
+      const x = cfg.dist * Math.cos(cfg.phi) * Math.sin(cfg.theta);
+      const y = cfg.dist * Math.sin(cfg.phi);
+      const z = cfg.dist * Math.cos(cfg.phi) * Math.cos(cfg.theta);
+      sprite.position.set(x, y, z);
+      sprite.scale.set(cfg.size, cfg.size, 1);
+      this.distantGalaxiesGroup.add(sprite);
+    });
+
+    this.scene.add(this.distantGalaxiesGroup);
   }
 
   setupConstellations() {
@@ -6241,6 +6772,8 @@ class CelestialSimulation {
 
         if (data.id === 'terra_nova') {
           tex = TextureGenerator.createEarthTexture();
+        } else if (data.id === 'venusia_aurora') {
+          tex = TextureGenerator.createVenusTexture();
         } else if (data.id === 'chronos_magister') {
           tex = TextureGenerator.createSaturnTexture();
         } else if (data.id === 'zeus_major') {
@@ -6249,6 +6782,8 @@ class CelestialSimulation {
           tex = TextureGenerator.createMarsTexture();
         } else if (data.id === 'aether_cyan') {
           tex = TextureGenerator.createIceGiantTexture();
+        } else if (data.id === 'thalassa_azure') {
+          tex = TextureGenerator.createNeptuneTexture();
         } else {
           tex = TextureGenerator.createRockyTexture(512, 256, data.color === '#b56238' ? 0.75 : 0.5);
         }
@@ -6304,6 +6839,21 @@ class CelestialSimulation {
           group.add(ringMesh);
         }
 
+        // Azure Rings for Thalassa Azure (Neptune)
+        if (data.hasRings && data.id === 'thalassa_azure') {
+          const ringGeo = new THREE.RingGeometry(data.ringInner, data.ringOuter, 96);
+          const ringMat = new THREE.MeshBasicMaterial({
+            color: 0x60a5fa,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.40,
+            blending: THREE.AdditiveBlending
+          });
+          const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+          ringMesh.rotation.x = Math.PI / 2 + (data.ringTilt || 0.49);
+          group.add(ringMesh);
+        }
+
         // Moons
         if (data.moons && data.moons.length > 0) {
           data.moons.forEach(m => {
@@ -6333,6 +6883,12 @@ class CelestialSimulation {
               moonTex = TextureGenerator.createEuropaTexture();
             } else if (m.textureType === 'titan') {
               moonTex = TextureGenerator.createTitanTexture();
+            } else if (m.textureType === 'triton') {
+              moonTex = TextureGenerator.createTritonTexture();
+            } else if (m.textureType === 'iapetus') {
+              moonTex = TextureGenerator.createIapetusTexture();
+            } else if (m.textureType === 'charon') {
+              moonTex = TextureGenerator.createCharonTexture();
             } else {
               moonTex = TextureGenerator.createRockyTexture(256, 128, 0.5);
             }
@@ -6434,9 +6990,9 @@ class CelestialSimulation {
   }
 
   buildAsteroidBelt() {
-    const asteroidCount = 450;
-    const innerRadius = 49;
-    const outerRadius = 57;
+    const asteroidCount = 600;
+    const innerRadius = 36;
+    const outerRadius = 45;
 
     const baseGeometry = new THREE.DodecahedronGeometry(0.24, 1);
     const material = new THREE.MeshStandardMaterial({
@@ -7320,12 +7876,14 @@ class CelestialSimulation {
         case '1': this.selectCelestialBody('sun'); break;
         case '2': this.selectCelestialBody('cygnus_beacon'); break;
         case '3': this.selectCelestialBody('vulcanus'); break;
-        case '4': this.selectCelestialBody('terra_nova'); break;
-        case '5': this.selectCelestialBody('ares_crimson'); break;
-        case '6': this.selectCelestialBody('zeus_major'); break;
-        case '7': this.selectCelestialBody('chronos_magister'); break;
-        case '8': this.selectCelestialBody('aether_cyan'); break;
-        case '9': this.selectCelestialBody('hades_outpost'); break;
+        case '4': this.selectCelestialBody('venusia_aurora'); break;
+        case '5': this.selectCelestialBody('terra_nova'); break;
+        case '6': this.selectCelestialBody('ares_crimson'); break;
+        case '7': this.selectCelestialBody('zeus_major'); break;
+        case '8': this.selectCelestialBody('chronos_magister'); break;
+        case '9': this.selectCelestialBody('aether_cyan'); break;
+        case '0': this.selectCelestialBody('thalassa_azure'); break;
+        case '`': this.selectCelestialBody('hades_outpost'); break;
       }
     });
   }
@@ -8085,6 +8643,10 @@ class CelestialSimulation {
         this.nebulaSkybox.rotation.y += 0.0001;
       }
 
+      if (this.distantGalaxiesGroup) {
+        this.distantGalaxiesGroup.rotation.y += 0.00003;
+      }
+
       this.updateWaveRings(delta * this.timeScale);
       this.updateOrbitalTrails();
       this.updateSolarFlare(delta * this.timeScale);
@@ -8176,5 +8738,6 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
   </script>
+
 </body>
 </html>
