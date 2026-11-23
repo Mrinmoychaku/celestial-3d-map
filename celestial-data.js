@@ -1041,7 +1041,12 @@ const STRINGS = {
     scaleSubtitle: 'True-to-Scale Silhouettes normalized vs Earth Reference (40px base)',
     timeline: 'Timeline',
     playEpochs: '▶ Play Epochs',
-    pauseEpochs: '⏸ Pause Epochs'
+    pauseEpochs: '⏸ Pause Epochs',
+    menu: 'Menu',
+    controls: 'CONTROLS',
+    mobileControlsTitle: 'SOLIS-IX SYSTEM CONTROLS',
+    mobileTools: 'TOOLS & VISUAL MODES',
+    mobileLayers: 'LAYER DISPLAY TOGGLES'
   },
   bn: {
     title: 'সোলিস-৯ · সেলেস্টিয়াল ব্লুপ্রিন্ট',
@@ -1085,7 +1090,12 @@ const STRINGS = {
     scaleSubtitle: 'পৃথিবীর মাপকে আদর্শ (৪০ পিক্সেল) ধরে সঠিক জ্যামিতিক স্কেলিং',
     timeline: 'টাইমলাইন',
     playEpochs: '▶ যুগ ভ্রমণ',
-    pauseEpochs: '⏸ থামুন'
+    pauseEpochs: '⏸ থামুন',
+    menu: 'মেনু',
+    controls: 'কন্ট্রোলস',
+    mobileControlsTitle: 'সোলিস-৯ সিস্টেম কন্ট্রোলস',
+    mobileTools: 'টুলস ও ভিজ্যুয়াল মোড',
+    mobileLayers: 'লেয়ার ডিসপ্লে টগল'
   }
 };
 

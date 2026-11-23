@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Celestial Orbital Map - 3D থ্রিডি মহাজাগতিক ম্যাপ</title>
   <style>
     :root {
@@ -52,6 +52,7 @@
       height: 100%;
       pointer-events: none;
       z-index: 5;
+      display: none;
     }
 
     /* 2D Projected HUD Tags */
@@ -63,6 +64,7 @@
       height: 100%;
       pointer-events: none;
       z-index: 10;
+      display: none;
     }
 
     .hud-tag {
@@ -898,13 +900,463 @@
       gap: 5px;
     }
 
-    /* Mobile adjustments */
-    @media (max-width: 640px) {
-      .top-title-group p { display: none; }
-      .toggle-group { font-size: 10px; gap: 8px; }
-      .bottom-bar { padding: 6px 10px; }
-      .telemetry-card { width: calc(100vw - 28px); right: 14px; top: 68px; }
-      .atmo-inspector-panel { width: calc(100vw - 20px); left: 10px; top: 10px; bottom: 10px; }
+    /* ========================================================
+       MOBILE-FIRST RESPONSIVE DESIGN & TOUCH OPTIMIZATION
+       ======================================================== */
+
+    /* Desktop vs Mobile component triggers */
+    .mobile-menu-toggle-btn {
+      display: none;
+    }
+
+    .sheet-drag-handle {
+      display: none;
+    }
+
+    .bottom-bar-handle {
+      display: none;
+      width: 100%;
+      padding: 4px 0 6px 0;
+      text-align: center;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+      margin-bottom: 6px;
+      touch-action: manipulation;
+    }
+
+    .handle-pill {
+      width: 36px;
+      height: 4px;
+      background: rgba(0, 240, 255, 0.55);
+      border-radius: 2px;
+      box-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
+    }
+
+    .handle-text {
+      font-size: 9px;
+      font-family: var(--font-mono);
+      color: rgba(180, 220, 255, 0.85);
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .handle-arrow {
+      font-size: 8px;
+      color: var(--cyan-glow);
+      transition: transform 0.25s ease;
+    }
+
+    /* Mobile Quick Actions & Settings Full Drawer */
+    .mobile-menu-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(2, 6, 16, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      padding: max(14px, env(safe-area-inset-top)) 16px max(14px, env(safe-area-inset-bottom)) 16px;
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+      font-family: var(--font-mono);
+    }
+
+    .mobile-menu-drawer.visible {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+      margin-bottom: 14px;
+    }
+
+    .mobile-menu-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mobile-menu-section-title {
+      font-size: 10px;
+      color: var(--cyan-glow);
+      letter-spacing: 1.2px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .mobile-grid-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .mobile-action-card {
+      background: rgba(6, 18, 38, 0.75);
+      border: 1px solid rgba(0, 240, 255, 0.22);
+      border-radius: 6px;
+      padding: 12px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #e2f1ff;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      touch-action: manipulation;
+    }
+
+    .mobile-action-card:active {
+      background: rgba(0, 240, 255, 0.25);
+      border-color: var(--cyan-glow);
+      transform: scale(0.97);
+    }
+
+    .mobile-action-card .m-icon {
+      font-size: 18px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .mobile-action-card .m-label {
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Touch targets and scrolling optimization */
+    button, input, select, .jump-chip, .mode-btn, .timeline-node {
+      touch-action: manipulation;
+    }
+
+    #webgl-container {
+      touch-action: none;
+    }
+
+    /* Screen Queries <= 768px (Tablets & Mobile Phones) */
+    @media (max-width: 768px) {
+      .blueprint-frame {
+        border: none;
+        margin: 4px;
+      }
+      .corner {
+        width: 12px;
+        height: 12px;
+        border-width: 1.5px;
+      }
+      .corner-tl { top: max(4px, env(safe-area-inset-top)); left: 4px; }
+      .corner-tr { top: max(4px, env(safe-area-inset-top)); right: 4px; }
+      .corner-bl { bottom: max(4px, env(safe-area-inset-bottom)); left: 4px; }
+      .corner-br { bottom: max(4px, env(safe-area-inset-bottom)); right: 4px; }
+
+      /* Top Header Bar */
+      .top-bar {
+        top: max(6px, env(safe-area-inset-top));
+        left: 6px;
+        right: 6px;
+        padding: 6px 10px;
+        gap: 8px;
+        background: rgba(3, 8, 20, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      .top-title-group {
+        min-width: 0;
+        flex: 1;
+      }
+      .top-title-group h1 {
+        font-size: 13px;
+        letter-spacing: 0.8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .top-title-group p {
+        display: none;
+      }
+      .sim-clock-badge {
+        font-size: 9px;
+        padding: 2px 6px;
+        margin-top: 2px;
+        white-space: nowrap;
+        display: inline-block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .top-actions {
+        gap: 5px;
+        flex-shrink: 0;
+      }
+      .top-actions .hud-btn {
+        padding: 5px 8px;
+        font-size: 11px;
+      }
+      /* Hide secondary buttons from top row on mobile; accessible via mobile menu */
+      #btn-thermal,
+      #btn-capture,
+      #btn-auto-tour,
+      #btn-toggle-info,
+      #btn-reset {
+        display: none !important;
+      }
+      .mobile-menu-toggle-btn {
+        display: flex !important;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 9px;
+      }
+
+      /* Bottom Control Dock */
+      .bottom-bar {
+        bottom: max(6px, env(safe-area-inset-bottom));
+        left: 6px;
+        right: 6px;
+        padding: 6px 10px;
+        gap: 6px;
+        flex-direction: column;
+        align-items: stretch;
+        max-height: 230px;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        background: rgba(3, 10, 24, 0.94);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+      }
+
+      .bottom-bar-handle {
+        display: flex;
+      }
+
+      /* Collapsed Bottom Bar State */
+      .bottom-bar.collapsed {
+        max-height: 38px;
+        padding: 4px 12px;
+      }
+      .bottom-bar.collapsed .handle-arrow {
+        transform: rotate(180deg);
+      }
+      .bottom-bar.collapsed .playback-controls,
+      .bottom-bar.collapsed .quick-jump-bar,
+      .bottom-bar.collapsed .toggle-group {
+        display: none;
+      }
+
+      .playback-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+      }
+      .speed-select {
+        font-size: 10px;
+        padding: 4px 6px;
+        max-width: 105px;
+        flex: 1;
+      }
+      .mode-select-group {
+        display: flex;
+        gap: 2px;
+        background: rgba(3, 12, 26, 0.7);
+        padding: 2px;
+        border-radius: 4px;
+      }
+      .mode-btn {
+        padding: 4px 7px;
+        font-size: 9px;
+      }
+
+      /* Planet Quick Jump Carousel */
+      .quick-jump-bar {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 5px;
+        padding: 4px 0;
+        width: 100%;
+      }
+      .quick-jump-bar::-webkit-scrollbar {
+        display: none;
+      }
+      .jump-chip {
+        padding: 4px 9px;
+        font-size: 10px;
+        flex-shrink: 0;
+      }
+
+      /* Layer Toggles Row */
+      .toggle-group {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        gap: 12px;
+        padding: 2px 0;
+        font-size: 10px;
+        width: 100%;
+      }
+      .toggle-group::-webkit-scrollbar {
+        display: none;
+      }
+      .toggle-item {
+        flex-shrink: 0;
+        font-size: 10px;
+      }
+
+      /* Telemetry Detail Card transforms to Native Bottom Sheet */
+      .telemetry-card {
+        position: fixed !important;
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 62vh;
+        border-radius: 16px 16px 0 0;
+        border-left: 1px solid rgba(0, 240, 255, 0.35);
+        border-right: 1px solid rgba(0, 240, 255, 0.35);
+        border-top: 1px solid var(--cyan-glow);
+        border-bottom: none;
+        transform: translateY(115%) !important;
+        opacity: 1 !important;
+        pointer-events: none;
+        background: rgba(3, 10, 24, 0.97);
+        box-shadow: 0 -12px 35px rgba(0, 0, 0, 0.95), 0 -2px 14px rgba(0, 240, 255, 0.3);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 12px 14px max(14px, env(safe-area-inset-bottom)) 14px;
+        z-index: 100;
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      }
+      .telemetry-card.visible {
+        transform: translateY(0) !important;
+        pointer-events: auto;
+      }
+      .sheet-drag-handle {
+        display: block;
+        width: 38px;
+        height: 4px;
+        background: rgba(0, 240, 255, 0.45);
+        border-radius: 2px;
+        margin: 0 auto 10px auto;
+      }
+      .tel-header {
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+      }
+      .tel-title {
+        font-size: 14px;
+      }
+      .tel-grid {
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+      .tel-metric {
+        padding: 5px 7px;
+      }
+      .tel-val {
+        font-size: 11px;
+      }
+      .tel-desc {
+        font-size: 11px;
+      }
+
+      /* Cosmic Timeline Drawer */
+      .timeline-drawer {
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 70vh;
+        overflow-y: auto;
+        border-radius: 14px 14px 0 0;
+        padding: 12px 14px max(14px, env(safe-area-inset-bottom)) 14px;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.95);
+        z-index: 95;
+      }
+      .timeline-epoch-title {
+        font-size: 12px;
+      }
+      .timeline-epoch-badge {
+        font-size: 9px;
+      }
+      .timeline-scrubber-container {
+        margin: 12px 6px 20px 6px;
+      }
+      .node-label {
+        font-size: 8px;
+        bottom: -15px;
+      }
+      .timeline-lore-card {
+        font-size: 10px;
+        padding: 8px 10px;
+      }
+      .change-chip {
+        font-size: 9px;
+        padding: 2px 6px;
+      }
+
+      /* Atmospheric Inspector Modal */
+      .atmo-inspector-panel {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0;
+        z-index: 130;
+      }
+
+      /* Command Palette & Scale Comparison */
+      .cmd-palette-box {
+        width: calc(100vw - 20px);
+        margin: 10px;
+      }
+      .scale-compare-panel {
+        height: 52vh;
+        padding: 12px 14px;
+      }
+      .scale-compare-items {
+        gap: 18px;
+        padding: 14px 6px;
+      }
+    }
+
+    /* Screen Queries <= 420px (Small Handhelds) */
+    @media (max-width: 420px) {
+      .top-title-group h1 {
+        font-size: 11px;
+      }
+      .top-actions .hud-btn {
+        padding: 4px 6px;
+        font-size: 10px;
+      }
+      .m-menu-text {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -983,11 +1435,27 @@
       <button class="hud-btn" id="btn-lang" title="ভাষা পরিবর্তন">English</button>
 
       <button class="hud-btn" id="btn-reset" title="ভিউ রিসেট">Reset</button>
+
+      <button class="hud-btn mobile-menu-toggle-btn" id="btn-mobile-menu" title="মেনু ও সেটিংস (Menu)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <span class="m-menu-text">Menu</span>
+      </button>
     </div>
   </header>
 
   <!-- Bottom Control Bar -->
   <footer class="bottom-bar">
+    <!-- Mobile Collapsible Drag Handle -->
+    <div class="bottom-bar-handle" id="bottom-bar-toggle" title="কন্ট্রোলস গুটিয়ে নিন বা প্রসারিত করুন">
+      <div class="handle-pill"></div>
+      <span class="handle-text" id="handle-text-lbl">CONTROLS</span>
+      <span class="handle-arrow">▼</span>
+    </div>
+
     <div class="playback-controls">
       <button class="hud-btn" id="btn-play-pause" title="প্লে / পজ">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1067,6 +1535,7 @@
 
   <!-- Telemetry Detail Slideout Card -->
   <aside class="telemetry-card" id="telemetry-card">
+    <div class="sheet-drag-handle"></div>
     <div id="tel-color-accent" style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--cyan-glow); border-radius: 4px 4px 0 0;"></div>
     <div class="tel-header">
       <div class="tel-title-wrap">
@@ -1119,6 +1588,67 @@
     <div class="tel-footer-actions" style="display: flex; gap: 8px; margin-top: 14px; border-top: 1px solid rgba(0, 240, 255, 0.2); padding-top: 10px;">
       <button class="hud-btn" id="btn-scale-compare" style="flex: 1; font-size: 10px; justify-content: center;">◐ SCALE</button>
       <button class="hud-btn" id="btn-export-json" style="flex: 1; font-size: 10px; justify-content: center;">⤓ JSON</button>
+    </div>
+  </aside>
+
+  <!-- Mobile Quick Actions & Settings Full Drawer -->
+  <aside class="mobile-menu-drawer" id="mobile-menu-drawer">
+    <div class="mobile-menu-header">
+      <div class="mobile-menu-title">
+        <span class="live-pulse" style="background: var(--cyan-glow);"></span>
+        <span id="mobile-menu-title-text">SOLIS-IX SYSTEM CONTROLS</span>
+      </div>
+      <button class="hud-btn" id="mobile-menu-close-btn" style="padding: 4px 10px; font-size: 13px;">✕</button>
+    </div>
+
+    <div class="mobile-menu-body">
+      <div class="mobile-menu-section-title" id="m-tools-lbl">TOOLS & VISUAL MODES</div>
+      <div class="mobile-grid-actions">
+        <button class="mobile-action-card" id="m-btn-search">
+          <span class="m-icon">🔍</span>
+          <span class="m-label" id="m-search-lbl">Search (⌘K)</span>
+        </button>
+        <button class="mobile-action-card" id="m-btn-timeline">
+          <span class="m-icon">⏳</span>
+          <span class="m-label" id="m-timeline-lbl">Timeline</span>
+        </button>
+        <button class="mobile-action-card" id="m-btn-audio">
+          <span class="m-icon">🔊</span>
+          <span class="m-label" id="m-audio-lbl">Audio FX</span>
+        </button>
+        <button class="mobile-action-card" id="m-btn-thermal">
+          <span class="m-icon">🌡️</span>
+          <span class="m-label" id="m-thermal-lbl">Thermal</span>
+        </button>
+        <button class="mobile-action-card" id="m-btn-tour">
+          <span class="m-icon">🎬</span>
+          <span class="m-label" id="m-tour-lbl">Auto Tour</span>
+        </button>
+        <button class="mobile-action-card" id="m-btn-compare">
+          <span class="m-icon">⚖️</span>
+          <span class="m-label" id="m-compare-lbl">Scale Compare</span>
+        </button>
+        <button class="mobile-action-card" id="m-btn-capture">
+          <span class="m-icon">📸</span>
+          <span class="m-label" id="m-capture-lbl">Screenshot</span>
+        </button>
+        <button class="mobile-action-card" id="m-btn-info">
+          <span class="m-icon">ℹ️</span>
+          <span class="m-label" id="m-info-lbl">Info Card</span>
+        </button>
+        <button class="mobile-action-card" id="m-btn-lang">
+          <span class="m-icon">🌐</span>
+          <span class="m-label" id="m-lang-lbl">বাংলা / English</span>
+        </button>
+        <button class="mobile-action-card" id="m-btn-reset">
+          <span class="m-icon">🔄</span>
+          <span class="m-label" id="m-reset-lbl">Reset View</span>
+        </button>
+        <button class="mobile-action-card" id="m-btn-export" style="grid-column: span 2;">
+          <span class="m-icon">⤓</span>
+          <span class="m-label" id="m-export-lbl">Export JSON Data</span>
+        </button>
+      </div>
     </div>
   </aside>
 

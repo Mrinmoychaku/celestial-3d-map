@@ -146,11 +146,19 @@ class CelestialSimulation {
   setupThree() {
     const width = this.container.clientWidth || window.innerWidth;
     const height = this.container.clientHeight || window.innerHeight;
+    const isPortrait = height > width;
 
     this.scene = new THREE.Scene();
     this.scene.fog = new THREE.FogExp2(0x02040b, 0.0011);
 
-    this.camera = new THREE.PerspectiveCamera(40, width / height, 0.5, 3500);
+    const initialFov = isPortrait ? 56 : 40;
+    this.camera = new THREE.PerspectiveCamera(initialFov, width / height, 0.5, 3500);
+
+    if (isPortrait) {
+      this.defaultCameraPos = new THREE.Vector3(0, 120, 185);
+    } else {
+      this.defaultCameraPos = new THREE.Vector3(0, 85, 135);
+    }
     this.camera.position.copy(this.defaultCameraPos);
 
     this.renderer = new THREE.WebGLRenderer({
@@ -1042,6 +1050,7 @@ class CelestialSimulation {
     const tag = document.createElement('div');
     tag.className = 'hud-tag';
     tag.id = `tag-${data.id}`;
+    tag.style.display = 'none'; // Initially hidden; displayed only when labels are enabled
 
     const isBn = this.currentLanguage === 'bn';
     tag.innerHTML = `
@@ -1065,14 +1074,27 @@ class CelestialSimulation {
   }
 
   updateHudPositions() {
-    if (!this.showHudLabels) return;
+    if (!this.showHudLabels) {
+      if (this.hudContainer) this.hudContainer.style.display = 'none';
+      if (this.svgLinesContainer) this.svgLinesContainer.style.display = 'none';
+      return;
+    }
+    if (this.hudContainer) this.hudContainer.style.display = 'block';
+    if (this.svgLinesContainer) this.svgLinesContainer.style.display = 'block';
 
     const width = this.container.clientWidth;
     const height = this.container.clientHeight;
     const widthHalf = width / 2;
     const heightHalf = height / 2;
 
+    const isMobile = width <= 768;
+    const topLimit = isMobile ? 65 : 75;
+    const bottomLimit = isMobile ? height - 90 : height - 75;
+
     let svgLines = '';
+
+    const forward = new THREE.Vector3();
+    this.camera.getWorldDirection(forward);
 
     this.planets.forEach(p => {
       const hudItem = this.hudElements.get(p.data.id);
@@ -1080,6 +1102,13 @@ class CelestialSimulation {
 
       const wp = new THREE.Vector3();
       p.group.getWorldPosition(wp);
+
+      // Check if body is in front of camera
+      const toBody = wp.clone().sub(this.camera.position);
+      if (forward.dot(toBody) <= 0) {
+        hudItem.dom.style.display = 'none';
+        return;
+      }
 
       const pos = wp.clone().project(this.camera);
 
@@ -1091,16 +1120,17 @@ class CelestialSimulation {
       const screenX = (pos.x * widthHalf) + widthHalf;
       const screenY = -(pos.y * heightHalf) + heightHalf;
 
-      if (screenX < -60 || screenX > width + 60 || screenY < -60 || screenY > height + 60) {
+      // Keep within safe viewport boundaries to avoid header / dock collision
+      if (screenX < 20 || screenX > width - 20 || screenY < topLimit || screenY > bottomLimit) {
         hudItem.dom.style.display = 'none';
         return;
       }
 
       hudItem.dom.style.display = 'flex';
-      hudItem.dom.style.left = `${screenX + 16}px`;
-      hudItem.dom.style.top = `${screenY - 18}px`;
+      hudItem.dom.style.left = `${screenX + 14}px`;
+      hudItem.dom.style.top = `${screenY - 14}px`;
 
-      const targetX = screenX + 16;
+      const targetX = screenX + 14;
       const targetY = screenY;
       const col = p.data.color || '#00f0ff';
 
@@ -1251,7 +1281,9 @@ class CelestialSimulation {
     this.lastTrackedTargetPos = null;
 
     this.clearHighlight();
-    this.startCameraAnimation(this.defaultCameraPos, this.defaultTarget, 1200);
+    const isPortrait = window.innerHeight > window.innerWidth;
+    const targetPos = isPortrait ? new THREE.Vector3(0, 120, 185) : this.defaultCameraPos;
+    this.startCameraAnimation(targetPos, this.defaultTarget, 1200);
 
     document.querySelectorAll('.hud-tag').forEach(tag => tag.classList.remove('active'));
     document.getElementById('telemetry-card').classList.remove('visible');
@@ -1388,12 +1420,33 @@ class CelestialSimulation {
     window.addEventListener('resize', () => {
       const width = this.container.clientWidth;
       const height = this.container.clientHeight;
+      const isPortrait = height > width;
       this.camera.aspect = width / height;
+      this.camera.fov = isPortrait ? 56 : 40;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(width, height);
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      this.updateHudPositions();
     });
 
+    let pointerDownPos = null;
+    let pointerDownTime = 0;
+
     this.container.addEventListener('pointerdown', (e) => {
+      pointerDownPos = { x: e.clientX, y: e.clientY };
+      pointerDownTime = performance.now();
+    });
+
+    this.container.addEventListener('pointerup', (e) => {
+      if (!pointerDownPos) return;
+      const dx = Math.abs(e.clientX - pointerDownPos.x);
+      const dy = Math.abs(e.clientY - pointerDownPos.y);
+      const dt = performance.now() - pointerDownTime;
+      pointerDownPos = null;
+
+      // Filter out drag / orbit gestures (> 8px movement or > 600ms hold)
+      if (dx > 8 || dy > 8 || dt > 600) return;
+
       const rect = this.renderer.domElement.getBoundingClientRect();
       this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       this.mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
@@ -1443,7 +1496,9 @@ class CelestialSimulation {
     });
 
     if (mode === 'orrery') {
-      this.startCameraAnimation(new THREE.Vector3(0, 240, 0), new THREE.Vector3(0, 0, 0), 1200);
+      const isPortrait = window.innerHeight > window.innerWidth;
+      const orreryDist = isPortrait ? 380 : 240;
+      this.startCameraAnimation(new THREE.Vector3(0, orreryDist, 0), new THREE.Vector3(0, 0, 0), 1200);
       this.selectedBody = null;
       this.isTracking = false;
       this.clearHighlight();
@@ -2057,6 +2112,67 @@ class CelestialSimulation {
       });
     }
 
+    // Mobile Menu Drawer wiring
+    const mobileMenuBtn = document.getElementById('btn-mobile-menu');
+    const mobileDrawer = document.getElementById('mobile-menu-drawer');
+    const mobileCloseBtn = document.getElementById('mobile-menu-close-btn');
+
+    if (mobileMenuBtn && mobileDrawer) {
+      mobileMenuBtn.addEventListener('click', () => {
+        const isOpen = mobileDrawer.classList.toggle('visible');
+        mobileMenuBtn.classList.toggle('active', isOpen);
+        if (window.cosmicAudio && isOpen) window.cosmicAudio.playSelect();
+      });
+    }
+
+    if (mobileCloseBtn && mobileDrawer) {
+      mobileCloseBtn.addEventListener('click', () => {
+        mobileDrawer.classList.remove('visible');
+        if (mobileMenuBtn) mobileMenuBtn.classList.remove('active');
+        if (window.cosmicAudio) window.cosmicAudio.playSelect();
+      });
+    }
+
+    const connectMobileCard = (cardId, action) => {
+      const el = document.getElementById(cardId);
+      if (el) {
+        el.addEventListener('click', () => {
+          if (mobileDrawer) mobileDrawer.classList.remove('visible');
+          if (mobileMenuBtn) mobileMenuBtn.classList.remove('active');
+          action();
+        });
+      }
+    };
+
+    connectMobileCard('m-btn-search', () => this.openCommandPalette());
+    connectMobileCard('m-btn-timeline', () => document.getElementById('btn-timeline')?.click());
+    connectMobileCard('m-btn-audio', () => document.getElementById('btn-audio')?.click());
+    connectMobileCard('m-btn-thermal', () => this.toggleThermalMode());
+    connectMobileCard('m-btn-tour', () => document.getElementById('btn-auto-tour')?.click());
+    connectMobileCard('m-btn-compare', () => this.openScaleComparison());
+    connectMobileCard('m-btn-capture', () => this.captureScreenshot());
+    connectMobileCard('m-btn-info', () => this.setInfoCardVisibility(!this.showInfoCard));
+    connectMobileCard('m-btn-lang', () => document.getElementById('btn-lang')?.click());
+    connectMobileCard('m-btn-reset', () => this.resetCamera());
+    connectMobileCard('m-btn-export', () => this.exportAstrometricJson());
+
+    // Collapsible Bottom Bar wiring
+    const bottomBar = document.querySelector('.bottom-bar');
+    const bottomToggle = document.getElementById('bottom-bar-toggle');
+    const isBottomCollapsed = localStorage.getItem('solisix.bottom.collapsed') === 'true';
+
+    if (bottomBar && isBottomCollapsed) {
+      bottomBar.classList.add('collapsed');
+    }
+
+    if (bottomToggle && bottomBar) {
+      bottomToggle.addEventListener('click', () => {
+        const collapsed = bottomBar.classList.toggle('collapsed');
+        localStorage.setItem('solisix.bottom.collapsed', collapsed);
+        if (window.cosmicAudio) window.cosmicAudio.playSelect();
+      });
+    }
+
     this.updateLanguageTexts();
   }
 
@@ -2319,7 +2435,21 @@ class CelestialSimulation {
       'btn-export-json': dict.exportJson,
       'scale-title-text': dict.scaleTitle,
       'scale-sub-text': dict.scaleSubtitle,
-      'solar-flare-alert-text': dict.solarFlareAlert
+      'solar-flare-alert-text': dict.solarFlareAlert,
+      'm-search-lbl': dict.search,
+      'm-timeline-lbl': dict.timeline,
+      'm-audio-lbl': dict.audio,
+      'm-thermal-lbl': dict.thermal,
+      'm-tour-lbl': dict.tour,
+      'm-compare-lbl': dict.scaleCompare,
+      'm-capture-lbl': dict.capture,
+      'm-info-lbl': dict.info,
+      'm-reset-lbl': dict.reset,
+      'm-export-lbl': dict.exportJson,
+      'mobile-menu-title-text': dict.mobileControlsTitle || (isBn ? 'সোলিস-৯ কন্ট্রোলস' : 'SOLIS-IX CONTROLS'),
+      'm-tools-lbl': dict.mobileTools || (isBn ? 'টুলস ও ভিজ্যুয়াল মোড' : 'TOOLS & MODES'),
+      'm-layers-lbl': dict.mobileLayers || (isBn ? 'লেয়ার ডিসপ্লে টগল' : 'LAYERS'),
+      'handle-text-lbl': dict.controls || (isBn ? 'কন্ট্রোলস' : 'CONTROLS')
     };
 
     for (const [id, txt] of Object.entries(elIds)) {
